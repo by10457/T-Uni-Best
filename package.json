@@ -123,8 +123,8 @@
     "vue": "^3.4.21",
     "vue-i18n": "9.1.9",
     "vue-router": "4.5.1",
-    "z-paging": "2.8.7",
-    "wot-design-uni": "latest"
+    "wot-design-uni": "latest",
+    "z-paging": "2.8.7"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
