@@ -23,7 +23,13 @@ export type ListAllUsingGetResponses = {
 
 export type UserItem = {
   userId: number;
+  uniqueId: string;
   username: string;
   nickname: string;
-  avatar: string;
+  avatarUrl: string;
+  gender: number;
+  bio: string;
+  location: string;
+  backgroundUrl: string;
+  phone: string;
 };

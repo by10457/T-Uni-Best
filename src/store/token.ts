@@ -124,18 +124,18 @@ export const useTokenStore = defineStore(
         const res = await _login(loginForm)
         console.log('普通登录-res: ', res)
         await _postLogin(res)
-        uni.showToast({
-          title: '登录成功',
-          icon: 'success',
-        })
+        // uni.showToast({
+        //   title: '登录成功',
+        //   icon: 'success',
+        // })
         return res
       }
       catch (error) {
         console.error('登录失败:', error)
-        uni.showToast({
-          title: '登录失败，请重试',
-          icon: 'error',
-        })
+        // uni.showToast({
+        //   title: '登录失败，请重试',
+        //   icon: 'error',
+        // })
         throw error
       }
       finally {
@@ -157,18 +157,18 @@ export const useTokenStore = defineStore(
         const res = await _wxLogin(code)
         console.log('微信登录-res: ', res)
         await _postLogin(res)
-        uni.showToast({
-          title: '登录成功',
-          icon: 'success',
-        })
+        // uni.showToast({
+        //   title: '登录成功',
+        //   icon: 'success',
+        // })
         return res
       }
       catch (error) {
         console.error('微信登录失败:', error)
-        uni.showToast({
-          title: '微信登录失败，请重试',
-          icon: 'error',
-        })
+        // uni.showToast({
+        //   title: '微信登录失败，请重试',
+        //   icon: 'error',
+        // })
         throw error
       }
       finally {

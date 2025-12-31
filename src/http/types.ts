@@ -3,6 +3,8 @@
  */
 export type CustomRequestOptions = UniApp.RequestOptions & {
   query?: Record<string, any>
+  /** 是否忽略鉴权（默认所有请求需要鉴权；登录/刷新等接口需设置 true 以绕过门禁） */
+  ignoreAuth?: boolean
   /** 出错时是否隐藏错误提示 */
   hideErrorToast?: boolean
 } & IUniUploadFileOptions // 添加uni.uploadFile参数类型
