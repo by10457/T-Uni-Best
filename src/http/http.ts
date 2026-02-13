@@ -142,6 +142,15 @@ export function http<T>(options: CustomRequestOptions) {
           const isTokenExpired = res.statusCode === 401 || code === 401
 
           if (isTokenExpired) {
+            // 排除登录相关接口，避免无限循环重试
+            const isAuthEndpoint = options.url?.includes('/auth/login')
+              || options.url?.includes('/auth/wxLogin')
+              || options.url?.includes('/auth/refreshToken')
+              || options.url?.includes('/auth/logout')
+            if (isAuthEndpoint) {
+              // 登录和认证接口直接返回错误，不进行重试
+              return reject(res)
+            }
             const tokenStore = useTokenStore()
             if (!isDoubleTokenMode) {
               // 未启用双token策略，清理用户信息，跳转到登录页
@@ -261,8 +270,7 @@ export function http<T>(options: CustomRequestOptions) {
           }
 
           // 处理其他错误
-          !options.hideErrorToast
-          && uni.showToast({
+          !options.hideErrorToast && uni.showToast({
             icon: 'none',
             title: (res.data as any).msg || '请求错误',
           })

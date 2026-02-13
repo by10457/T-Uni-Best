@@ -155,6 +155,7 @@ export const useTokenStore = defineStore(
         const code = await getWxCode()
         console.log('微信登录-code: ', code)
         const res = await _wxLogin(code)
+        // const res = await _wxLogin({ code: '3' })
         console.log('微信登录-res: ', res)
         await _postLogin(res)
         // uni.showToast({
@@ -197,8 +198,6 @@ export const useTokenStore = defineStore(
         console.log('退出登录-清除用户信息')
         tokenInfo.value = { ...tokenInfoState }
         uni.removeStorageSync('token')
-        const userStore = useUserStore()
-        userStore.clearUserInfo()
       }
     }
 

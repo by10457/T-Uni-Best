@@ -30,14 +30,14 @@ export function login(loginForm: ILoginForm) {
  * @param refreshToken 刷新token
  */
 export function refreshToken(refreshToken: string) {
-  return http.post<IDoubleTokenRes>('/api/auth/refreshToken', { refreshToken }, undefined, undefined, { ignoreAuth: true })
+  return http.post<IDoubleTokenRes>('/auth/refreshToken', { refreshToken }, undefined, undefined, { ignoreAuth: true })
 }
 
 /**
  * 获取用户信息
  */
 export function getUserInfo() {
-  return http.get<IUserInfoRes>('/api/user/info')
+  return http.get<IUserInfoRes>('/user/getUserInfo')
 }
 
 /**
@@ -81,5 +81,5 @@ export function getWxCode() {
  * @returns Promise 包含登录结果
  */
 export function wxLogin(data: { code: string }) {
-  return http.post<IAuthLoginRes>('/api/auth/wxLogin', data, undefined, undefined, { ignoreAuth: true })
+  return http.post<IAuthLoginRes>('/auth/wxLogin', data, undefined, undefined, { ignoreAuth: true })
 }

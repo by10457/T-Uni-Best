@@ -84,7 +84,7 @@ export function getAllPages(key?: string) {
 
   // 这里处理分包
   const subPages: PageMetaDatum[] = []
-  ;(subPackages as SubPackages).forEach((subPageObj) => {
+    ; (subPackages as SubPackages).forEach((subPageObj) => {
     // console.log(subPageObj)
     const { root } = subPageObj
 
@@ -139,11 +139,12 @@ export function isCurrentPageTabbar() {
 export function getEnvBaseUrl() {
   // 请求基准地址
   let baseUrl = import.meta.env.VITE_SERVER_BASEURL
+  const isDev = import.meta.env.DEV
 
   // # 有些同学可能需要在微信小程序里面根据 develop、trial、release 分别设置上传地址，参考代码如下。
-  const VITE_SERVER_BASEURL__WEIXIN_DEVELOP = 'http://localhost:10457'
-  const VITE_SERVER_BASEURL__WEIXIN_TRIAL = 'https://mp.sisanjiu.com'
-  const VITE_SERVER_BASEURL__WEIXIN_RELEASE = 'https://mp.sisanjiu.com'
+  const VITE_SERVER_BASEURL__WEIXIN_DEVELOP = isDev ? 'http://localhost:10457/api' : 'https://mp.sisanjiu.com/api'
+  const VITE_SERVER_BASEURL__WEIXIN_TRIAL = 'https://mp.sisanjiu.com/api'
+  const VITE_SERVER_BASEURL__WEIXIN_RELEASE = 'https://mp.sisanjiu.com/api'
 
   // 微信小程序端环境区分
   if (isMpWeixin) {

@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app'
 import { navigateToInterceptor } from '@/router/interceptor'
+import updateManager from '@/utils/updateManager.wx'
 
 onLaunch((options) => {
   console.log('App.vue onLaunch', options)
+  // #ifdef MP-WEIXIN
+  // 检查更新
+  updateManager()
+  // #endif
 })
 onShow((options) => {
   console.log('App.vue onShow', options)
@@ -22,5 +27,13 @@ onHide(() => {
 </script>
 
 <style lang="scss">
-
+/* 隐藏页面scroll-view滚动条 */
+::-webkit-scrollbar {
+  display: none;
+  width: 0 !important;
+  height: 0 !important;
+  color: transparent;
+  background: transparent;
+  appearance: none;
+}
 </style>
