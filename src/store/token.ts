@@ -154,7 +154,7 @@ export const useTokenStore = defineStore(
         // 获取微信小程序登录的code
         const code = await getWxCode()
         console.log('微信登录-code: ', code)
-        const res = await _wxLogin(code)
+        const res = await _wxLogin({ code: code.code })
         // const res = await _wxLogin({ code: '3' })
         console.log('微信登录-res: ', res)
         await _postLogin(res)
