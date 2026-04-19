@@ -1,6 +1,6 @@
 ---
 name: css-styling
-description: 前端 CSS 样式编写规范。当编写或审查页面样式、使用图标、覆盖组件库样式时触发此 skill，确保严格遵循 UnoCSS 原子化优先、禁止滥用 <style> 块、统一使用 carbon 图标库等规范。
+description: T-Uni-Best 项目 CSS 样式规范。凡是在 template 中写 class 属性、讨论布局方式、调整间距颜色、使用或查找图标、需要覆盖 Wot UI 组件默认样式、或者用户说"样式太丑了"/"这个按钮加点样式"/"图标怎么变颜色"等任何与样式视觉相关的需求时，都应加载此 skill，即便用户没有明确说"查样式规范"。
 ---
 
 # CSS 样式编写规范
@@ -277,31 +277,10 @@ src/static/my-icons/
 </style>
 ```
 
-### 常用 Wot UI CSS 变量速查
+### Wot UI CSS 变量速查
 
-```scss
-// 按钮
---wot-button-border-radius       // 圆角
---wot-button-normal-height       // 高度
---wot-button-normal-font-size    // 字体大小
-
-// 输入框
---wot-input-border-radius        // 圆角
---wot-input-height               // 高度
-
-// 标签页
---wot-tabs-nav-height            // 导航高度
---wot-tabs-nav-active-color      // 激活颜色
-
-// 单元格/列表
---wot-cell-padding               // 内边距
---wot-cell-title-font-size       // 主标题字号
---wot-cell-value-font-size       // 副文本字号
-
-// 全局主题
---wot-color-theme                // 主题色
---wot-color-theme-light          // 主题浅色
-```
+> 完整变量列表见 `references/wot-ui-css-vars.md`（按钮、输入框、标签页、单元格、导航栏、弹出层、全局主题）。
+> 当用户询问某个具体组件的 CSS 变量时，读取该文件获取完整列表。
 
 ---
 
