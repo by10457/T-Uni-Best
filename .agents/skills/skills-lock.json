@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "wot-ui": {
+      "source": "wot-ui/wot-starter",
+      "sourceType": "github",
+      "computedHash": "b4f8b0577871b28dd12278f26961d015e378d7d4f11435599631f1ee6860c8eb"
+    }
+  }
+}
