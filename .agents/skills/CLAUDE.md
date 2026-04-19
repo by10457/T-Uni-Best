@@ -10,7 +10,7 @@
 
 | Skill | 路径 | 触发场景 |
 |-------|------|---------|
-| `uni-page-generator` | `.agents/skills/uni-page-generator/SKILL.md` | 创建新页面、新分包页面 |
+| `uni-page-generator` | `.agents/skills/uni-page-generator/SKILL.md` | 创建新页面、新分包页面、干净的页面中添加功能 |
 | `css-styling` | `.agents/skills/css-styling/SKILL.md` | 编写或审查样式、使用图标、覆盖组件库样式 |
 | `wot-ui` | `.agents/skills/wot-ui/SKILL.md` | 使用 Wot UI 组件、查询组件 API、排查组件问题 |
 | `ui-ux-pro-max` | `.agents/skills/ui-ux-pro-max/SKILL.md` | 做 UI/UX 设计、生成设计系统、选色板字体 |

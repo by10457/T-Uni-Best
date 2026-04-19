@@ -1,6 +1,6 @@
 ---
 name: uni-page-generator
-description: 快速生成符合 T-Uni-Best 项目规范的 uni-app 页面，包含标准模板、目录结构和 definePage 宏配置。当用户需要创建新页面、新分包页面时触发此 skill。
+description: 快速生成符合 T-Uni-Best 项目规范的 uni-app 页面。只要用户提到"新建页面"、"创建页面"、"搭一个页面"、"做个XXX页"、"加一个分包"、"新增路由"，或者需要初始化任何新的 .vue 页面文件时，都必须加载此 skill 获取标准模板和目录规范，不能凭记忆直接写。
 allowed-tools: Bash(mkdir:*), Write, Read
 ---
 
@@ -44,15 +44,21 @@ definePage({
 // interface XxxData { ... }
 
 // =================== 变量声明 ===================
-/** 返回上一页处理 */
+/** 返回上一页处理，全局统一 */
 const { handleBack } = useNavBack()
 
 // =================== 函数定义 ===================
 // const handleXxx = () => { ... }
 
+// =================== 事件监听 ===================
+// watch(() => store.xxx, (val) => { ... })
+// uni.$on('xxx', (params) => { ... })
+
 // =================== 生命周期 ===================
 // onLoad((options) => { ... })
 // onShow(() => { ... })
+// onMounted(() => { ... })
+// onUnmounted(() => { ... })
 </script>
 
 <template>
@@ -97,6 +103,7 @@ src/
 - 样式优先使用 UnoCSS 原子化类名（如 `flex flex-col items-center p-4`）
 - 图标使用 Iconify 的 carbon 图标库：`<i class="i-carbon-xxx" />`
 - 分包目录名必须以 `pages-` 开头，并在 `vite.config.ts` 中注册
+- src目录下的`manifest.json` `pages.json` 不允许编写，此为编译阶段自动生成，相关配置需在 `manifest.config.ts` `pages.config.ts` 中编写
 
 ## 平台条件编译示例
 
