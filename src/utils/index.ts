@@ -1,7 +1,9 @@
+/* eslint-disable style/indent */
 import type { PageMetaDatum, SubPackages } from '@uni-helper/vite-plugin-uni-pages'
+/** 如果是运行抖音小程序，就不引入 @uni-helper/uni-env，否则运行报错（找不到process) */
 import { isMpWeixin } from '@uni-helper/uni-env'
+
 import { pages, subPackages } from '@/pages.json'
-import { isPageTabbar } from '@/tabbar/store'
 
 export type PageInstance = Page.PageInstance<AnyObject, object> & { $page: Page.PageInstance<AnyObject, object> & { fullPath: string } }
 
@@ -85,18 +87,17 @@ export function getAllPages(key?: string) {
   // 这里处理分包
   const subPages: PageMetaDatum[] = []
     ; (subPackages as SubPackages).forEach((subPageObj) => {
-    // console.log(subPageObj)
-    const { root } = subPageObj
-
-    subPageObj.pages
-      .filter(page => !key || page[key])
-      .forEach((page) => {
-        subPages.push({
-          ...page,
-          path: `/${root}/${page.path}`,
+      // console.log(subPageObj)
+      const { root } = subPageObj
+      subPageObj.pages
+        .filter(page => !key || page[key])
+        .forEach((page) => {
+          subPages.push({
+            ...page,
+            path: `/${root}/${page.path}`,
+          })
         })
-      })
-  })
+    })
   const result = [...mainPages, ...subPages]
   // console.log(`getAllPages by ${key} result: `, result)
   return result
@@ -104,33 +105,14 @@ export function getAllPages(key?: string) {
 
 export function getCurrentPageI18nKey() {
   const routeObj = currRoute()
-
-  let currPage = (pages as PageMetaDatum[]).find(page => `/${page.path}` === routeObj.path)
+  const currPage = (pages as PageMetaDatum[]).find(page => `/${page.path}` === routeObj.path)
   if (!currPage) {
-    // 在主包中找不到对应的页面，则在分包中找
-    const allSubPages: PageMetaDatum[] = []
-    subPackages?.forEach((config) => {
-      config.pages?.forEach((cur) => {
-        allSubPages.push({
-          ...cur,
-          path: `/${config.root}/${cur.path}`,
-        })
-      })
-    })
-    currPage = allSubPages.find(page => page.path === routeObj.path)
-    if (!currPage) {
-      console.warn('路由不正确')
-      return ''
-    }
+    console.warn('路由不正确')
+    return ''
   }
   console.log(currPage)
   console.log(currPage.style.navigationBarTitleText)
   return currPage.style?.navigationBarTitleText || ''
-}
-
-export function isCurrentPageTabbar() {
-  const { path } = currRoute()
-  return isPageTabbar(path)
 }
 
 /**

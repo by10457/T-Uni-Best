@@ -1,8 +1,7 @@
 import path from 'node:path'
 import process from 'node:process'
 import Uni from '@uni-helper/plugin-uni'
-import { isMpWeixin } from '@uni-helper/uni-env'
-import Components from '@uni-helper/vite-plugin-uni-components'
+import UniComponents from '@uni-helper/vite-plugin-uni-components'
 // @see https://uni-helper.js.org/vite-plugin-uni-layouts
 import UniLayouts from '@uni-helper/vite-plugin-uni-layouts'
 // @see https://github.com/uni-helper/vite-plugin-uni-manifest
@@ -12,7 +11,6 @@ import UniPages from '@uni-helper/vite-plugin-uni-pages'
 // @see https://github.com/uni-helper/vite-plugin-uni-platform
 // 需要与 @uni-helper/vite-plugin-uni-pages 插件一起使用
 import UniPlatform from '@uni-helper/vite-plugin-uni-platform'
-
 /**
  * 分包优化、模块异步跨包调用、组件异步跨包引用
  * @see https://github.com/uni-ku/bundle-optimizer
@@ -27,7 +25,6 @@ import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig, loadEnv } from 'vite'
 import ViteRestart from 'vite-plugin-restart'
 import openDevTools from './scripts/open-dev-tools'
-import vitePluginEruda from './scripts/vite-plugin-eruda'
 import { createCopyNativeResourcesPlugin } from './vite-plugins/copy-native-resources'
 import syncManifestPlugin from './vite-plugins/sync-manifest-plugins'
 
@@ -47,7 +44,7 @@ export default defineConfig(({ command, mode }) => {
   // pnpm build:app 时得到 => build production
   // dev 和 build 命令可以分别使用 .env.development 和 .env.production 的环境变量
 
-  const { UNI_PLATFORM } = process.env
+  const { UNI_PLATFORM, SKIP_OPEN_DEVTOOLS } = process.env
   console.log('UNI_PLATFORM -> ', UNI_PLATFORM) // 得到 mp-weixin, h5, app 等
 
   const env = loadEnv(mode, path.resolve(process.cwd(), 'env'))
@@ -67,37 +64,39 @@ export default defineConfig(({ command, mode }) => {
     envDir: './env', // 自定义env目录
     base: VITE_APP_PUBLIC_BASE,
     plugins: [
+      // UniXXX 需要在 Uni 之前引入
       UniLayouts(),
       UniPlatform(),
       UniManifest(),
+      UniComponents({
+        extensions: ['vue'],
+        deep: true, // 是否递归扫描子目录，
+        directoryAsNamespace: false, // 是否把目录名作为命名空间前缀，true 时组件名为 目录名+组件名，
+        dts: 'src/types/components.d.ts', // 自动生成的组件类型声明文件路径（用于 TypeScript 支持）
+      }),
       UniPages({
-        exclude: ['**/components/**/**.*'],
+        exclude: ['**/components/**/**.*', '**/sections/**/**.*'],
         // pages 目录为 src/pages，分包目录不能配置在pages目录下！！
         // 是个数组，可以配置多个，但是不能为pages里面的目录！！
-        subPackages: [
-          'src/pages-fg', // 这个是相对必要的路由，尽量留着（登录页、注册页、404页等）
-        ],
+        // "src/pages-demo" 是unibest demo 预留的，方便后续插入demo示例
+        subPackages: ['src/pages-demo'],
         dts: 'src/types/uni-pages.d.ts',
       }),
-      // Optimization 插件需要 page.json 文件，故应在 UniPages 插件之后执行
+      // UniOptimization 插件需要 page.json 文件，故应在 UniPages 插件之后执行
       UniOptimization({
-        enable: isMpWeixin,
+        enable: {
+          'optimization': true,
+          'async-import': true,
+          'async-component': true,
+        },
         dts: {
           base: 'src/types',
         },
         logger: false,
       }),
-      // UniXXX 需要在 Uni 之前引入
       // 若存在改变 pages.json 的插件，请将 UniKuRoot 放置其后
       UniKuRoot({
-        excludePages: ['**/components/**/**.*'],
-      }),
-      // Components 需要在 Uni 之前引入
-      Components({
-        extensions: ['vue'],
-        deep: true, // 是否递归扫描子目录，
-        directoryAsNamespace: false, // 是否把目录名作为命名空间前缀，true 时组件名为 目录名+组件名，
-        dts: 'src/types/components.d.ts', // 自动生成的组件类型声明文件路径（用于 TypeScript 支持）
+        excludePages: ['**/components/**/**.*', '**/sections/**/**.*'],
       }),
       Uni(),
       {
@@ -127,7 +126,9 @@ export default defineConfig(({ command, mode }) => {
       UNI_PLATFORM === 'h5' && {
         name: 'html-transform',
         transformIndexHtml(html) {
-          return html.replace('%BUILD_TIME%', dayjs().format('YYYY-MM-DD HH:mm:ss')).replace('%VITE_APP_TITLE%', VITE_APP_TITLE)
+          return html
+            .replace('%BUILD_TIME%', dayjs().format('YYYY-MM-DD HH:mm:ss'))
+            .replace('%VITE_APP_TITLE%', VITE_APP_TITLE)
         },
       },
       // 打包分析插件，h5 + 生产环境才弹出
@@ -147,11 +148,9 @@ export default defineConfig(({ command, mode }) => {
         },
       ),
       syncManifestPlugin(),
-      vitePluginEruda({
-        open: UNI_PLATFORM === 'h5' && mode === 'development',
-      }),
       // 自动打开开发者工具插件 (必须修改 .env 文件中的 VITE_WX_APPID)
-      openDevTools(),
+      // 上传时通过 SKIP_OPEN_DEVTOOLS=true 跳过
+      SKIP_OPEN_DEVTOOLS !== 'true' && openDevTools({ mode }),
     ],
     define: {
       __VITE_APP_PROXY__: JSON.stringify(VITE_APP_PROXY_ENABLE),
@@ -183,11 +182,9 @@ export default defineConfig(({ command, mode }) => {
             [VITE_APP_PROXY_PREFIX]: {
               target: VITE_SERVER_BASEURL,
               changeOrigin: true,
-              // // 后端有/api前缀则不做处理，没有则需要去掉
-              // rewrite: path => path.replace(new RegExp(`^${VITE_APP_PROXY_PREFIX}`), ''),
-
-              // 保留 /api 前缀，直接转发到后端
-              rewrite: path => path,
+              // 后端有/api前缀则不做处理，没有则需要去掉
+              rewrite: path =>
+                path.replace(new RegExp(`^${VITE_APP_PROXY_PREFIX}`), ''),
             },
           }
         : undefined,
