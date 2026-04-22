@@ -101,6 +101,18 @@ async function ensureAuthReady(options: CustomRequestOptions) {
   // 第三步：返回登录Promise，所有并发请求都会等待这个Promise
   return loginPromise
   // #endif
+
+  // H5端：走到这里说明无法无感获取 token
+  // - 单Token H5：没有刷新机制，无法自动登录
+  // - 双Token H5：refreshToken 已过期或不存在，无法刷新
+  // 直接跳转登录页并阻止请求发出，避免无 token 的无效网络请求
+  // #ifdef H5
+  tokenStore.updateNowTime()
+  if (!tokenStore.hasLogin) {
+    toLoginPage()
+    throw new Error('[请求拦截] 未登录，已跳转登录页')
+  }
+  // #endif
 }
 
 /**
@@ -152,12 +164,17 @@ export function http<T>(options: CustomRequestOptions) {
               return reject(res)
             }
             const tokenStore = useTokenStore()
-            if (!isDoubleTokenMode) {
-              // 未启用双token策略，清理用户信息，跳转到登录页
+            // H5端：判断是否具备无感恢复能力，分情况处理
+            // - 双Token H5 + 有refreshToken：可直接调刷新接口，无需跳转，继续走下方队列逻辑
+            // - 单Token H5：无刷新机制，必须跳登录页
+            // - 双Token H5 但无refreshToken：同样无法无感恢复，跳登录页
+            // #ifdef H5
+            if (!isDoubleTokenMode || !(tokenStore.tokenInfo as IDoubleTokenRes)?.refreshToken) {
               tokenStore.logout()
               toLoginPage()
               return reject(res)
             }
+            // #endif
 
             /* -------- 无感刷新 token（容错处理）----------- */
             // 先检查重试次数，防止无限循环
@@ -247,23 +264,8 @@ export function http<T>(options: CustomRequestOptions) {
               })()
             }
 
-            // 检查是否有有效的refreshToken用于容错处理
-            const { refreshToken: hasRefreshToken } = tokenStore.tokenInfo as IDoubleTokenRes || {}
-            if (!hasRefreshToken) {
-              // 没有refreshToken，直接登出并提示用户
-              // nextTick(() => {
-              //   uni.hideToast()
-              //   uni.showToast({
-              //     title: '登录已过期，请重新登录',
-              //     icon: 'none',
-              //     duration: 3000,
-              //   })
-              // })
-              await tokenStore.logout()
-              return reject(res)
-            }
-
             // 已进入队列，等待刷新结束后重试
+            // （IIFE 内部会根据是否有 refreshToken 自动决定走刷新还是 wxLogin）
             return
           }
 
@@ -275,6 +277,7 @@ export function http<T>(options: CustomRequestOptions) {
                 icon: 'none',
                 title: responseData.msg || responseData.message || '请求错误',
               })
+              return reject(responseData.data)
             }
             return resolve(responseData.data)
           }
