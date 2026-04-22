@@ -1,6 +1,7 @@
 import path from 'node:path'
 import process from 'node:process'
 import Uni from '@uni-helper/plugin-uni'
+import { isMpWeixin } from '@uni-helper/uni-env'
 import UniComponents from '@uni-helper/vite-plugin-uni-components'
 // @see https://uni-helper.js.org/vite-plugin-uni-layouts
 import UniLayouts from '@uni-helper/vite-plugin-uni-layouts'
@@ -11,6 +12,7 @@ import UniPages from '@uni-helper/vite-plugin-uni-pages'
 // @see https://github.com/uni-helper/vite-plugin-uni-platform
 // 需要与 @uni-helper/vite-plugin-uni-pages 插件一起使用
 import UniPlatform from '@uni-helper/vite-plugin-uni-platform'
+
 /**
  * 分包优化、模块异步跨包调用、组件异步跨包引用
  * @see https://github.com/uni-ku/bundle-optimizer
@@ -25,6 +27,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig, loadEnv } from 'vite'
 import ViteRestart from 'vite-plugin-restart'
 import openDevTools from './scripts/open-dev-tools'
+import vitePluginEruda from './scripts/vite-plugin-eruda'
 import { createCopyNativeResourcesPlugin } from './vite-plugins/copy-native-resources'
 import syncManifestPlugin from './vite-plugins/sync-manifest-plugins'
 
@@ -84,11 +87,7 @@ export default defineConfig(({ command, mode }) => {
       }),
       // UniOptimization 插件需要 page.json 文件，故应在 UniPages 插件之后执行
       UniOptimization({
-        enable: {
-          'optimization': true,
-          'async-import': true,
-          'async-component': true,
-        },
+        enable: isMpWeixin,
         dts: {
           base: 'src/types',
         },
@@ -148,6 +147,9 @@ export default defineConfig(({ command, mode }) => {
         },
       ),
       syncManifestPlugin(),
+      vitePluginEruda({
+        open: UNI_PLATFORM === 'h5' && mode === 'development',
+      }),
       // 自动打开开发者工具插件 (必须修改 .env 文件中的 VITE_WX_APPID)
       // 上传时通过 SKIP_OPEN_DEVTOOLS=true 跳过
       SKIP_OPEN_DEVTOOLS !== 'true' && openDevTools({ mode }),
