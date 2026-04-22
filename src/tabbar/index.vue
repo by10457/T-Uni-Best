@@ -26,11 +26,15 @@ function handleClick(index: number) {
   if (index === tabbarStore.curIdx) {
     return
   }
-  if (tabbarList[index].isBulge) {
+  const list = tabbarList.value
+  if (!list[index]) {
+    return
+  }
+  if (list[index].isBulge) {
     handleClickBulge()
     return
   }
-  const url = tabbarList[index].pagePath
+  const url = list[index].pagePath
   tabbarStore.setCurIdx(index)
   if (tabbarCacheEnable) {
     uni.switchTab({ url })
@@ -101,8 +105,8 @@ function getColorByIndex(index: number) {
   </view>
 </template>
 
-  <style scoped lang="scss">
-  .border-and-fixed {
+<style scoped lang="scss">
+.border-and-fixed {
   position: fixed;
   bottom: 0;
   left: 0;
