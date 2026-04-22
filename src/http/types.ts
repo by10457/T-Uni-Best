@@ -7,6 +7,8 @@ export type CustomRequestOptions = UniApp.RequestOptions & {
   ignoreAuth?: boolean
   /** 出错时是否隐藏错误提示 */
   hideErrorToast?: boolean
+  /** 内部使用：401 重试计数，防止无限循环（外部请勿手动设置） */
+  _retryCount?: number
 } & IUniUploadFileOptions // 添加uni.uploadFile参数类型
 
 /** 主要提供给 openapi-ts-request 生成的代码使用 */

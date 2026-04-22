@@ -160,12 +160,20 @@ export function http<T>(options: CustomRequestOptions) {
             }
 
             /* -------- 无感刷新 token（容错处理）----------- */
+            // 先检查重试次数，防止无限循环
+            const retryCount = options._retryCount || 0
+            if (retryCount >= 1) {
+              // 已重试过一次，后端仍返回 401，将登出并拒绝
+              await tokenStore.logout()
+              return reject(new Error('Token 刷新后仍鉴权失败，请重新打开小程序'))
+            }
+
             // 所有401请求都加入队列等待处理
             taskQueue.push((err) => {
               if (err)
                 return reject(err)
-              // 重新发起原始请求
-              http<T>(options).then(resolve).catch(reject)
+              // 重新发起原始请求，并计入重试次数
+              http<T>({ ...options, _retryCount: retryCount + 1 }).then(resolve).catch(reject)
             })
 
             // 如果未在刷新中，开始容错处理流程
@@ -185,15 +193,17 @@ export function http<T>(options: CustomRequestOptions) {
                   //   })
                   // })
 
-                  // 第二步：小程序端尝试静默登录
-                  // #ifdef MP-WEIXIN
-                  await tokenStore.wxLogin()
-                  // #endif
-
-                  // 第三步：如果有refreshToken，尝试刷新
+                  // 第二步：尝试用 refreshToken 刷新，失败再降级为小程序静默登录
                   const tokenInfo = tokenStore.tokenInfo as IDoubleTokenRes
                   if (tokenInfo?.refreshToken) {
+                    // 优先用 refreshToken 刷新，避免无谓调用 wx.login
                     await tokenStore.refreshToken()
+                  }
+                  else {
+                    // 没有 refreshToken，降级到小程序静默登录
+                    // #ifdef MP-WEIXIN
+                    await tokenStore.wxLogin()
+                    // #endif
                   }
 
                   // 第四步：处理成功
