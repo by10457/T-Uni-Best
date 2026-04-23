@@ -26,3 +26,8 @@ export function getMiddleHeight() {
     - (systemInfo.statusBarHeight + 44)
     - (systemInfo.safeAreaInsets.bottom + 50)
 }
+
+/** 获取屏幕高度 */
+export function getScreenHeight() {
+  return systemInfo.screenHeight
+}
