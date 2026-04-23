@@ -3,7 +3,7 @@ import type { CustomRequestOptions, IResponse } from '@/http/types'
 import { useTokenStore } from '@/store/token'
 import { isDoubleTokenMode } from '@/utils'
 import { toLoginPage } from '@/utils/toLoginPage'
-import { ResultEnum } from './tools/enum'
+import { isSuccessCode, isTokenExpiredCode } from './tools/enum'
 
 // 刷新 token 状态管理
 let refreshing = false // 防止重复刷新 token 标识
@@ -150,8 +150,8 @@ export function http<T>(options: CustomRequestOptions) {
           const responseData = res.data as IResponse<T>
           const { code } = responseData
 
-          // 检查是否是401错误（包括HTTP状态码401或业务码401）
-          const isTokenExpired = res.statusCode === 401 || code === 401
+          // 检查是否是Token失效错误（包括HTTP状态码401或业务码）
+          const isTokenExpired = res.statusCode === 401 || isTokenExpiredCode(code)
 
           if (isTokenExpired) {
             // 排除登录相关接口，避免无限循环重试
@@ -272,7 +272,7 @@ export function http<T>(options: CustomRequestOptions) {
           // 处理其他成功状态（HTTP状态码200-299）
           if (res.statusCode >= 200 && res.statusCode < 300) {
             // 处理业务逻辑错误
-            if (code !== ResultEnum.Success0 && code !== ResultEnum.Success200) {
+            if (!isSuccessCode(code)) {
               uni.showToast({
                 icon: 'none',
                 title: responseData.msg || responseData.message || '请求错误',

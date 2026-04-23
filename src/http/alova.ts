@@ -5,7 +5,7 @@ import { createAlova } from 'alova'
 import { createServerTokenAuthentication } from 'alova/client'
 import VueHook from 'alova/vue'
 import { toLoginPage } from '@/utils/toLoginPage'
-import { ContentTypeEnum, ResultEnum, ShowMessage } from './tools/enum'
+import { ContentTypeEnum, isSuccessCode, ResultEnum, ShowMessage } from './tools/enum'
 
 // 配置动态Tag
 export const API_DOMAINS = {
@@ -101,8 +101,8 @@ const alovaInstance = createAlova({
 
     // 处理业务逻辑错误
     const { code, message, data } = rawData as IResponse
-    // 0和200当做成功都很普遍，这里直接兼容两者，见 ResultEnum
-    if (code !== ResultEnum.Success0 && code !== ResultEnum.Success200) {
+    // 判断是否为业务成功
+    if (!isSuccessCode(code)) {
       if (config.meta?.toast !== false) {
         uni.showToast({
           title: message,

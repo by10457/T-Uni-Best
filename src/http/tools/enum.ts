@@ -66,3 +66,57 @@ export function ShowMessage(status: number | string): string {
   }
   return `${message}，请检查网络或联系管理员！`
 }
+
+export enum ResultCodeEnum {
+  // ==================== 通用成功 ====================
+  Success = 2000,
+  CreateSuccess = 2001,
+  UpdateSuccess = 2002,
+  DeleteSuccess = 2003,
+  SortSuccess = 2004,
+  UploadSuccess = 2005,
+  LogoutSuccess = 2006,
+
+  // ==================== 认证/会话 (Token 失效) ====================
+  LoginAuth = 3200,
+  AuthenticationExpired = 3201,
+  SessionExpiration = 3202,
+  
+  // ==================== 权限/Token (Token 失效) ====================
+  TokenParsingFailed = 3302,
+  TokenExpired = 3303,
+  TokenNotProvided = 3304,
+  RefreshTokenEmpty = 3305,
+  RefreshTokenInvalid = 3306,
+  RefreshTokenExpired = 3307,
+  AccessTokenEmpty = 3308,
+  AccessTokenInvalid = 3309,
+}
+
+/**
+ * 判断是否为业务成功
+ */
+export function isSuccessCode(code: number | string): boolean {
+  const c = Number(code)
+  return c === ResultEnum.Success0 || c === ResultEnum.Success200 || (c >= 2000 && c <= 2099)
+}
+
+/**
+ * 判断是否为 Token 失效/未授权，需要重新登录或无感刷新
+ */
+export function isTokenExpiredCode(code: number | string): boolean {
+  const c = Number(code)
+  return c === ResultEnum.Unauthorized || [
+    ResultCodeEnum.LoginAuth,
+    ResultCodeEnum.AuthenticationExpired,
+    ResultCodeEnum.SessionExpiration,
+    ResultCodeEnum.TokenParsingFailed,
+    ResultCodeEnum.TokenExpired,
+    ResultCodeEnum.TokenNotProvided,
+    ResultCodeEnum.RefreshTokenEmpty,
+    ResultCodeEnum.RefreshTokenInvalid,
+    ResultCodeEnum.RefreshTokenExpired,
+    ResultCodeEnum.AccessTokenEmpty,
+    ResultCodeEnum.AccessTokenInvalid
+  ].includes(c)
+}
