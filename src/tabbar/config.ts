@@ -33,7 +33,7 @@ export const nativeTabbarList: NativeTabBarItem[] = [
   {
     iconPath: 'static/tabbar/personal.png',
     selectedIconPath: 'static/tabbar/personalHL.png',
-    pagePath: 'pages/me/me',
+    pagePath: 'pages/me/index',
     text: '个人',
   },
 ]
@@ -54,7 +54,7 @@ export const customTabbarList: CustomTabBarItem[] = [
   // 鼓包配置示例（2025-12-31）
   // 中间鼓包tabbarItem配置：通常是扫描按钮、发布按钮、更多按钮等，点击触发业务逻辑
   // {
-  //   pagePath: 'pages/me/me',
+  //   pagePath: 'pages/me/index',
   //   text: '我的',
   //   // 1）在fg-tabbar.vue页面上引入一下并注释掉（见tabbar/index.vue代码第2行）
   //   // 2）配置到 unocss.config.ts 的 safelist 中
@@ -73,7 +73,7 @@ export const customTabbarList: CustomTabBarItem[] = [
     roles: ['admin'],
   },
   {
-    pagePath: 'pages/me/me',
+    pagePath: 'pages/me/index',
     text: '我的',
     // 1）在fg-tabbar.vue页面上引入一下并注释掉（见tabbar/index.vue代码第2行）
     // 2）配置到 unocss.config.ts 的 safelist 中
