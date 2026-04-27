@@ -48,3 +48,4 @@ src/pages.json
 # npx @dcloudio/uvm@latest
 
 __pycache__
+node-compile-cache
