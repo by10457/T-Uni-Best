@@ -35,3 +35,8 @@ export interface CustomTabBarItem {
   // roles 不写 → 所有用户都能看到；roles 写了 → 只有匹配角色可见
   roles?: UserRole[]
 }
+
+/** 运行时使用的 tabbar 配置，pagePath 统一为 '/' 开头 */
+export type CustomTabBarRuntimeItem = Omit<CustomTabBarItem, 'pagePath'> & {
+  pagePath: _LocationUrl
+}

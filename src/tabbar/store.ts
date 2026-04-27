@@ -1,14 +1,19 @@
-import type { CustomTabBarItem, CustomTabBarItemBadge } from './types'
+import type { CustomTabBarItem, CustomTabBarItemBadge, CustomTabBarRuntimeItem, NativeTabBarItem } from './types'
 import { computed, reactive } from 'vue'
 import { useUserStore } from '@/store/user'
 
-import { tabbarList as _tabbarList, selectedTabbarStrategy, TABBAR_STRATEGY_MAP } from './config'
+import { customTabbarList as _tabbarList, nativeTabbarList, selectedTabbarStrategy, TABBAR_STRATEGY_MAP } from './config'
+
+function normalizeTabbarPath(path: CustomTabBarItem['pagePath'] | NativeTabBarItem['pagePath']): _LocationUrl {
+  return (path.startsWith('/') ? path : `/${path}`) as _LocationUrl
+}
 
 /** tabbarList 里面的 path 从 pages.config.ts 得到 */
-const baseTabbarList = reactive<CustomTabBarItem[]>(_tabbarList.map(item => ({
+const baseTabbarList = reactive<CustomTabBarRuntimeItem[]>(_tabbarList.map(item => ({
   ...item,
-  pagePath: item.pagePath.startsWith('/') ? item.pagePath : `/${item.pagePath}`, // 统一成 '/' 开头的路径
+  pagePath: normalizeTabbarPath(item.pagePath), // 统一成 '/' 开头的路径
 })))
+const nativeTabbarPathList = nativeTabbarList.map(item => normalizeTabbarPath(item.pagePath))
 
 const userRoles = computed(() => {
   const userStore = useUserStore()
@@ -35,6 +40,9 @@ export function isPageTabbar(path: string) {
     return false
   }
   const _path = path.split('?')[0]
+  if (selectedTabbarStrategy === TABBAR_STRATEGY_MAP.NATIVE_TABBAR) {
+    return nativeTabbarPathList.includes(_path as _LocationUrl)
+  }
   return tabbarList.value.some(item => item.pagePath === _path)
 }
 
@@ -70,7 +78,10 @@ const tabbarStore = reactive({
     const index = list.findIndex(item => item.pagePath === path)
     // console.log('tabbarList:', tabbarList)
     if (index === -1) {
-      const pagesPathList = getCurrentPages().map(item => item.route.startsWith('/') ? item.route : `/${item.route}`)
+      const pagesPathList = getCurrentPages()
+        .map(item => item.route)
+        .filter((route): route is string => Boolean(route))
+        .map(route => route.startsWith('/') ? route : `/${route}`)
       // console.log(pagesPathList)
       const flag = list.some(item => pagesPathList.includes(item.pagePath))
       if (!flag) {

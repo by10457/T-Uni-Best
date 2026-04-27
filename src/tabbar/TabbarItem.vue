@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import type { CustomTabBarItem } from './types'
+import type { CustomTabBarRuntimeItem } from './types'
 import { tabbarStore } from './store'
 
 defineProps<{
-  item: CustomTabBarItem
+  item: CustomTabBarRuntimeItem
   index: number
   isBulge?: boolean
 }>()
 
-function getImageByIndex(index: number, item: CustomTabBarItem) {
+function getImageByIndex(index: number, item: CustomTabBarRuntimeItem) {
   if (!item.iconActive) {
     console.warn('image 模式下，需要配置 iconActive (高亮时的图片），否则无法切换高亮图片')
     return item.icon
