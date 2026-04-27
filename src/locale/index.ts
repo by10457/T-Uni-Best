@@ -3,7 +3,10 @@ import { createI18n } from 'vue-i18n'
 import en from './en.json'
 import zhHans from './zh-Hans.json' // 简体中文
 
-const messages = {
+type LocaleMessages = Record<string, string>
+type I18nData = Record<string, any>
+
+const messages: Record<string, LocaleMessages> = {
   en,
   'zh-Hans': zhHans, // key 不能乱写，查看截图 screenshots/i18n.png
 }
@@ -30,16 +33,22 @@ export function getTemplateByKey(key: string) {
   const locale = uni.getLocale()
   console.log('locale:', locale)
 
-  const message = messages[locale] // 拿到某个多语言的所有模板（是一个对象)
+  const message = messages[locale] || messages.en // 拿到某个多语言的所有模板（是一个对象)
   if (Object.keys(message).includes(key)) {
     return message[key]
   }
 
   try {
     const keyList = key.split('.')
-    return keyList.reduce((pre, cur) => {
-      return pre[cur]
-    }, message)
+    let result: any = message
+    while (keyList.length) {
+      const cur = keyList.shift()
+      if (cur === undefined) {
+        return ''
+      }
+      result = result[cur]
+    }
+    return typeof result === 'string' ? result : ''
   }
   catch (error) {
     console.error(`[i18n] Function getTemplateByKey(), key param ${key} is not existed.`)
@@ -54,16 +63,22 @@ export function getTemplateByKey(key: string) {
  * @param {object | undefined} data 需要传递的数据对象，里面的key与多语言字符串对应，eg: `{name:'菲鸽'}`
  * @returns
  */
-function formatI18n(template: string, data?: any) {
+function formatI18n(template: string, data?: I18nData) {
   return template.replace(/\{([^}]+)\}/g, (match, key: string) => {
     // console.log( match, key) // => { detail.height }  detail.height
     const arr = key.trim().split('.')
     let result = data
     while (arr.length) {
       const first = arr.shift()
+      if (first === undefined) {
+        return match
+      }
+      if (result == null) {
+        return match
+      }
       result = result[first]
     }
-    return result
+    return result == null ? match : String(result)
   })
 }
 
@@ -75,7 +90,7 @@ function formatI18n(template: string, data?: any) {
  * @param {object | undefined} data 需要传递的数据对象，里面的key与多语言字符串对应，eg: `{name:'菲鸽'}`
  * @returns
  */
-export function t(key, data?) {
+export function t(key: string, data?: I18nData) {
   return formatI18n(getTemplateByKey(key), data)
 }
 export default i18n
