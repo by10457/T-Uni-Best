@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // 最简可运行配置
-const manifest = { }
+const manifest = {}
 const pages = {
   pages: [
     {

@@ -20,8 +20,7 @@ const httpInterceptor = {
       const queryStr = stringifyQuery(options.query)
       if (options.url.includes('?')) {
         options.url += `&${queryStr}`
-      }
-      else {
+      } else {
         options.url += `?${queryStr}`
       }
     }
@@ -31,8 +30,7 @@ const httpInterceptor = {
       if (JSON.parse(import.meta.env.VITE_APP_PROXY_ENABLE)) {
         // 自动拼接代理前缀
         options.url = import.meta.env.VITE_APP_PROXY_PREFIX + options.url
-      }
-      else {
+      } else {
         options.url = baseUrl + options.url
       }
       // #endif

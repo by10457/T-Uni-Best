@@ -20,8 +20,7 @@ async function doLogin() {
       password: '123456',
     })
     uni.navigateBack()
-  }
-  catch (error) {
+  } catch (error) {
     console.log('登录失败', error)
   }
 }
@@ -30,12 +29,8 @@ async function doLogin() {
 <template>
   <view class="login">
     <!-- 本页面是非MP的登录页，主要用于 h5 和 APP -->
-    <view class="text-center">
-      登录页
-    </view>
-    <button class="mt-4 w-40 text-center" @click="doLogin">
-      点击模拟登录
-    </button>
+    <view class="text-center"> 登录页 </view>
+    <button class="mt-4 w-40 text-center" @click="doLogin">点击模拟登录</button>
   </view>
 </template>
 

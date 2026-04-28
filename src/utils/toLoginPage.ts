@@ -37,8 +37,7 @@ export const toLoginPage = debounce((options: ToLoginPageOptions = {}) => {
 
   if (mode === 'navigateTo') {
     uni.navigateTo({ url })
-  }
-  else {
+  } else {
     uni.reLaunch({ url })
   }
 }, 500)

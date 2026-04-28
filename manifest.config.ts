@@ -7,8 +7,12 @@ import { loadEnv } from 'vite'
 // 手动解析命令行参数获取 mode
 function getMode() {
   const args = process.argv.slice(2)
-  const modeFlagIndex = args.findIndex(arg => arg === '--mode')
-  return modeFlagIndex !== -1 ? args[modeFlagIndex + 1] : args[0] === 'build' ? 'production' : 'development' // 默认 development
+  const modeFlagIndex = args.findIndex((arg) => arg === '--mode')
+  return modeFlagIndex !== -1
+    ? args[modeFlagIndex + 1]
+    : args[0] === 'build'
+      ? 'production'
+      : 'development' // 默认 development
 }
 // 获取环境变量的范例
 const env = loadEnv(getMode(), path.resolve(process.cwd(), 'env'))
@@ -22,14 +26,14 @@ const {
 // console.log('manifest.config.ts env:', env)
 
 export default defineManifestConfig({
-  'name': VITE_APP_TITLE,
-  'appid': VITE_UNI_APPID,
-  'description': '',
-  'versionName': '1.0.0',
-  'versionCode': '100',
-  'transformPx': false,
-  'locale': VITE_FALLBACK_LOCALE, // 'zh-Hans'
-  'h5': {
+  name: VITE_APP_TITLE,
+  appid: VITE_UNI_APPID,
+  description: '',
+  versionName: '1.0.0',
+  versionCode: '100',
+  transformPx: false,
+  locale: VITE_FALLBACK_LOCALE, // 'zh-Hans'
+  h5: {
     router: {
       base: VITE_APP_PUBLIC_BASE,
     },
@@ -90,14 +94,14 @@ export default defineManifestConfig({
         ios: {
           appstore: 'static/app/icons/1024x1024.png',
           ipad: {
-            'app': 'static/app/icons/76x76.png',
+            app: 'static/app/icons/76x76.png',
             'app@2x': 'static/app/icons/152x152.png',
-            'notification': 'static/app/icons/20x20.png',
+            notification: 'static/app/icons/20x20.png',
             'notification@2x': 'static/app/icons/40x40.png',
             'proapp@2x': 'static/app/icons/167x167.png',
-            'settings': 'static/app/icons/29x29.png',
+            settings: 'static/app/icons/29x29.png',
             'settings@2x': 'static/app/icons/58x58.png',
-            'spotlight': 'static/app/icons/40x40.png',
+            spotlight: 'static/app/icons/40x40.png',
             'spotlight@2x': 'static/app/icons/80x80.png',
           },
           iphone: {
@@ -115,7 +119,7 @@ export default defineManifestConfig({
     },
   },
   /* 快应用特有相关 */
-  'quickapp': {},
+  quickapp: {},
   /* 小程序特有相关 */
   'mp-weixin': {
     appid: VITE_WX_APPID,
@@ -157,8 +161,8 @@ export default defineManifestConfig({
   'mp-toutiao': {
     usingComponents: true,
   },
-  'uniStatistics': {
+  uniStatistics: {
     enable: false,
   },
-  'vueVersion': '3',
+  vueVersion: '3',
 })

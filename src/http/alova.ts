@@ -28,8 +28,7 @@ const { onAuthRequired, onResponseRefreshToken } = createServerTokenAuthenticati
     handler: async () => {
       try {
         // await authLogin();
-      }
-      catch (error) {
+      } catch (error) {
         // 切换到登录页
         toLoginPage({ mode: 'reLaunch' })
         throw error

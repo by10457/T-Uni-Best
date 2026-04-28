@@ -16,8 +16,7 @@ onShow((options) => {
   // https://github.com/unibest-tech/unibest/issues/192
   if (options?.path) {
     navigateToInterceptor.invoke({ url: `/${options.path}`, query: options.query })
-  }
-  else {
+  } else {
     navigateToInterceptor.invoke({ url: '/' })
   }
 })

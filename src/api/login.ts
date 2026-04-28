@@ -1,4 +1,11 @@
-import type { IAuthLoginRes, ICaptcha, IDoubleTokenRes, IUpdateInfo, IUpdatePassword, IUserInfoRes } from './types/login'
+import type {
+  IAuthLoginRes,
+  ICaptcha,
+  IDoubleTokenRes,
+  IUpdateInfo,
+  IUpdatePassword,
+  IUserInfoRes,
+} from './types/login'
 import { http } from '@/http/http'
 
 /**
@@ -22,7 +29,9 @@ export function getCode() {
  * @param loginForm 登录表单
  */
 export function login(loginForm: ILoginForm) {
-  return http.post<IAuthLoginRes>('/auth/login', loginForm, undefined, undefined, { ignoreAuth: true })
+  return http.post<IAuthLoginRes>('/auth/login', loginForm, undefined, undefined, {
+    ignoreAuth: true,
+  })
 }
 
 /**
@@ -30,7 +39,9 @@ export function login(loginForm: ILoginForm) {
  * @param refreshToken 刷新token
  */
 export function refreshToken(refreshToken: string) {
-  return http.post<IDoubleTokenRes>('/auth/refreshToken', { refreshToken }, undefined, undefined, { ignoreAuth: true })
+  return http.post<IDoubleTokenRes>('/auth/refreshToken', { refreshToken }, undefined, undefined, {
+    ignoreAuth: true,
+  })
 }
 
 /**
@@ -69,8 +80,8 @@ export function getWxCode() {
   return new Promise<UniApp.LoginRes>((resolve, reject) => {
     uni.login({
       provider: 'weixin',
-      success: res => resolve(res),
-      fail: err => reject(new Error(err)),
+      success: (res) => resolve(res),
+      fail: (err) => reject(new Error(err)),
     })
   })
 }

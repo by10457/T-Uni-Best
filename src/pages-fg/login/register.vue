@@ -20,12 +20,8 @@ function doRegister() {
 
 <template>
   <view class="login">
-    <view class="text-center">
-      注册页
-    </view>
-    <button class="mt-4 w-40 text-center" @click="doRegister">
-      点击模拟注册
-    </button>
+    <view class="text-center"> 注册页 </view>
+    <button class="mt-4 w-40 text-center" @click="doRegister">点击模拟注册</button>
   </view>
 </template>
 

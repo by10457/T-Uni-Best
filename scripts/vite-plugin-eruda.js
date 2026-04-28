@@ -7,7 +7,11 @@
  * @param {string} [options.erudaUrl] - eruda 地址
  */
 export default function vitePluginEruda(options = {}) {
-  const { open = true, erudaOptions = {}, erudaUrl = 'https://cdn.jsdelivr.net/npm/eruda' } = options
+  const {
+    open = true,
+    erudaOptions = {},
+    erudaUrl = 'https://cdn.jsdelivr.net/npm/eruda',
+  } = options
 
   return {
     name: 'vite-plugin-eruda',

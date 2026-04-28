@@ -1,6 +1,4 @@
-import type {
-  ILoginForm,
-} from '@/api/login'
+import type { ILoginForm } from '@/api/login'
 import type { IAuthLoginRes } from '@/api/types/login'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue' // 修复：导入 computed
@@ -61,8 +59,7 @@ export const useTokenStore = defineStore(
         // 单token模式
         const expireTime = now + val.expiresIn * 1000
         uni.setStorageSync('accessTokenExpireTime', expireTime)
-      }
-      else if (isDoubleTokenRes(val)) {
+      } else if (isDoubleTokenRes(val)) {
         // 双token模式
         const accessExpireTime = now + val.accessExpiresIn * 1000
         const refreshExpireTime = now + val.refreshExpiresIn * 1000
@@ -82,8 +79,7 @@ export const useTokenStore = defineStore(
       const now = nowTime.value
       const expireTime = uni.getStorageSync('accessTokenExpireTime')
 
-      if (!expireTime)
-        return true
+      if (!expireTime) return true
       return now >= expireTime
     })
 
@@ -91,14 +87,12 @@ export const useTokenStore = defineStore(
      * 判断refreshToken是否过期
      */
     const isRefreshTokenExpired = computed(() => {
-      if (!isDoubleTokenMode)
-        return true
+      if (!isDoubleTokenMode) return true
 
       const now = nowTime.value
       const refreshExpireTime = uni.getStorageSync('refreshTokenExpireTime')
 
-      if (!refreshExpireTime)
-        return true
+      if (!refreshExpireTime) return true
       return now >= refreshExpireTime
     })
 
@@ -129,16 +123,14 @@ export const useTokenStore = defineStore(
         //   icon: 'success',
         // })
         return res
-      }
-      catch (error) {
+      } catch (error) {
         console.error('登录失败:', error)
         // uni.showToast({
         //   title: '登录失败，请重试',
         //   icon: 'error',
         // })
         throw error
-      }
-      finally {
+      } finally {
         updateNowTime()
       }
     }
@@ -163,16 +155,14 @@ export const useTokenStore = defineStore(
         //   icon: 'success',
         // })
         return res
-      }
-      catch (error) {
+      } catch (error) {
         console.error('微信登录失败:', error)
         // uni.showToast({
         //   title: '微信登录失败，请重试',
         //   icon: 'error',
         // })
         throw error
-      }
-      finally {
+      } finally {
         updateNowTime()
       }
     }
@@ -184,11 +174,9 @@ export const useTokenStore = defineStore(
       try {
         // TODO 实现自己的退出登录逻辑
         await _logout()
-      }
-      catch (error) {
+      } catch (error) {
         console.error('退出登录失败:', error)
-      }
-      finally {
+      } finally {
         updateNowTime()
 
         // 无论成功失败，都需要清除本地token信息
@@ -222,12 +210,10 @@ export const useTokenStore = defineStore(
         console.log('刷新token-res: ', res)
         setTokenInfo(res)
         return res
-      }
-      catch (error) {
+      } catch (error) {
         console.error('刷新token失败:', error)
         throw error
-      }
-      finally {
+      } finally {
         updateNowTime()
       }
     }
@@ -246,8 +232,7 @@ export const useTokenStore = defineStore(
 
       if (!isDoubleTokenMode) {
         return isSingleTokenRes(tokenInfo.value) ? tokenInfo.value.token : ''
-      }
-      else {
+      } else {
         return isDoubleTokenRes(tokenInfo.value) ? tokenInfo.value.accessToken : ''
       }
     })
@@ -261,8 +246,7 @@ export const useTokenStore = defineStore(
       }
       if (isDoubleTokenMode) {
         return isDoubleTokenRes(tokenInfo.value) && !!tokenInfo.value.accessToken
-      }
-      else {
+      } else {
         return isSingleTokenRes(tokenInfo.value) && !!tokenInfo.value.token
       }
     })
@@ -286,8 +270,7 @@ export const useTokenStore = defineStore(
         try {
           await refreshToken()
           return getValidToken.value
-        }
-        catch (error) {
+        } catch (error) {
           console.error('尝试刷新token失败:', error)
           return ''
         }

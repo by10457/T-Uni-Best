@@ -81,7 +81,7 @@ export enum ResultCodeEnum {
   LoginAuth = 3200,
   AuthenticationExpired = 3201,
   SessionExpiration = 3202,
-  
+
   // ==================== 权限/Token (Token 失效) ====================
   TokenParsingFailed = 3302,
   TokenExpired = 3303,
@@ -106,17 +106,20 @@ export function isSuccessCode(code: number | string): boolean {
  */
 export function isTokenExpiredCode(code: number | string): boolean {
   const c = Number(code)
-  return c === ResultEnum.Unauthorized || [
-    ResultCodeEnum.LoginAuth,
-    ResultCodeEnum.AuthenticationExpired,
-    ResultCodeEnum.SessionExpiration,
-    ResultCodeEnum.TokenParsingFailed,
-    ResultCodeEnum.TokenExpired,
-    ResultCodeEnum.TokenNotProvided,
-    ResultCodeEnum.RefreshTokenEmpty,
-    ResultCodeEnum.RefreshTokenInvalid,
-    ResultCodeEnum.RefreshTokenExpired,
-    ResultCodeEnum.AccessTokenEmpty,
-    ResultCodeEnum.AccessTokenInvalid
-  ].includes(c)
+  return (
+    c === ResultEnum.Unauthorized ||
+    [
+      ResultCodeEnum.LoginAuth,
+      ResultCodeEnum.AuthenticationExpired,
+      ResultCodeEnum.SessionExpiration,
+      ResultCodeEnum.TokenParsingFailed,
+      ResultCodeEnum.TokenExpired,
+      ResultCodeEnum.TokenNotProvided,
+      ResultCodeEnum.RefreshTokenEmpty,
+      ResultCodeEnum.RefreshTokenInvalid,
+      ResultCodeEnum.RefreshTokenExpired,
+      ResultCodeEnum.AccessTokenEmpty,
+      ResultCodeEnum.AccessTokenInvalid,
+    ].includes(c)
+  )
 }

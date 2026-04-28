@@ -95,7 +95,8 @@ const { list, loading, finished, error, onScrollToLower, onRefresherRefresh } = 
 
 <style scoped>
 /* 样式省略 */
-.scroll-page, .scroll-view {
+.scroll-page,
+.scroll-view {
   height: 100%;
 }
 </style>
@@ -106,10 +107,10 @@ const { list, loading, finished, error, onScrollToLower, onRefresherRefresh } = 
 1.  **创建API**: 确保你有一个返回分页数据的API请求函数（例如 `getList`），它应该接受页码和页面大小作为参数。
 2.  **调用 `useScroll`**: 在你的页面脚本中，导入并调用 `useScroll` Hook，将你的API函数作为参数传入。
 3.  **模板绑定**:
-    -   使用 `scroll-view` 组件作为滚动容器。
-    -   将其 `refresher-triggered` 属性绑定到 `useScroll` 返回的 `loading` 状态。
-    -   将其 `@scrolltolower` 事件绑定到 `onScrollToLower` 方法。
-    -   将其 `@refresherrefresh` 事件绑定到 `onRefresherRefresh` 方法。
+    - 使用 `scroll-view` 组件作为滚动容器。
+    - 将其 `refresher-triggered` 属性绑定到 `useScroll` 返回的 `loading` 状态。
+    - 将其 `@scrolltolower` 事件绑定到 `onScrollToLower` 方法。
+    - 将其 `@refresherrefresh` 事件绑定到 `onRefresherRefresh` 方法。
 4.  **渲染列表**: 使用 `v-for` 指令渲染 `useScroll` 返回的 `list` 数组。
 5.  **添加加载提示**: 根据 `loading`, `finished`, `error` 状态，在列表底部显示不同的提示信息，提升用户体验。
 

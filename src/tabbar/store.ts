@@ -1,19 +1,33 @@
-import type { CustomTabBarItem, CustomTabBarItemBadge, CustomTabBarRuntimeItem, NativeTabBarItem } from './types'
+import type {
+  CustomTabBarItem,
+  CustomTabBarItemBadge,
+  CustomTabBarRuntimeItem,
+  NativeTabBarItem,
+} from './types'
 import { computed, reactive } from 'vue'
 import { useUserStore } from '@/store/user'
 
-import { customTabbarList as _tabbarList, nativeTabbarList, selectedTabbarStrategy, TABBAR_STRATEGY_MAP } from './config'
+import {
+  customTabbarList as _tabbarList,
+  nativeTabbarList,
+  selectedTabbarStrategy,
+  TABBAR_STRATEGY_MAP,
+} from './config'
 
-function normalizeTabbarPath(path: CustomTabBarItem['pagePath'] | NativeTabBarItem['pagePath']): _LocationUrl {
+function normalizeTabbarPath(
+  path: CustomTabBarItem['pagePath'] | NativeTabBarItem['pagePath'],
+): _LocationUrl {
   return (path.startsWith('/') ? path : `/${path}`) as _LocationUrl
 }
 
 /** tabbarList 里面的 path 从 pages.config.ts 得到 */
-const baseTabbarList = reactive<CustomTabBarRuntimeItem[]>(_tabbarList.map(item => ({
-  ...item,
-  pagePath: normalizeTabbarPath(item.pagePath), // 统一成 '/' 开头的路径
-})))
-const nativeTabbarPathList = nativeTabbarList.map(item => normalizeTabbarPath(item.pagePath))
+const baseTabbarList = reactive<CustomTabBarRuntimeItem[]>(
+  _tabbarList.map((item) => ({
+    ...item,
+    pagePath: normalizeTabbarPath(item.pagePath), // 统一成 '/' 开头的路径
+  })),
+)
+const nativeTabbarPathList = nativeTabbarList.map((item) => normalizeTabbarPath(item.pagePath))
 
 const userRoles = computed(() => {
   const userStore = useUserStore()
@@ -30,9 +44,12 @@ const userRoles = computed(() => {
 const tabbarList = computed(() => {
   const roles = userRoles.value
   if (roles.length === 0) {
-    return baseTabbarList.filter(item => !item.roles || item.roles.length === 0)
+    return baseTabbarList.filter((item) => !item.roles || item.roles.length === 0)
   }
-  return baseTabbarList.filter(item => !item.roles || item.roles.length === 0 || item.roles.some(role => roles.includes(role)))
+  return baseTabbarList.filter(
+    (item) =>
+      !item.roles || item.roles.length === 0 || item.roles.some((role) => roles.includes(role)),
+  )
 })
 
 export function isPageTabbar(path: string) {
@@ -43,7 +60,7 @@ export function isPageTabbar(path: string) {
   if (selectedTabbarStrategy === TABBAR_STRATEGY_MAP.NATIVE_TABBAR) {
     return nativeTabbarPathList.includes(_path as _LocationUrl)
   }
-  return tabbarList.value.some(item => item.pagePath === _path)
+  return tabbarList.value.some((item) => item.pagePath === _path)
 }
 
 /**
@@ -75,27 +92,25 @@ const tabbarStore = reactive({
       this.setCurIdx(0)
       return
     }
-    const index = list.findIndex(item => item.pagePath === path)
+    const index = list.findIndex((item) => item.pagePath === path)
     // console.log('tabbarList:', tabbarList)
     if (index === -1) {
       const pagesPathList = getCurrentPages()
-        .map(item => item.route)
+        .map((item) => item.route)
         .filter((route): route is string => Boolean(route))
-        .map(route => route.startsWith('/') ? route : `/${route}`)
+        .map((route) => (route.startsWith('/') ? route : `/${route}`))
       // console.log(pagesPathList)
-      const flag = list.some(item => pagesPathList.includes(item.pagePath))
+      const flag = list.some((item) => pagesPathList.includes(item.pagePath))
       if (!flag) {
         this.setCurIdx(0)
         return
       }
-    }
-    else {
+    } else {
       this.setCurIdx(index)
     }
   },
   restorePrevIdx() {
-    if (this.prevIdx === this.curIdx)
-      return
+    if (this.prevIdx === this.curIdx) return
     this.setCurIdx(this.prevIdx)
     this.prevIdx = uni.getStorageSync('app-tabbar-index') || 0
   },

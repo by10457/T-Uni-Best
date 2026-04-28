@@ -1,18 +1,11 @@
-import type {
-  Preset,
-} from 'unocss'
+import type { Preset } from 'unocss'
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders'
 
 // https://www.npmjs.com/package/@uni-helper/unocss-preset-uni
 import { presetUni } from '@uni-helper/unocss-preset-uni'
 // @see https://unocss.dev/presets/legacy-compat
 import { presetLegacyCompat } from '@unocss/preset-legacy-compat'
-import {
-  defineConfig,
-  presetIcons,
-  transformerDirectives,
-  transformerVariantGroup,
-} from 'unocss'
+import { defineConfig, presetIcons, transformerDirectives, transformerVariantGroup } from 'unocss'
 
 export default defineConfig({
   presets: [
@@ -23,7 +16,7 @@ export default defineConfig({
       scale: 1.2,
       warn: true,
       extraProperties: {
-        'display': 'inline-block',
+        display: 'inline-block',
         'vertical-align': 'middle',
       },
       collections: {
@@ -37,10 +30,14 @@ export default defineConfig({
             let svgStr = svg
 
             // 如果 SVG 文件未定义 `fill` 属性，则默认填充 `currentColor`, 这样图标颜色会继承文本颜色，方便在不同场景下适配
-            svgStr = svgStr.includes('fill="') ? svgStr : svgStr.replace(/^<svg /, '<svg fill="currentColor" ')
+            svgStr = svgStr.includes('fill="')
+              ? svgStr
+              : svgStr.replace(/^<svg /, '<svg fill="currentColor" ')
 
             // 如果 svg 有 width, 和 height 属性，将这些属性改为 1em，否则无法显示图标
-            svgStr = svgStr.replace(/(<svg.*?width=)"(.*?)"/, '$1"1em"').replace(/(<svg.*?height=)"(.*?)"/, '$1"1em"')
+            svgStr = svgStr
+              .replace(/(<svg.*?width=)"(.*?)"/, '$1"1em"')
+              .replace(/(<svg.*?height=)"(.*?)"/, '$1"1em"')
 
             return svgStr
           },

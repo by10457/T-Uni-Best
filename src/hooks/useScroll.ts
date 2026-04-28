@@ -26,8 +26,7 @@ export function useScroll<T>({
   const page = ref(1)
 
   const loadData = async () => {
-    if (loading.value || finished.value)
-      return
+    if (loading.value || finished.value) return
 
     loading.value = true
     error.value = null
@@ -39,11 +38,9 @@ export function useScroll<T>({
       }
       list.value.push(...data)
       page.value++
-    }
-    catch (err) {
+    } catch (err) {
       error.value = err
-    }
-    finally {
+    } finally {
       loading.value = false
     }
   }

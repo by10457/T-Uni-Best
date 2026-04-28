@@ -51,7 +51,9 @@ const config: QiniuConfig = {
   // 从指定 URL 获取 uploadtoken，数据机构见
   qiniuUploadTokenURL: '',
   // uptokenFunc 这个属性的值可以是一个用来生成uptoken的函数，详情请见 README.md
-  qiniuUploadTokenFunction() { return '' },
+  qiniuUploadTokenFunction() {
+    return ''
+  },
 
   // qiniuShouldUseQiniuFileName 如果是 true，则文件的 key 由 qiniu 服务器分配（全局去重）。如果是 false，则文件的 key 使用微信自动生成的 filename。出于初代sdk用户升级后兼容问题的考虑，默认是 false。
   // 微信自动生成的 filename较长，导致fileURL较长。推荐使用{qiniuShouldUseQiniuFileName: true} + "通过fileURL下载文件时，自定义下载名" 的组合方式。
@@ -75,18 +77,15 @@ export function init(options: QiniuOptions) {
 function updateConfigWithOptions(options: QiniuOptions) {
   if (options.region) {
     config.qiniuRegion = options.region
-  }
-  else {
+  } else {
     console.error('qiniu uploader need your bucket region')
   }
 
   if (options.uptoken) {
     config.qiniuUploadToken = options.uptoken
-  }
-  else if (options.uptokenURL) {
+  } else if (options.uptokenURL) {
     config.qiniuUploadTokenURL = options.uptokenURL
-  }
-  else if (options.uptokenFunc) {
+  } else if (options.uptokenFunc) {
     config.qiniuUploadTokenFunction = options.uptokenFunc
   }
 
@@ -109,21 +108,18 @@ export function upload(uploadOptions: QiniuUploadOptions) {
   }
   if (config.qiniuUploadToken) {
     doUpload(uploadOptions)
-  }
-  else if (config.qiniuUploadTokenURL) {
+  } else if (config.qiniuUploadTokenURL) {
     getQiniuToken(() => {
       doUpload(uploadOptions)
     })
-  }
-  else if (config.qiniuUploadTokenFunction) {
+  } else if (config.qiniuUploadTokenFunction) {
     config.qiniuUploadToken = config.qiniuUploadTokenFunction()
     if (!config.qiniuUploadToken) {
       console.error('qiniu UploadTokenFunction result is null, please check the return value')
       return
     }
     doUpload(uploadOptions)
-  }
-  else {
+  } else {
     console.error('qiniu uploader need one of [uptoken, uptokenURL, uptokenFunc]')
     return
   }
@@ -146,7 +142,7 @@ function doUpload(uploadOptions: QiniuUploadOptions) {
   if (options && options.key) {
     fileName = options.key
   }
-  const formData: { token: string, key?: string } = {
+  const formData: { token: string; key?: string } = {
     token: config.qiniuUploadToken,
   }
   if (!config.qiniuShouldUseQiniuFileName) {
@@ -171,8 +167,7 @@ function doUpload(uploadOptions: QiniuUploadOptions) {
         if (success) {
           success(dataObject)
         }
-      }
-      catch (e) {
+      } catch (e) {
         console.log(`parse JSON failed, origin String is: ${dataString}`)
         fail && fail(e)
       }
@@ -194,9 +189,10 @@ function doUpload(uploadOptions: QiniuUploadOptions) {
     })
   }
 
-  cancelTask && cancelTask(() => {
-    uploadTask.abort()
-  })
+  cancelTask &&
+    cancelTask(() => {
+      uploadTask.abort()
+    })
 }
 
 /**
@@ -211,11 +207,8 @@ function getQiniuToken(callback: () => void) {
       if (token && typeof token === 'string' && token.length > 0) {
         config.qiniuUploadToken = token
         callback && callback()
-      }
-      else {
-        console.error(
-          'qiniuUploader cannot get your token, please check the uptokenURL or server',
-        )
+      } else {
+        console.error('qiniuUploader cannot get your token, please check the uptokenURL or server')
       }
     },
     fail(error) {
@@ -244,9 +237,7 @@ function uploadURLFromRegionCode(code: RegionCode): string | null {
       uploadURL = 'https://up-as0.qiniup.com'
       break
     default:
-      console.error(
-        'please make the region is with one of [ECN, SCN, NCN, NA, ASG]',
-      )
+      console.error('please make the region is with one of [ECN, SCN, NCN, NA, ASG]')
   }
   return uploadURL
 }

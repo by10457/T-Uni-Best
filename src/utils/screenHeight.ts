@@ -22,9 +22,11 @@ export function getHeightSubNavBar() {
 
 /** 获取中间区域高度（减去顶部导航栏和底部tabbar） */
 export function getMiddleHeight() {
-  return systemInfo.screenHeight
-    - (systemInfo.statusBarHeight + 44)
-    - (systemInfo.safeAreaInsets.bottom + 50)
+  return (
+    systemInfo.screenHeight -
+    (systemInfo.statusBarHeight + 44) -
+    (systemInfo.safeAreaInsets.bottom + 50)
+  )
 }
 
 /** 获取屏幕高度 */

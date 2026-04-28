@@ -25,7 +25,7 @@
       "    navigationBarTitleText: '$1',",
       "  },",
       "})",
-       "defineOptions({",
+      "defineOptions({",
       "  name: '$2',",
       "  options: { ",
       "   virtualHost: true,",
@@ -43,11 +43,7 @@
   "Print unibest style": {
     "scope": "vue",
     "prefix": "st",
-    "body": [
-      "<style lang=\"scss\" scoped>",
-      "//",
-      "</style>\n"
-    ],
+    "body": ["<style lang=\"scss\" scoped>", "//", "</style>\n"],
   },
   "Print unibest script with definePage": {
     "scope": "vue",
@@ -59,22 +55,18 @@
       "    navigationBarTitleText: '$1',",
       "  },",
       "})",
-       "defineOptions({",
+      "defineOptions({",
       "  name: '$2',",
       "  options: { ",
       "   virtualHost: true,",
       "  },",
       "})",
-      "</script>\n"
+      "</script>\n",
     ],
   },
   "Print unibest template": {
     "scope": "vue",
     "prefix": "te",
-    "body": [
-      "<template>",
-      "  <view class=\"\">$1</view>",
-      "</template>\n"
-    ],
+    "body": ["<template>", "  <view class=\"\">$1</view>", "</template>\n"],
   },
 }

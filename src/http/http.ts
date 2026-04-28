@@ -30,15 +30,13 @@ let tokenRefreshPromise: Promise<void> | null = null // 刷新 token Promise
  * @returns Promise<void> 当认证就绪或忽略认证时resolve，如果认证失败则reject
  */
 async function ensureAuthReady(options: CustomRequestOptions) {
-  if (options.ignoreAuth)
-    return
+  if (options.ignoreAuth) return
 
   const tokenStore = useTokenStore()
   tokenStore.updateNowTime()
 
   // 已有有效登录态，直接放行
-  if (tokenStore.hasLogin)
-    return
+  if (tokenStore.hasLogin) return
 
   // 双 token：优先尝试用 refreshToken 刷新（避免频繁 wx.login）
   if (isDoubleTokenMode) {
@@ -47,8 +45,7 @@ async function ensureAuthReady(options: CustomRequestOptions) {
       await tokenRefreshPromise
       // 刷新完成后，检查是否已有有效登录状态
       tokenStore.updateNowTime()
-      if (tokenStore.hasLogin)
-        return
+      if (tokenStore.hasLogin) return
     }
 
     // 第二步：如果没有正在刷新，才启动新的刷新流程
@@ -58,8 +55,7 @@ async function ensureAuthReady(options: CustomRequestOptions) {
         try {
           // 执行token刷新逻辑
           await tokenStore.tryGetValidToken()
-        }
-        finally {
+        } finally {
           // 无论成功失败，都重置状态
           tokenRefreshing = false
           tokenRefreshPromise = null
@@ -71,16 +67,14 @@ async function ensureAuthReady(options: CustomRequestOptions) {
 
     // 第三步：刷新完成后再次检查登录状态
     tokenStore.updateNowTime()
-    if (tokenStore.hasLogin)
-      return
+    if (tokenStore.hasLogin) return
   }
 
   // 小程序端：无 token -> 静默登录（并发仅执行一次，其它请求等待）
   // #ifdef MP-WEIXIN
 
   // 第一步：如果已有登录Promise在进行中，直接返回它（让其他请求等待）
-  if (loginPromise)
-    return loginPromise
+  if (loginPromise) return loginPromise
 
   // 第二步：如果没有正在登录，才启动新的登录流程
   if (!loggingIn) {
@@ -89,8 +83,7 @@ async function ensureAuthReady(options: CustomRequestOptions) {
       try {
         // 实际执行微信登录逻辑
         await tokenStore.wxLogin()
-      }
-      finally {
+      } finally {
         // 无论成功失败，都重置状态，为下次登录做准备
         loggingIn = false
         loginPromise = null
@@ -131,11 +124,10 @@ async function ensureAuthReady(options: CustomRequestOptions) {
  */
 export function http<T>(options: CustomRequestOptions) {
   return new Promise<T>((resolve, reject) => {
-    (async () => {
+    ;(async () => {
       try {
         await ensureAuthReady(options)
-      }
-      catch (err) {
+      } catch (err) {
         return reject(err)
       }
 
@@ -155,10 +147,11 @@ export function http<T>(options: CustomRequestOptions) {
 
           if (isTokenExpired) {
             // 排除登录相关接口，避免无限循环重试
-            const isAuthEndpoint = options.url?.includes('/auth/login')
-              || options.url?.includes('/auth/wxLogin')
-              || options.url?.includes('/auth/refreshToken')
-              || options.url?.includes('/auth/logout')
+            const isAuthEndpoint =
+              options.url?.includes('/auth/login') ||
+              options.url?.includes('/auth/wxLogin') ||
+              options.url?.includes('/auth/refreshToken') ||
+              options.url?.includes('/auth/logout')
             if (isAuthEndpoint) {
               // 登录和认证接口直接返回错误，不进行重试
               return reject(res)
@@ -187,10 +180,11 @@ export function http<T>(options: CustomRequestOptions) {
 
             // 所有401请求都加入队列等待处理
             taskQueue.push((err) => {
-              if (err)
-                return reject(err)
+              if (err) return reject(err)
               // 重新发起原始请求，并计入重试次数
-              http<T>({ ...options, _retryCount: retryCount + 1 }).then(resolve).catch(reject)
+              http<T>({ ...options, _retryCount: retryCount + 1 })
+                .then(resolve)
+                .catch(reject)
             })
 
             // 如果未在刷新中，开始容错处理流程
@@ -198,7 +192,7 @@ export function http<T>(options: CustomRequestOptions) {
               refreshing = true
 
               // 执行容错处理（静默登录 + token刷新）
-              ; (async () => {
+              ;(async () => {
                 try {
                   // 第一步：显示处理中提示
                   // nextTick(() => {
@@ -215,8 +209,7 @@ export function http<T>(options: CustomRequestOptions) {
                   if (tokenInfo?.refreshToken) {
                     // 优先用 refreshToken 刷新，避免无谓调用 wx.login
                     await tokenStore.refreshToken()
-                  }
-                  else {
+                  } else {
                     // 没有 refreshToken，降级到小程序静默登录
                     // #ifdef MP-WEIXIN
                     await tokenStore.wxLogin()
@@ -235,9 +228,8 @@ export function http<T>(options: CustomRequestOptions) {
                   // })
 
                   // 执行队列中的所有等待请求
-                  taskQueue.forEach(task => task())
-                }
-                catch (error) {
+                  taskQueue.forEach((task) => task())
+                } catch (error) {
                   console.error('容错处理失败:', error)
                   refreshing = false
 
@@ -255,9 +247,8 @@ export function http<T>(options: CustomRequestOptions) {
                   await tokenStore.logout()
 
                   // 拒绝所有等待的请求
-                  taskQueue.forEach(task => task(error))
-                }
-                finally {
+                  taskQueue.forEach((task) => task(error))
+                } finally {
                   // 清空任务队列
                   taskQueue = []
                 }
@@ -283,10 +274,11 @@ export function http<T>(options: CustomRequestOptions) {
           }
 
           // 处理其他错误
-          !options.hideErrorToast && uni.showToast({
-            icon: 'none',
-            title: (res.data as any).msg || '请求错误',
-          })
+          !options.hideErrorToast &&
+            uni.showToast({
+              icon: 'none',
+              title: (res.data as any).msg || '请求错误',
+            })
           reject(res)
         },
         // 响应失败
@@ -309,7 +301,12 @@ export function http<T>(options: CustomRequestOptions) {
  * @param header 请求头，默认为json格式
  * @returns
  */
-export function httpGet<T>(url: string, query?: Record<string, any>, header?: Record<string, any>, options?: Partial<CustomRequestOptions>) {
+export function httpGet<T>(
+  url: string,
+  query?: Record<string, any>,
+  header?: Record<string, any>,
+  options?: Partial<CustomRequestOptions>,
+) {
   return http<T>({
     url,
     query,
@@ -327,7 +324,13 @@ export function httpGet<T>(url: string, query?: Record<string, any>, header?: Re
  * @param header 请求头，默认为json格式
  * @returns
  */
-export function httpPost<T>(url: string, data?: Record<string, any>, query?: Record<string, any>, header?: Record<string, any>, options?: Partial<CustomRequestOptions>) {
+export function httpPost<T>(
+  url: string,
+  data?: Record<string, any>,
+  query?: Record<string, any>,
+  header?: Record<string, any>,
+  options?: Partial<CustomRequestOptions>,
+) {
   return http<T>({
     url,
     query,
@@ -341,7 +344,13 @@ export function httpPost<T>(url: string, data?: Record<string, any>, query?: Rec
 /**
  * PUT 请求
  */
-export function httpPut<T>(url: string, data?: Record<string, any>, query?: Record<string, any>, header?: Record<string, any>, options?: Partial<CustomRequestOptions>) {
+export function httpPut<T>(
+  url: string,
+  data?: Record<string, any>,
+  query?: Record<string, any>,
+  header?: Record<string, any>,
+  options?: Partial<CustomRequestOptions>,
+) {
   return http<T>({
     url,
     data,
@@ -355,7 +364,12 @@ export function httpPut<T>(url: string, data?: Record<string, any>, query?: Reco
 /**
  * DELETE 请求（无请求体，仅 query）
  */
-export function httpDelete<T>(url: string, query?: Record<string, any>, header?: Record<string, any>, options?: Partial<CustomRequestOptions>) {
+export function httpDelete<T>(
+  url: string,
+  query?: Record<string, any>,
+  header?: Record<string, any>,
+  options?: Partial<CustomRequestOptions>,
+) {
   return http<T>({
     url,
     query,

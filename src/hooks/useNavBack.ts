@@ -1,7 +1,4 @@
-const TAB_PAGE_SET = new Set([
-  '/pages/index/index',
-  '/pages/me/index',
-])
+const TAB_PAGE_SET = new Set(['/pages/index/index', '/pages/me/index'])
 
 /** 统一处理自定义导航栏返回，无法后退时回到兜底页面 */
 export function useNavBack(fallbackUrl = '/pages/index/index') {

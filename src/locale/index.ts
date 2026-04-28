@@ -49,8 +49,7 @@ export function getTemplateByKey(key: string) {
       result = result[cur]
     }
     return typeof result === 'string' ? result : ''
-  }
-  catch (error) {
+  } catch (error) {
     console.error(`[i18n] Function getTemplateByKey(), key param ${key} is not existed.`)
     return ''
   }

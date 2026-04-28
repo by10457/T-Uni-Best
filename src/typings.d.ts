@@ -139,7 +139,9 @@ declare global {
      * }
      */
     // eslint-disable-next-line ts/method-signature-style
-    hideLoading<T extends UniNamespace.HideToastOption = UniNamespace.HideToastOption>(options?: T): void
+    hideLoading<T extends UniNamespace.HideToastOption = UniNamespace.HideToastOption>(
+      options?: T,
+    ): void
     /**
      * 隐藏消息提示框
      *
@@ -164,7 +166,9 @@ declare global {
      * }
      */
     // eslint-disable-next-line ts/method-signature-style
-    hideToast<T extends UniNamespace.HideLoadingOption = UniNamespace.HideLoadingOption>(options?: T): void
+    hideToast<T extends UniNamespace.HideLoadingOption = UniNamespace.HideLoadingOption>(
+      options?: T,
+    ): void
   }
 }
 

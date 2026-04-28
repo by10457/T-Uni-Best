@@ -31,8 +31,7 @@ function log(message, type = 'log') {
   if (FG_LOG_ENABLE) {
     if (type === 'error') {
       console.error(message)
-    }
-    else {
+    } else {
       console.log(message)
     }
   }
@@ -55,8 +54,7 @@ async function uninstallDependency(dep) {
     }
     log(`成功卸载依赖: ${dep}`)
     return true
-  }
-  catch (error) {
+  } catch (error) {
     // 单个依赖卸载失败不影响其他依赖
     log(`卸载依赖 ${dep} 失败: ${error.message}`, 'error')
     return false
@@ -77,13 +75,12 @@ async function uninstallAllDependencies() {
     const success = await uninstallDependency(dep)
     if (success) {
       successCount++
-    }
-    else {
+    } else {
       failedCount++
     }
 
     // 为了避免命令执行过快导致的问题，添加短暂延迟
-    await new Promise(resolve => setTimeout(resolve, 100))
+    await new Promise((resolve) => setTimeout(resolve, 100))
   }
 
   log(`卸载操作完成: 成功 ${successCount} 个, 失败 ${failedCount} 个`)

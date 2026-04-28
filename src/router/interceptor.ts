@@ -7,7 +7,13 @@ import { isMp } from '@uni-helper/uni-env'
 import { useTokenStore } from '@/store/token'
 import { isPageTabbar, tabbarStore } from '@/tabbar/store'
 import { getAllPages, getLastPage, HOME_PAGE, parseUrlToObj } from '@/utils/index'
-import { EXCLUDE_LOGIN_PATH_LIST, isNeedLoginMode, LOGIN_PAGE, LOGIN_PAGE_ENABLE_IN_MP, NOT_FOUND_PAGE } from './config'
+import {
+  EXCLUDE_LOGIN_PATH_LIST,
+  isNeedLoginMode,
+  LOGIN_PAGE,
+  LOGIN_PAGE_ENABLE_IN_MP,
+  NOT_FOUND_PAGE,
+} from './config'
 
 export const FG_LOG_ENABLE = false
 
@@ -25,7 +31,10 @@ export function judgeIsExcludePath(path: string) {
     return EXCLUDE_LOGIN_PATH_LIST.includes(path)
   }
   const allExcludeLoginPages = getAllPages('excludeLoginPath') // dev 环境下，需要每次都重新获取，否则新配置就不会生效
-  return EXCLUDE_LOGIN_PATH_LIST.includes(path) || (isDev && allExcludeLoginPages.some(page => page.path === path))
+  return (
+    EXCLUDE_LOGIN_PATH_LIST.includes(path) ||
+    (isDev && allExcludeLoginPages.some((page) => page.path === path))
+  )
 }
 
 // 检查是否为系统内部页面
@@ -41,13 +50,13 @@ export function isRouteExists(path: string): boolean {
   }
 
   const allPages = getAllPages()
-  return allPages.some(page => page.path === path) || path === '/'
+  return allPages.some((page) => page.path === path) || path === '/'
 }
 
 export const navigateToInterceptor = {
   // 注意，这里的url是 '/' 开头的，如 '/pages/index/index'，跟 'pages.json' 里面的 path 不同
   // 增加对相对路径的处理，BY 网友 @ideal
-  invoke({ url, query }: { url: string, query?: Record<string, string> }) {
+  invoke({ url, query }: { url: string; query?: Record<string, string> }) {
     if (url === undefined) {
       return
     }
@@ -102,14 +111,12 @@ export const navigateToInterceptor = {
     if (tokenStore.hasLogin) {
       if (path !== LOGIN_PAGE) {
         return true // 明确表示允许路由继续执行
-      }
-      else {
+      } else {
         console.log('已经登录，但是还在登录页', myQuery.redirect)
         const url = myQuery.redirect || HOME_PAGE
         if (isPageTabbar(url)) {
           uni.switchTab({ url })
-        }
-        else {
+        } else {
           uni.navigateTo({ url })
         }
         return false // 明确表示阻止原路由继续执行
@@ -118,7 +125,9 @@ export const navigateToInterceptor = {
     let fullPath = path
 
     if (Object.keys(myQuery).length) {
-      fullPath += `?${Object.keys(myQuery).map(key => `${key}=${myQuery[key]}`).join('&')}`
+      fullPath += `?${Object.keys(myQuery)
+        .map((key) => `${key}=${myQuery[key]}`)
+        .join('&')}`
     }
     const redirectUrl = `${LOGIN_PAGE}?redirect=${encodeURIComponent(fullPath)}`
 
@@ -139,7 +148,6 @@ export const navigateToInterceptor = {
       }
     }
     // #endregion 1/2 默认需要登录的情况(白名单策略) ---------------------------
-
     // #region 2/2 默认不需要登录的情况(黑名单策略) ---------------------------
     else {
       // 不需要登录里面的 EXCLUDE_LOGIN_PATH_LIST 表示黑名单，需要重定向到登录页

@@ -99,13 +99,7 @@ export function copyNativeResources(options: CopyNativeResourcesOptions = {}): P
         // platform: 'app' (App平台) 或其他平台标识
         const buildMode = process.env.NODE_ENV === 'production' ? 'build' : 'dev'
         const platform = process.env.UNI_PLATFORM || 'app'
-        const targetPath = path.resolve(
-          projectRoot,
-          'dist',
-          buildMode,
-          platform,
-          targetDirName,
-        )
+        const targetPath = path.resolve(projectRoot, 'dist', buildMode, platform, targetDirName)
 
         // 检查源目录是否存在
         // 如果不存在 nativeplugins 目录，说明项目没有使用本地原生插件
@@ -116,7 +110,9 @@ export function copyNativeResources(options: CopyNativeResourcesOptions = {}): P
             console.warn(`${logPrefix} 源目录路径: ${sourcePath}`)
             console.warn(`${logPrefix} 如需使用本地原生插件，请在项目根目录创建 nativeplugins 目录`)
             console.warn(`${logPrefix} 并按照官方文档放入原生插件文件`)
-            console.warn(`${logPrefix} 参考: https://uniapp.dcloud.net.cn/plugin/native-plugin.html`)
+            console.warn(
+              `${logPrefix} 参考: https://uniapp.dcloud.net.cn/plugin/native-plugin.html`,
+            )
           }
           return
         }
@@ -158,10 +154,12 @@ export function copyNativeResources(options: CopyNativeResourcesOptions = {}): P
           console.log(`${logPrefix} 已成功复制 ${sourceFiles.length} 个文件/目录到构建目录`)
           console.log(`${logPrefix} 原生插件现在可以在 App 中正常使用`)
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error(`${config.logPrefix} ❌ 复制 UniApp 本地原生插件失败:`, error)
-        console.error(`${config.logPrefix} 错误详情:`, error instanceof Error ? error.message : String(error))
+        console.error(
+          `${config.logPrefix} 错误详情:`,
+          error instanceof Error ? error.message : String(error),
+        )
         console.error(`${config.logPrefix} 请检查源目录权限和磁盘空间`)
         // 不抛出错误，避免影响整个构建过程，但会记录详细的错误信息
       }
