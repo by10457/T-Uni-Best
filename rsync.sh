@@ -51,7 +51,14 @@ need_command() {
 
 sync_once() {
   mkdir -p "$WIN_OUT"
-  rsync -a --delete "$WSL_OUT/" "$WIN_OUT/"
+
+  # 微信开发者工具会把编译模式、热重载等个人设置写入该文件。
+  # 首次同步时保留 uni-app 生成的默认值，之后不再覆盖 Windows 侧的本地设置。
+  if [ ! -e "$WIN_OUT/project.private.config.json" ] && [ -f "$WSL_OUT/project.private.config.json" ]; then
+    cp "$WSL_OUT/project.private.config.json" "$WIN_OUT/project.private.config.json"
+  fi
+
+  rsync -a --delete --exclude='project.private.config.json' "$WSL_OUT/" "$WIN_OUT/"
   echo "已同步到 Windows：$WIN_OUT ($(date '+%H:%M:%S'))"
 }
 
