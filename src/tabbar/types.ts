@@ -20,7 +20,7 @@ export interface CustomTabBarItem {
   iconType: 'uiLib' | 'unocss' | 'iconfont' | 'image'
   /**
    * icon 的路径
-   * - uiLib: wot-design-uni 图标的 icon prop
+   * - uiLib: @wot-ui/ui 图标的 icon prop
    * - unocss: unocss 图标的类名
    * - iconfont: iconfont 图标的类名
    * - image: 图片的路径
