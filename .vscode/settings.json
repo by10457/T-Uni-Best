@@ -11,6 +11,10 @@
   "less.validate": false, // 禁用 LESS 内置验证
 
   "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "oxc.enable": true,
+  "oxc.typeAware": true,
+  "oxc.configPath": "oxlint.config.ts",
+  "oxc.fmt.configPath": "oxfmt.config.ts",
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
@@ -18,15 +22,41 @@
     "docker.md": "Dockerfile,docker*.md,nginx*,.dockerignore",
     "pages.config.ts": "manifest.config.ts,openapi-ts-request.config.ts",
     "package.json": "tsconfig.json,pnpm-lock.yaml,pnpm-workspace.yaml,LICENSE,.gitattributes,.gitignore,.gitpod.yml,CNAME,.npmrc,.browserslistrc",
-    "eslint.config.mjs": ".commitlintrc.*,.prettier*,.editorconfig,.commitlint.cjs,.eslint*"
+    "oxlint.config.ts": "oxfmt.config.ts,eslint.config.mjs,.commitlintrc.*,.prettier*,.editorconfig,.commitlint.cjs,.eslint*"
   },
 
-  // Disable the default formatter, use eslint instead
+  // Disable Prettier and use Oxc/Oxfmt as the workspace formatter.
   "prettier.enable": false,
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "[vue]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
 
   // Auto fix
   "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "explicit",
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "never"
   },
@@ -93,7 +123,5 @@
     "WechatMiniprogram",
     "Weixin"
   ],
-  "i18n-ally.localesPaths": [
-    "src/locale"
-  ]
+  "i18n-ally.localesPaths": ["src/locale"]
 }

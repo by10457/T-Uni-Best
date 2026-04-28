@@ -1,6 +1,7 @@
 import uniHelper from '@uni-helper/eslint-config'
 
 export default uniHelper({
+  stylistic: false,
   unocss: true,
   vue: true,
   markdown: false,
@@ -32,27 +33,13 @@ export default uniHelper({
     'jsdoc/require-returns-description': 'off',
     'ts/no-empty-object-type': 'off',
     'no-extend-native': 'off',
-    'vue/singleline-html-element-content-newline': [
+    'vue/singleline-html-element-content-newline': 'off',
+    // vue SFC 调换顺序改这里
+    'vue/block-order': [
       'error',
       {
-        externalIgnores: ['text'],
+        order: [['script', 'template'], 'style'],
       },
     ],
-    // vue SFC 调换顺序改这里
-    'vue/block-order': ['error', {
-      order: [['script', 'template'], 'style'],
-    }],
-  },
-  formatters: {
-    /**
-     * Format CSS, LESS, SCSS files, also the `<style>` blocks in Vue
-     * By default uses Prettier
-     */
-    css: true,
-    /**
-     * Format HTML files
-     * By default uses Prettier
-     */
-    html: true,
   },
 })

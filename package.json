@@ -95,8 +95,14 @@
     "build:quickapp-webview-union": "uni build -p quickapp-webview-union",
     "upload:mp": "node ./scripts/upload-weixin.js",
     "type-check": "vue-tsc --noEmit",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint:ox": "oxlint",
+    "lint:ox:fix": "oxlint --fix",
+    "lint:eslint": "eslint . --cache",
+    "lint:eslint:fix": "eslint . --cache --fix",
+    "lint": "pnpm format:check && pnpm lint:ox && pnpm lint:eslint",
+    "lint:fix": "pnpm format && pnpm lint:ox:fix && pnpm lint:eslint:fix"
   },
   "dependencies": {
     "@alova/adapter-uniapp": "^2.0.14",
@@ -162,12 +168,13 @@
     "autoprefixer": "^10.4.20",
     "cross-env": "^10.0.0",
     "eslint": "^9.31.0",
-    "eslint-plugin-format": "^1.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.10",
     "miniprogram-api-typings": "^4.1.0",
     "miniprogram-ci": "^2.1.26",
     "openapi-ts-request": "^1.10.0",
+    "oxfmt": "^0.47.0",
+    "oxlint": "^1.62.0",
     "postcss": "^8.4.49",
     "postcss-html": "^1.8.0",
     "postcss-scss": "^4.0.9",
@@ -195,6 +202,11 @@
     "unconfig": "7.3.2"
   },
   "lint-staged": {
-    "*": "echo 666"
+    "*.{js,jsx,ts,tsx,vue}": [
+      "oxfmt --no-error-on-unmatched-pattern",
+      "oxlint --fix",
+      "eslint --cache --fix"
+    ],
+    "*.{json,jsonc,md,css,scss,html}": "oxfmt --no-error-on-unmatched-pattern"
   }
 }

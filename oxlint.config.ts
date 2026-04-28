@@ -1,0 +1,70 @@
+import { defineConfig } from 'oxlint'
+
+export default defineConfig({
+  categories: {
+    correctness: 'error',
+    suspicious: 'warn',
+  },
+  plugins: ['eslint', 'typescript', 'unicorn', 'oxc', 'import', 'vue'],
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
+  },
+  globals: {
+    UniApp: 'readonly',
+    WechatMiniprogram: 'readonly',
+    definePage: 'readonly',
+    getApp: 'readonly',
+    getCurrentPages: 'readonly',
+    uni: 'readonly',
+    wx: 'readonly',
+  },
+  ignorePatterns: [
+    '**/uni_modules/**',
+    '**/nativeplugins/**',
+    '**/dist/**',
+    '**/unpackage/**',
+    '**/node_modules/**',
+    '.agents/**',
+    'auto-import.d.ts',
+    'uni-pages.d.ts',
+    'src/pages.d.ts',
+    'src/pages.json',
+    'src/manifest.json',
+    'src/service/**',
+    'src/types/**',
+  ],
+  rules: {
+    'eslint/no-unreachable': 'off',
+    'import/no-named-as-default': 'off',
+    'import/no-unassigned-import': 'off',
+    'no-console': 'off',
+    'no-shadow': 'off',
+    'no-underscore-dangle': 'off',
+    'no-unused-expressions': [
+      'warn',
+      {
+        allowShortCircuit: true,
+        allowTaggedTemplates: true,
+        allowTernary: true,
+      },
+    ],
+    'eslint/no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      },
+    ],
+    'no-unused-vars': 'off',
+    'typescript/no-explicit-any': 'off',
+    'typescript/no-non-null-assertion': 'off',
+    'typescript/no-var-requires': 'error',
+    'unicorn/filename-case': 'off',
+    'unicorn/no-null': 'off',
+    'unicorn/require-module-specifiers': 'off',
+    'vue/prefer-import-from-vue': 'error',
+  },
+})
