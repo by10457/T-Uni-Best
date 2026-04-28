@@ -1,22 +1,24 @@
 ---
-url: 'https://wot-ui.cn/component/action-sheet.md'
+url: 'https://v2.wot-ui.cn/component/action-sheet.md'
 ---
 
 # ActionSheet 动作面板
 
 从底部弹出的动作菜单面板。
 
-## 基本用法
+## 组件类型
+
+### 基本用法
 
 通过 `v-model` 设置显示隐藏。
 
 `actions` 类型为 `Array`，数组内部对象结构如下：
 
-| 参数    | 类型   | 说明     | 最低版本 |
-| ------- | ------ | -------- | -------- |
-| name    | string | 选项名称 | -        |
-| subname | string | 描述信息 | -        |
-| color   | string | 颜色     | -        |
+| 参数 | 说明 | 类型 |
+| --- | --- | --- |
+| name | 选项名称 | string |
+| description | 描述信息 | string |
+| color | 颜色 | string |
 
 ```html
 <wd-toast />
@@ -35,7 +37,7 @@ const actions = ref([
   },
   {
     name: '选项3',
-    subname: '描述信息'
+    description: '描述信息'
   }
 ])
 
@@ -50,13 +52,152 @@ function close() {
 const toast = useToast()
 
 function select({ item, index }) {
+  toast.show(`当前选中项: ${item.name}, 下标: ${index}`)
+}
+```
+
+### 自定义单行面板
+
+自定义单行面板时，`panels` 类型为一维数组，数组内部对象结构如下：
+
+| 参数 | 说明 | 类型 |
+| --- | --- | --- |
+| icon | 图标名或图片地址 | string |
+| title | 标题 | string |
+
+```html
+<wd-button @click="showActions">弹出菜单</wd-button>
+<wd-action-sheet v-model="show" :panels="panels" @close="close" @select="select" />
+```
+
+```typescript
+const show = ref<boolean>(false)
+const panels = ref([
+  {
+    icon: 'user',
+    title: '微信好友'
+  },
+  {
+    icon: 'share-internal',
+    title: '朋友圈'
+  },
+  {
+    icon: 'message',
+    title: 'QQ 好友'
+  },
+  {
+    icon: 'star-fill',
+    title: '收藏'
+  },
+  {
+    icon: 'share-internal',
+    title: '更多分享'
+  },
+  {
+    icon: 'user-add',
+    title: '邀请好友'
+  }
+])
+function showActions() {
+  show.value = true
+}
+
+function close() {
+  show.value = false
+}
+const toast = useToast()
+
+function select({ item, index }) {
   toast.show(`当前选中项: ${item.title}, 下标: ${index}`)
 }
 ```
 
-## 选项状态
+### 自定义多行面板
 
-可以设置 颜色、禁用、加载 等状态。
+自定义多行面板时，`panels` 类型为多维数组，每个数组内部对象结构如下：
+
+| 参数 | 说明 | 类型 |
+| --- | --- | --- |
+| icon | 图标名或图片地址 | string |
+| title | 标题 | string |
+
+```html
+<wd-button @click="showActions">弹出菜单</wd-button>
+<wd-action-sheet v-model="show" :panels="panels" @close="close" @select="select1" />
+```
+
+```typescript
+const show = ref<boolean>(false)
+const panels = ref([
+  [
+    {
+      icon: 'user',
+      title: '微信好友'
+    },
+    {
+      icon: 'share-internal',
+      title: '朋友圈'
+    },
+    {
+      icon: 'message',
+      title: 'QQ 好友'
+    },
+    {
+      icon: 'star-fill',
+      title: '收藏'
+    },
+    {
+      icon: 'user-add',
+      title: '邀请'
+    },
+    {
+      icon: 'share-external',
+      title: '外部分享'
+    },
+    {
+      icon: 'qrcode',
+      title: '生成二维码'
+    },
+    {
+      icon: 'save',
+      title: '保存图片'
+    }
+  ],
+  [
+    {
+      icon: 'file-image',
+      title: '图片'
+    },
+    {
+      icon: 'download',
+      title: '下载'
+    },
+    {
+      icon: 'copy',
+      title: '复制链接'
+    }
+  ]
+])
+
+function showActions() {
+  show.value = true
+}
+
+function close() {
+  show.value = false
+}
+const toast = useToast()
+
+function select1({ item, rowIndex, colIndex }) {
+  toast.show(`当前选中项: ${item.title}, 行下标: ${rowIndex}, 列下标: ${colIndex}`)
+}
+```
+
+## 组件状态
+
+### 选项状态
+
+可以设置颜色、禁用、加载等状态。
 
 ```html
 <wd-button @click="showActions">弹出菜单</wd-button>
@@ -87,7 +228,9 @@ function close() {
 }
 ```
 
-## 取消按钮
+## 组件变体
+
+### 取消按钮
 
 设置 `cancel-text` 取消按钮文案，展示取消按钮。
 
@@ -95,88 +238,7 @@ function close() {
 <wd-action-sheet v-model="show" :actions="actions" @close="close" cancel-text="取消" />
 ```
 
-## 自定义单行面板
-
-自定义单行面板时，`panels` 类型为一维数组， 数组内部对象结构如下：
-
-| 参数    | 类型   | 说明     | 最低版本 |
-| ------- | ------ | -------- | -------- |
-| iconUrl | string | 图片地址 | -        |
-| title   | string | 标题     | -        |
-
-```html
-<wd-button @click="showActions">弹出菜单</wd-button>
-<wd-action-sheet v-model="show" :panels="panels" @close="close" @select="select" />
-```
-
-```typescript
-const show = ref<boolean>(false)
-const panels = ref([
-  {
-    iconUrl: '//img12.360buyimg.com/imagetools/jfs/t1/122016/33/6657/1362/5f0692a1E8708d245/e47299e5945a6956.png',
-    title: '微信好友'
-  }
-])
-function showActions() {
-  show.value = true
-}
-
-function close() {
-  show.value = false
-}
-const toast = useToast()
-
-function select({ item, index }) {
-  toast.show(`当前选中项: ${item.title}, 下标: ${index}`)
-}
-```
-
-### 多行展示
-
-自定义多行面板时， `panels` 类型为多维数组， 每个数组内部对象结构如下：
-
-| 参数    | 类型   | 说明     | 最低版本 |
-| ------- | ------ | -------- | -------- |
-| iconUrl | string | 图片地址 | -        |
-| title   | string | 标题     | -        |
-
-```html
-<wd-button @click="showActions">弹出菜单</wd-button>
-<wd-action-sheet v-model="show" :panels="panels" @close="close" @select="select" />
-```
-
-```typescript
-const show = ref<boolean>(false)
-const panels = ref([
-  [
-    {
-      iconUrl: '//img12.360buyimg.com/imagetools/jfs/t1/122016/33/6657/1362/5f0692a1E8708d245/e47299e5945a6956.png',
-      title: '微信好友'
-    }
-  ],
-  [
-    {
-      iconUrl: '//img12.360buyimg.com/imagetools/jfs/t1/122016/33/6657/1362/5f0692a1E8708d245/e47299e5945a6956.png',
-      title: '微信好友'
-    }
-  ]
-])
-
-function showActions() {
-  show.value = true
-}
-
-function close() {
-  show.value = false
-}
-const toast = useToast()
-
-function select({ item, index }) {
-  toast.show(`当前选中项: ${item.title}, 下标: ${index}`)
-}
-```
-
-## 标题
+### 标题
 
 设置 `title` 展示标题。
 
@@ -188,52 +250,57 @@ function select({ item, index }) {
 
 ## Attributes
 
-| 参数                   | 说明                                                                          | 类型    | 可选值 | 默认值  | 最低版本 |
-| ---------------------- | ----------------------------------------------------------------------------- | ------- | ------ | ------- | -------- |
-| v-model                | 设置菜单显示隐藏                                                              | boolean | -      | -       | -        |
-| actions                | 菜单选项                                                                      | array   | -      | \[]      | -        |
-| panels                 | 自定义面板项,可以为字符串数组，也可以为对象数组，如果为二维数组，则为多行展示 | array   | -      | \[]      | -        |
-| title                  | 标题                                                                          | string  | -      | -       | -        |
-| cancel-text            | 取消按钮文案                                                                  | string  | -      | -       | -        |
-| close-on-click-action  | 点击选项后是否关闭菜单                                                        | boolean | -      | true    | -        |
-| close-on-click-modal   | 点击遮罩是否关闭                                                              | boolean | -      | true    | -        |
-| duration               | 动画持续时间                                                                  | number  | -      | 200(ms) | -        |
-| z-index                | 菜单层级                                                                      | number  | -      | 10      | -        |
-| lazy-render            | 弹层内容懒渲染，触发展示时才渲染内容                                          | boolean | -      | true    | -    |
-| safe-area-inset-bottom | 弹出面板是否设置底部安全距离（iphone X 类型的机型）                           | boolean | -      | true    | -    |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| v-model | 设置菜单显示隐藏 | boolean | false |
+| actions | 菜单选项，详见下方 Action 数据结构 | `Action[]` | `[]` |
+| panels | 自定义宫格面板项，支持一维 `Panel[]` 与二维 `Panel[][]`（多行） | `Array<Panel \| Panel[]>` | `[]` |
+| title | 标题 | string | - |
+| cancel-text | 取消按钮文案 | string | - |
+| close-on-click-action | 点击选项后是否关闭菜单 | boolean | true |
+| close-on-click-modal | 点击遮罩是否关闭 | boolean | true |
+| duration | 动画持续时间（ms） | number | 200 |
+| z-index | 菜单层级 | number | 10 |
+| lazy-render | 弹层内容懒渲染，触发展示时才渲染内容 | boolean | true |
+| safe-area-inset-bottom | 弹出面板是否设置底部安全距离（iPhone X 类型机型） | boolean | true |
+| root-portal | 是否从页面中脱离出来（H5: teleport，App: renderjs，小程序: root-portal） | boolean | false |
+| custom-title-class | 标题区域自定义类名 | string | - |
+| custom-class | 根节点自定义类名 | string | - |
+| custom-style | 根节点自定义样式 | string | - |
 
 ## Events
 
-| 事件名称   | 说明                     | 参数                                                                                                                                              | 最低版本 |
-| ---------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| select     | 点击选项时触发           | 菜单选项或自定义面板一维数组 （item: 选项对象, index: 选项下标），自定义面板二维数组（item: 选项对象, rowIndex: 选项行下标, colIndex 选项列下标） | -        |
-| open       | 弹出层打开时触发         | -                                                                                                                                                 | -        |
-| opened     | 弹出层打开动画结束时触发 | -                                                                                                                                                 | -        |
-| close      | 弹出层关闭时触发         | -                                                                                                                                                 | -        |
-| closed     | 弹出层关闭动画结束时触发 | -                                                                                                                                                 | -        |
-| click-modal | 点击遮罩时触发           | -                                                                                                                                                 | -        |
-| cancel     | 点击取消按钮时触发       | -                                                                                                                                                 | -        |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| select | 点击选项时触发 | 菜单选项或自定义面板一维数组：`{ item, index }`；自定义面板二维数组：`{ item, rowIndex, colIndex }` |
+| enter | 打开动画开始时触发 | - |
+| after-enter | 打开动画结束时触发 | - |
+| leave | 关闭动画开始时触发 | - |
+| after-leave | 关闭动画结束时触发 | - |
+| close | 面板关闭时触发 | - |
+| click-modal | 点击遮罩时触发 | - |
+| cancel | 点击取消按钮时触发 | - |
 
 ## Action 数据结构
 
-| 键名     | 说明       | 类型    | 最低版本 |
-| -------- | ---------- | ------- | -------- |
-| name     | 选项名称   | string  | -        |
-| subname  | 描述信息   | string  | -        |
-| color    | 颜色       | string  | -        |
-| disabled | 禁用       | boolean | -        |
-| loading  | 加载中状态 | boolean | -        |
+| 键名 | 说明 | 类型 |
+| --- | --- | --- |
+| name | 选项名称 | string |
+| description | 描述信息 | string |
+| color | 颜色 | string |
+| disabled | 禁用 | boolean |
+| loading | 加载中状态 | boolean |
 
 ## Panel 数据结构
 
-| 键名    | 说明     | 类型   | 最低版本 |
-| ------- | -------- | ------ | -------- |
-| iconUrl | 图片地址 | string | -        |
-| title   | 标题内容 | string | -        |
+| 键名 | 说明 | 类型 |
+| --- | --- | --- |
+| icon | 图标名或图片地址 | string |
+| title | 标题内容 | string |
 
-## 外部样式类
+## Slots
 
-| 类名                | 说明            | 最低版本 |
-| ------------------- | --------------- | -------- |
-| custom-class        | 根节点样式      | -        |
-| custom-header-class | header 头部样式 | -        |
+| name | 说明 | 参数 |
+| --- | --- | --- |
+| default | 自定义内容区，传入后会覆盖默认 actions/panels 渲染 | - |
+| close | 自定义标题栏右侧关闭区域 | `{ close }` |

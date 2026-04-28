@@ -1,25 +1,31 @@
 ---
-url: 'https://wot-ui.cn/component/swiper.md'
+url: 'https://v2.wot-ui.cn/component/swiper.md'
 ---
 
 # Swiper 轮播
 
-用于创建轮播，它支持水平和垂直方向的滑动，可以自定义样式和指示器位置，支持视频和图片资源的轮播，支持设置轮播标题和自定义标题样式。
+用于创建轮播，支持水平和垂直方向滑动、自定义指示器、图片和视频资源展示，以及基于对象数据渲染标题。
 
-:::danger 请注意
-嵌入视频仅在`h5`、`微信小程序`和`钉钉小程序`支持，其余端不支持，请了解后使用。
+::: danger 请注意
+嵌入视频仅在 H5、微信小程序和钉钉小程序支持，其余端不支持，请了解后使用。
 :::
 
-## 基础用法
+## 组件类型
 
-通过设置 `autoplay` 属性控制轮播图是否自动播放，设置 `v-model:current` 属性初始化轮播图展示的滑块，监听滑块 `click` 来处理点击事件，而每一页轮播结束后，会触发 `change` 事件。
+### 点状指示器
 
-```html
-<wd-swiper :list="swiperList" autoplay v-model:current="current" @click="handleClick" @change="onChange"></wd-swiper>
+基础轮播可通过 `indicator` 配置展示点状指示器。
+
+::: code-group
+
+```html [vue]
+<wd-swiper :list="swiperList" autoplay v-model:current="current" :indicator="{ type: 'dots' }"></wd-swiper>
 ```
 
-```ts
-const current = ref<number>(0)
+```ts [ts]
+import { ref } from 'vue'
+
+const current = ref(0)
 
 const swiperList = ref([
   'https://wot-ui.cn/assets/redpanda.jpg',
@@ -28,21 +34,17 @@ const swiperList = ref([
   'https://wot-ui.cn/assets/moon.jpg',
   'https://wot-ui.cn/assets/meng.jpg'
 ])
-function handleClick(e) {
-  console.log(e)
-}
-function onChange(e) {
-  console.log(e)
-}
 ```
 
-## 点条状指示器
+:::
+
+### 点条状指示器
 
 ```html
-<wd-swiper :list="swiperList" autoplay v-model:current="current" :indicator="{ type: 'dots-bar' }" @click="handleClick" @change="onChange"></wd-swiper>
+<wd-swiper :list="swiperList" autoplay v-model:current="current" :indicator="{ type: 'dots-bar' }"></wd-swiper>
 ```
 
-## 数字指示器
+### 数字指示器
 
 ```html
 <wd-swiper
@@ -50,67 +52,15 @@ function onChange(e) {
   autoplay
   v-model:current="current"
   :indicator="{ type: 'fraction' }"
-  indicatorPosition="bottom-right"
-  @click="handleClick"
-  @change="onChange"
+  indicator-position="bottom-right"
 ></wd-swiper>
 ```
 
-## 视频轮播1.3.13
+## 组件变体
 
-:::danger 请注意
-嵌入视频仅在`h5`、`微信小程序`和`钉钉小程序`支持，其余端不支持，请了解后使用。
-:::
+### 手动切换
 
-```html
-<wd-swiper :list="videoList" autoplay :indicator="false" indicator-position="bottom-right"></wd-swiper>
-```
-
-```ts
-const videoList = ref([
-  'https://unpkg.com/wot-design-uni-assets@1.0.3/VID_115503.mp4',
-  'https://unpkg.com/wot-design-uni-assets@1.0.3/VID_150752.mp4',
-  'https://unpkg.com/wot-design-uni-assets@1.0.3/VID_155516.mp4',
-  'https://wot-ui.cn/assets/moon.jpg'
-])
-```
-
-## 手动播放视频
-
-```html
-<wd-swiper :list="videoList" autoplay :autoplayVideo="false" :indicator="{ type: 'fraction' }" indicator-position="top-right"></wd-swiper>
-```
-
-```ts
-const videoList = ref([
-  'https://unpkg.com/wot-design-uni-assets/VID_115503.mp4',
-  'https://unpkg.com/wot-design-uni-assets/VID_150752.mp4',
-  'https://unpkg.com/wot-design-uni-assets/VID_155516.mp4'
-])
-```
-
-## 播放视频时停止轮播
-
-```html
-<wd-swiper
-  :list="videoList"
-  autoplay
-  stopAutoplayWhenVideoPlay
-  :autoplayVideo="false"
-  :indicator="{ type: 'fraction' }"
-  indicator-position="top-right"
-></wd-swiper>
-```
-
-```ts
-const videoList = ref([
-  'https://unpkg.com/wot-design-uni-assets/VID_115503.mp4',
-  'https://unpkg.com/wot-design-uni-assets/VID_150752.mp4',
-  'https://unpkg.com/wot-design-uni-assets/VID_155516.mp4'
-])
-```
-
-## 手动切换
+关闭 `autoplay` 并开启 `showControls` 后，可通过控制按钮手动切换轮播项。
 
 ```html
 <wd-swiper
@@ -119,123 +69,125 @@ const videoList = ref([
   v-model:current="current"
   :indicator="{ showControls: true }"
   :loop="false"
-  @click="handleClick"
-  @change="onChange"
 ></wd-swiper>
 ```
 
-## 卡片样式
-
-设置 `previousMargin` 和 `nextMargin` 实现卡片轮播的样式。
-
-```html
-<view class="card-swiper">
-  <wd-swiper
-    autoplay
-    v-model:current="current"
-    custom-indicator-class="custom-indicator-class"
-    custom-image-class="custom-image"
-    custom-next-image-class="custom-image-prev"
-    custom-prev-image-class="custom-image-prev"
-    :indicator="{ type: 'dots' }"
-    :list="swiperList"
-    previousMargin="24px"
-    nextMargin="24px"
-  ></wd-swiper>
-</view>
-```
-
-```scss
-.card-swiper {
-  --wot-swiper-radius: 0;
-  --wot-swiper-item-padding: 0 24rpx;
-  --wot-swiper-nav-dot-color: #e7e7e7;
-  --wot-swiper-nav-dot-active-color: #4d80f0;
-  padding-bottom: 24rpx;
-  :deep(.custom-indicator-class) {
-    bottom: -16px;
-  }
-  :deep(.custom-image) {
-    border-radius: 12rpx;
-  }
-  :deep(.custom-image-prev) {
-    height: 168px !important;
-  }
-}
-```
-
-## 同时展示 2 个滑块
-
-设置 `display-multiple-items` 属性，控制同时展示的滑块数量。
-
-```html
-<view class="card-swiper">
-  <wd-swiper
-    autoplay
-    v-model:current="current"
-    :display-multiple-items="2"
-    custom-indicator-class="custom-indicator-class"
-    custom-image-class="custom-image"
-    custom-next-image-class="custom-image-prev"
-    custom-prev-image-class="custom-image-prev"
-    :indicator="{ type: 'dots' }"
-    :list="swiperList"
-    previousMargin="24px"
-    nextMargin="24px"
-  ></wd-swiper>
-</view>
-```
-
-```scss
-.card-swiper {
-  --wot-swiper-radius: 0;
-  --wot-swiper-item-padding: 0 24rpx;
-  --wot-swiper-nav-dot-color: #e7e7e7;
-  --wot-swiper-nav-dot-active-color: #4d80f0;
-  padding-bottom: 24rpx;
-  :deep(.custom-indicator-class) {
-    bottom: -16px;
-  }
-  :deep(.custom-image) {
-    border-radius: 12rpx;
-  }
-  :deep(.custom-image-prev) {
-    height: 168px !important;
-  }
-}
-```
-
-## 垂直方向
-
-`direction` 设置为 `vertical` 后滑块会纵向排列。
+### 垂直方向
 
 ```html
 <wd-swiper
   :list="swiperList"
   direction="vertical"
-  indicatorPosition="right"
+  indicator-position="right"
   autoplay
   v-model:current="current"
   :indicator="{ type: 'dots-bar' }"
-  @click="handleClick"
-  @change="onChange"
 ></wd-swiper>
 ```
 
-## 自定义指示器
+### 指定 value-key 和 text-key
 
-通过 `indicator` 插槽可以自定义指示器的样式。
+当 `list` 为对象数组时，可通过 `value-key` 和 `text-key` 指定图片地址字段与标题字段。
+
+::: code-group
+
+```html [vue]
+<wd-swiper value-key="url" text-key="title" :list="customSwiperList" autoplay v-model:current="current"></wd-swiper>
+```
+
+```ts [ts]
+import { ref } from 'vue'
+
+const current = ref(0)
+
+const customSwiperList = ref([
+  { url: 'https://wot-ui.cn/assets/redpanda.jpg', title: '小熊猫' },
+  { url: 'https://wot-ui.cn/assets/capybara.jpg', title: '卡皮巴拉' },
+  { url: 'https://wot-ui.cn/assets/panda.jpg', title: '大熊猫' },
+  { url: 'https://wot-ui.cn/assets/moon.jpg', title: '诗画中国' }
+])
+```
+
+:::
+
+## 组件样式
+
+### 卡片样式
+
+设置 `previous-margin` 和 `next-margin`，并结合自定义类名，可以实现卡片轮播样式。
 
 ```html
-<wd-swiper :list="swiperList" direction="vertical" indicatorPosition="right" autoplay v-model:current="current" @click="handleClick" @change="onChange">
+<view class="card-swiper">
+  <wd-swiper
+    autoplay
+    v-model:current="current"
+    :indicator="{ type: 'dots' }"
+    :list="swiperList"
+    previous-margin="24px"
+    next-margin="24px"
+    custom-indicator-class="custom-indicator-class"
+    custom-image-class="custom-image"
+    custom-next-image-class="custom-image-prev"
+    custom-prev-image-class="custom-image-prev"
+  ></wd-swiper>
+</view>
+```
+
+```scss
+.card-swiper {
+  --wot-swiper-radius: 0;
+  --wot-swiper-item-padding: 0 24rpx;
+  --wot-swiper-nav-dot-color: #e7e7e7;
+  --wot-swiper-nav-dot-active-color: #4d80f0;
+  padding-bottom: 24rpx;
+
+  :deep(.custom-indicator-class) {
+    bottom: -16px;
+  }
+
+  :deep(.custom-image) {
+    border-radius: 12rpx;
+  }
+
+  :deep(.custom-image-prev) {
+    height: 168px !important;
+  }
+}
+```
+
+### 同时展示 2 个滑块
+
+通过 `display-multiple-items` 控制同时展示的滑块数量。
+
+```html
+<wd-swiper
+  autoplay
+  v-model:current="current"
+  :display-multiple-items="2"
+  :indicator="{ type: 'dots' }"
+  :list="swiperList"
+  previous-margin="24px"
+  next-margin="24px"
+></wd-swiper>
+```
+
+### 自定义指示器
+
+通过 `indicator` 插槽可以完全自定义指示器展示。
+
+```html
+<wd-swiper :list="swiperList" direction="vertical" indicator-position="right" autoplay v-model:current="current">
   <template #indicator="{ current, total }">
-    <view class="custom-indicator" style="position: absolute; bottom: 24rpx; right: 24rpx">{{ current + 1 }}/{{ total }}</view>
+    <view class="custom-indicator">{{ current + 1 }}/{{ total }}</view>
   </template>
 </wd-swiper>
 ```
 
 ```scss
 .custom-indicator {
+  position: absolute;
+  right: 24rpx;
+  bottom: 24rpx;
   padding: 0 12rpx;
   height: 48rpx;
   line-height: 48rpx;
@@ -246,42 +198,51 @@ const videoList = ref([
 }
 ```
 
-## 指定valueKey和textKey
+## 特殊样式
 
-通过`value-key` 属性指定 `list` 中每个对象图片地址字段，默认为 `value`。
-
-通过`text-key` 属性指定 `list` 中每个对象标题字段，默认为 `text`。
-:::tip 提示
-当前`swiper`提供的标题样式为顶部靠右，如需自定义样式，请使用外部样式类`customTextClass`或者自定义样式`customTextStyle`，使用`text-key`时请确认你的组件库版本是否包含此功能。
-:::
+### 视频轮播
 
 ```html
-<wd-swiper value-key="url" text-key="title" :custom-text-style="color:#fff" :list="customSwiperList" autoplay v-model:current="current" @click="handleClick" @change="onChange"></wd-swiper>
+<wd-swiper :list="videoList" autoplay :indicator="{ type: 'fraction' }" indicator-position="top-right"></wd-swiper>
 ```
 
 ```ts
-const current = ref<number>(0)
+import { ref } from 'vue'
 
-const customSwiperList = ref([
-  { url: 'https://wot-ui.cn/assets/redpanda.jpg', title: '小熊猫！' },
-  { url: 'https://wot-ui.cn/assets/capybara.jpg', title: '卡！皮！巴！拉！' },
-  { url: 'https://wot-ui.cn/assets/panda.jpg', title: '大熊猫！' },
-  { url: 'https://wot-ui.cn/assets/moon.jpg', title: '诗画中国！' }
+const videoList = ref([
+  'https://unpkg.com/wot-design-uni-assets@1.0.3/VID_115503.mp4',
+  'https://unpkg.com/wot-design-uni-assets@1.0.3/VID_150752.mp4',
+  'https://unpkg.com/wot-design-uni-assets@1.0.3/VID_155516.mp4',
+  'https://wot-ui.cn/assets/moon.jpg'
 ])
 ```
 
-```scss
-:deep(.customTextClass) {
-  position: absolute;
-  top: 24rpx;
-  right: 24rpx;
-  color: #ffffff;
-  font-size: 24rpx;
-  text-shadow: 0 0 8rpx #000000;
-}
+### 手动播放视频
+
+```html
+<wd-swiper
+  :list="videoList"
+  autoplay
+  :autoplay-video="false"
+  :indicator="{ type: 'fraction' }"
+  indicator-position="top-right"
+></wd-swiper>
 ```
 
-## 属性控制切换
+### 播放视频时停止轮播
+
+```html
+<wd-swiper
+  :list="videoList"
+  autoplay
+  stop-autoplay-when-video-play
+  :autoplay-video="false"
+  :indicator="{ type: 'fraction' }"
+  indicator-position="top-right"
+></wd-swiper>
+```
+
+### 属性控制切换
 
 ```html
 <wd-swiper :loop="isLoop" :autoplay="false" :list="swiperList" v-model:current="current" />
@@ -298,24 +259,12 @@ const customSwiperList = ref([
 </view>
 ```
 
-```javascript
-const current = ref <number>(0)
-const isLoop = ref(false)
-```
+### 插槽用法
 
-## 插槽用法
-
-通过默认插槽可以自定义轮播项的内容。
+通过默认插槽可以自定义轮播项内容。
 
 ```html
-<wd-swiper
-  :list="swiperList"
-  autoplay
-  v-model:current="current"
-  :indicator="{ type: 'dots-bar' }"
-  @click="handleClick"
-  @change="onChange"
->
+<wd-swiper :list="swiperList" autoplay v-model:current="current" :indicator="{ type: 'dots-bar' }">
   <template #default="{ item }">
     <image :src="item as string" mode="aspectFill" style="width: 100%; height: 100%" />
   </template>
@@ -324,99 +273,103 @@ const isLoop = ref(false)
 
 ## Attributes
 
-| 参数                      | 说明                                                               | 类型                              | 可选值                                                                                                 | 默认值       | 最低版本         |
-| ------------------------- | ------------------------------------------------------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------ | ---------------- |
-| autoplay                  | 是否自动播放                                                       | `boolean`                         | -                                                                                                      | true         | 0.1.22           |
-| v-model:current           | 控制当前轮播在哪一项（下标）                                       | `number`                          | -                                                                                                      | 0            | 0.1.22           |
-| direction                 | 轮播滑动方向                                                       | `DirectionType`                   | `horizontal, vertical`                                                                                 | horizontal   | 0.1.22           |
-| displayMultipleItems      | 同时显示的滑块数量                                                 | `number`                          | -                                                                                                      | 1            | 0.1.22           |
-| duration                  | 滑动动画时长                                                       | `number`                          | -                                                                                                      | 300          | 0.1.22           |
-| easingFunction            | 切换缓动动画类型（微信小程序、快手小程序、京东小程序）             | `EasingType`                      | -                                                                                                      | default      | 0.1.22           |
-| height                    | 轮播的高度                                                         | `string / number`                | -                                                                                                      | 192          | 0.1.22           |
-| interval                  | 轮播间隔时间                                                       | `number`                          | -                                                                                                      | 5000         | 0.1.22           |
-| list                      | 图片列表                                                           | `string[] / SwiperList[]`        | -                                                                                                      | -            | 0.1.22           |
-| loop                      | 是否循环播放                                                       | `boolean`                         | -                                                                                                      | true         | 0.1.22           |
-| nextMargin                | 后边距                                                             | `string / number`                | -                                                                                                      | 0            | 0.1.22           |
-| indicatorPosition         | 指示器展示位置                                                     | `IndicatorPositionType`           | `left, top-left, top, top-right, bottom-left, bottom, bottom-right, right`                             | bottom       | 0.1.22           |
-| previousMargin            | 前边距                                                             | `string / number`                | -                                                                                                      | 0            | 0.1.22           |
-| snapToEdge                | 边距是否应用到第一个、最后一个元素                                 | `boolean`                         | -                                                                                                      | false        | 0.1.22           |
-| indicator                 | 指示器全部配置                                                     | `SwiperIndicatorProps / boolean` | -                                                                                                      | true         | 0.1.22           |
-| imageMode                 | 图片裁剪、缩放的模式                                               | `string`                          | 参考官方文档[mode](https://uniapp.dcloud.net.cn/component/image.html#mode-%E6%9C%89%E6%95%88%E5%80%BC) | `aspectFill` | 0.1.55           |
-| autoplayVideo             | 视频是否自动播放，默认自动播放                                     | `boolean`                         | -                                                                                                      | true         | 1.3.13 |
-| stopPreviousVideo         | 切换轮播项时是否停止上一个视频的播放，默认切换时停止播放上一个视频 | `boolean`                         | -                                                                                                      | true         | 1.3.13 |
-| stopAutoplayWhenVideoPlay | 视频播放时是否停止自动轮播                                         | `boolean`                         | -                                                                                                      | false        | 1.3.13 |
-| customStyle               | 外部自定义样式                                                     | `string`                          | -                                                                                                      | ''           | 0.1.22           |
-| value-key          | 选项对象中，value 对应的 key        | `string`       | -       | `value`           | 1.3.7   |
-| text-key          | 选项对象中，标题 text 对应的 key        | `string`       | -       | `text`           | 1.3.13   |
-| adjust-height      | 自动以指定滑块的高度为整个容器的高度。当 vertical 为 true 时，默认不调整，仅支付宝小程序支持。| `string`       | `'first' / 'current' / 'highest' / 'none'`       |   `highest`  | 1.3.13   |
-| adjust-vertical-height | vertical 为 true 时强制使 adjust-height 生效。仅支付宝小程序支持。 | `boolean`       | -       | `false`           | 1.3.13   |
-｜ muted | 视频是否静音播放 | `boolean` | - | `true` | 1.6.0 |
-| videoLoop | 视频是否循环播放 | `boolean` | - | `true` | 1.6.0 |
-
-### DirectionType
-
-轮播滑动方向，可选值为 `'horizontal'` 和 `'vertical'`。
-
-### EasingType
-
-切换缓动动画类型，可选值为 `'default'`、`'linear'`、`'easeInCubic'`、`'easeOutCubic'` 和 `'easeInOutCubic'`。
-
-### IndicatorPositionType
-
-页码信息展示位置，可选值为 `'left'`、`'top-left'`、`'top'`、`'top-right'`、`'bottom-left'`、`'bottom'`、`'bottom-right'` 和 `'right'`。
-
-### SwiperList
-
-轮播图项的列表配置，包括 图片或视频地址`value`、视频封面`poster` 、文件资源的类型`type`等属性，支持扩展属性。指定`type`后组件将不在内部判断文件类型，以`type`为准。
-| name      | 说明          | 最低版本 |
-| --------- | ------------ | -------- |
-| value | 图片或视频地址 |-   |
-| poster | 视频封面 |-   |
-| type | 用于指定文件资源的类型，可选值`image`、`video` | 1.4.0 |
-
-### SwiperIndicatorProps
-
-| 参数                | 说明                       | 类型                  | 可选值                                                                     | 默认值     | 最低版本 |
-| ------------------- | -------------------------- | --------------------- | -------------------------------------------------------------------------- | ---------- | -------- |
-| current             | 当前轮播在哪一项（下标）   | Number                | -                                                                          | 0          | 0.1.22   |
-| direction           | 轮播滑动方向               | DirectionType         | `horizontal, vertical`                                                     | horizontal | 0.1.22   |
-| min-show-num        | 小于这个数字不会显示导航器 | Number                | -                                                                          | 2          | 0.1.22   |
-| 参数                | 说明                       | 类型                  | 可选值                                                                     | 默认值     | 最低版本 |
-| ------------------- | -------------------------- | --------------------- | -------------------------------------------------------------------------- | ---------- | -------- |
-| current             | 当前轮播在哪一项（下标）   | Number                | -                                                                          | 0          | 0.1.22   |
-| direction           | 轮播滑动方向               | DirectionType         | `horizontal, vertical`                                                     | horizontal | 0.1.22   |
-| min-show-num        | 小于这个数字不会显示导航器 | Number                | -                                                                          | 2          | 0.1.22   |
-| pagination-position | 页码信息展示位置           | IndicatorPositionType | `left, top-left, top, top-right, bottom-left, bottom, bottom-right, right` | bottom     | 0.1.22   |
-| show-controls       | 是否显示控制按钮           | Boolean               | -                                                                          | false      | 0.1.22   |
-| total               | 总共的项数                 | Number                | -                                                                          | 0          | 0.1.22   |
-| type                | 导航器类型                 | SwiperIndicatorType   | `dots, dots-bar, fraction `                                                | dots       | 0.1.22   |
-| autoplay            | 是否自动播放               | boolean               | -                                                                          | true       | 0.1.22   |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| autoplay | 是否自动播放 | `boolean` | `true` |
+| v-model:current | 当前轮播项索引 | `number` | `0` |
+| direction | 轮播方向，可选值为 `horizontal`、`vertical` | `DirectionType` | `horizontal` |
+| display-multiple-items | 同时显示的滑块数量 | `number` | `1` |
+| duration | 滑动动画时长，单位为 `ms` | `number` | `300` |
+| easing-function | 切换缓动动画类型，可选值为 `default`、`linear`、`easeInCubic`、`easeOutCubic`、`easeInOutCubic` | `EasingType` | `default` |
+| height | 轮播高度 | string | number | `192` |
+| interval | 自动轮播间隔时间，单位为 `ms` | `number` | `5000` |
+| list | 轮播数据列表，支持字符串数组或对象数组 | string\[] | SwiperItem\[] | `[]` |
+| loop | 是否循环播放 | `boolean` | `true` |
+| video-loop | 视频是否循环播放 | `boolean` | `true` |
+| muted | 视频是否静音播放 | `boolean` | `true` |
+| next-margin | 后边距 | string | number | `0` |
+| indicator-position | 指示器位置，可选值为 `left`、`top-left`、`top`、`top-right`、`bottom-left`、`bottom`、`bottom-right`、`right` | `IndicatorPositionType` | `bottom` |
+| previous-margin | 前边距 | string | number | `0` |
+| radius | 轮播圆角 | string | number | - |
+| snap-to-edge | 是否将边距应用到首尾元素 | `boolean` | `false` |
+| indicator | 指示器配置，传入 `false` 时隐藏指示器 | boolean | Partial\<SwiperIndicatorProps> | `true` |
+| image-mode | 图片裁剪模式，取值参考 uni-app Image 组件 `mode` | `ImageMode` | `aspectFill` |
+| show-menu-by-longpress | 是否开启长按图片显示识别小程序码菜单 | `boolean` | `false` |
+| value-key | 选项对象中图片地址字段名 | `string` | `value` |
+| text-key | 选项对象中标题字段名 | `string` | `text` |
+| autoplay-video | 视频是否自动播放 | `boolean` | `true` |
+| stop-previous-video | 切换轮播项时是否停止上一个视频播放 | `boolean` | `true` |
+| stop-autoplay-when-video-play | 视频播放时是否停止自动轮播 | `boolean` | `false` |
+| adjust-height | 自动根据滑块高度调整容器高度，可选值为 `first`、`current`、`highest`、`none`，仅支付宝小程序支持 | `AdjustHeightType` | `highest` |
+| adjust-vertical-height | `vertical` 为 `true` 时强制让 `adjust-height` 生效，仅支付宝小程序支持 | `boolean` | `false` |
+| custom-indicator-class | 自定义指示器类名 | `string` | `''` |
+| custom-image-class | 自定义图片类名 | `string` | `''` |
+| custom-prev-image-class | 自定义前一个图片类名 | `string` | `''` |
+| custom-next-image-class | 自定义后一个图片类名 | `string` | `''` |
+| custom-item-class | 自定义轮播项类名 | `string` | `''` |
+| custom-prev-class | 自定义前一个轮播项类名 | `string` | `''` |
+| custom-next-class | 自定义后一个轮播项类名 | `string` | `''` |
+| custom-text-class | 自定义标题类名 | `string` | `''` |
+| custom-text-style | 自定义标题样式 | `string` | `''` |
+| custom-class | 根节点自定义样式类 | `string` | `''` |
+| custom-style | 根节点自定义样式 | `string` | `''` |
 
 ## Events
 
-| 事件名称 | 说明             | 参数                                                        | 最低版本 |
-| -------- | ---------------- | ----------------------------------------------------------- | -------- |
-| click    | 点击轮播项时触发 | `(index: number, item: SwiperList \| string)`                                           | 0.1.22   |
-| change   | 轮播切换时触发   | `(current: number, source: 'autoplay' \| 'touch' \| 'nav')	` | 0.1.22   |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| click | 点击轮播项时触发 | { index: number; item: SwiperItem | string } |
+| change | 轮播切换时触发 | { current: number; source: string } |
+| animationfinish | 轮播动画结束时触发 | { current: number; source: string } |
+| update:current | 当前轮播项更新时触发 | `number` |
 
-## Slot
+## Slots
 
-| name      | 说明         | 参数                                 | 最低版本 |
-| --------- | ------------ | ------------------------------------ | -------- |
-| indicator | 自定义指示器 | `{ current: number, total: number }` | 1.13.0   |
-| default   | item展示内容 | `{ item: string \| SwiperList, index: number }`       | 1.13.0   |
+| 名称 | 说明 |
+| --- | --- |
+| default | 自定义轮播项内容，参数为 { item, index } |
+| indicator | 自定义指示器内容，参数为 { current, total } |
 
-## 外部样式类
+## 类型定义
 
-| 类名                 | 说明                 | 最低版本 |
-| -------------------- | -------------------- | -------- |
-| customClass          | 外部自定义类名       | 0.1.22   |
-| customIndicatorClass       | 自定义指示器类名     | 0.1.22   |
-| customImageClass     | 自定义图片类名，1.3版本将废弃，请使用`customItemClass`代替 | 0.1.22   |
-| customPrevImageClass | 自定义上一个图片类名，1.3版本将废弃，请使用`customPrevClass`代替 | 0.1.22   |
-| customNextImageClass | 自定义下一个图片类名，1.3版本将废弃，请使用`customNextClass`代替 | 0.1.22   |
-| customItemClass     | 自定义子项类名       | 1.3.13   |
-| customPrevClass | 自定义上一个子项类名 | 1.3.13   |
-| customNextClass | 自定义下一个子项类名 | 1.3.13   |
-| customTextClass | 自定义文字标题类名 | 1.3.13   |
-| customTextStyle | 自定义文字标题样式 | 1.3.13   |
+### DirectionType
+
+轮播方向，可选值为 `horizontal`、`vertical`。
+
+### EasingType
+
+切换缓动动画类型，可选值为 `default`、`linear`、`easeInCubic`、`easeOutCubic`、`easeInOutCubic`。
+
+### IndicatorPositionType
+
+指示器位置，可选值为 `left`、`top-left`、`top`、`top-right`、`bottom-left`、`bottom`、`bottom-right`、`right`。
+
+### AdjustHeightType
+
+自动高度策略，可选值为 `first`、`current`、`highest`、`none`。
+
+### SwiperIndicatorType
+
+指示器类型，可选值为 `dots`、`dots-bar`、`fraction`。
+
+### SwiperItem
+
+轮播项对象配置，支持扩展字段。
+
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| value | 图片或视频地址 | `string` | - |
+| poster | 视频封面地址 | `string` | - |
+| type | 资源类型，可选值为 `image`、`video` | `SwiperItemType` | - |
+
+### SwiperIndicator Attributes
+
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| current | 当前轮播项索引 | `number` | `0` |
+| direction | 轮播方向，可选值为 `horizontal`、`vertical` | `DirectionType` | `horizontal` |
+| min-show-num | 小于该数量时不显示导航器 | `number` | `2` |
+| indicator-position | 指示器位置，可选值为 `left`、`top-left`、`top`、`top-right`、`bottom-left`、`bottom`、`bottom-right`、`right` | `IndicatorPositionType` | `bottom` |
+| show-controls | 是否显示两侧控制按钮 | `boolean` | `false` |
+| total | 轮播项总数 | `number` | `0` |
+| type | 指示器类型，可选值为 `dots`、`dots-bar`、`fraction` | `SwiperIndicatorType` | `dots` |

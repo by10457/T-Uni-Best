@@ -1,5 +1,5 @@
 ---
-url: 'https://wot-ui.cn/component/use-upload.md'
+url: 'https://v2.wot-ui.cn/component/use-upload.md'
 ---
 
 # useUpload
@@ -9,7 +9,7 @@ url: 'https://wot-ui.cn/component/use-upload.md'
 ## 基础用法
 
 ```ts
-import { useUpload } from '@/uni_modules/wot-design-uni'
+import { useUpload } from '@/uni_modules/wot-ui'
 
 const { startUpload, abort, chooseFile, UPLOAD_STATUS } = useUpload()
 
@@ -63,7 +63,7 @@ abort()
 | name | 文件对应的 key | string | 'file' | - |
 | formData | 其它表单数据 | Record\<string, any> | {} | - |
 | fileType | 文件类型 | 'image' | 'video' | 'audio' | 'image' | - |
-| statusCode | 成功状态码 | number | 200 | - |
+| statusCode | 成功状态码 | number | number\[] | 200 | - |
 | uploadMethod | 自定义上传方法 | UploadMethod | - | - |
 | onSuccess | 上传成功回调 | Function | - | - |
 | onError | 上传失败回调 | Function | - | - |

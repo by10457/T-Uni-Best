@@ -262,7 +262,7 @@ function handleConfirm({ value }) {
 // 导入路径根据自己实际情况调整，万不可一贴了之
 import { useColPickerData } from '@/hooks/useColPickerData'
 const { colPickerData, findChildrenByCode } = useColPickerData()
-import { useToast } from '@/uni_modules/wot-design-uni'
+import { useToast } from '@wot-ui/ui'
 
 const toast = useToast()
 

@@ -1,28 +1,35 @@
 ---
-url: 'https://wot-ui.cn/component/skeleton.md'
+url: 'https://v2.wot-ui.cn/component/skeleton.md'
 ---
 
 # Skeleton 骨架屏
 
-用于等待加载内容所展示的占位图形组合，有动态效果加载效果，减少用户等待焦虑。
+骨架屏用于内容加载时的占位展示，支持多种主题类型、行列自定义、动画效果和插槽内容。
 
-## 骨架图风格
+## 组件类型
 
-支持 `avatar`、`image`、`text`、`paragraph` 四种类型。
+### 基本用法
+
+通过 `theme` 设置不同骨架主题，常用于文本、头像、图片、段落等场景。
+
+::: code-group
 
 ```html
-// 头像骨架屏
 <wd-skeleton theme="avatar" />
-// 图片骨架屏
 <wd-skeleton theme="image" />
-// 文本骨架屏
 <wd-skeleton theme="text" />
-// 段落骨架屏
 <wd-skeleton theme="paragraph" />
-
 ```
 
-## 宫格骨架屏
+:::
+
+## 组件样式
+
+### 宫格骨架屏
+
+通过 `row-col` 组合多行多列占位结构，可以构造宫格骨架屏。
+
+::: code-group
 
 ```html
 <wd-skeleton :row-col="grid" />
@@ -44,10 +51,14 @@ const grid = [
     { width: '48px', height: '16px' },
     { width: '48px', height: '16px' }
   ]
-]
+] as SkeletonRowCol[]
 ```
 
-## 单元格骨架屏
+:::
+
+### 单元格骨架屏
+
+可以组合头像、矩形块与文本行，模拟常见单元格列表布局。
 
 ```html
 <view style="display: flex">
@@ -60,83 +71,98 @@ const grid = [
 </view>
 ```
 
-## 图片组合骨架屏
+### 图片组合骨架屏
+
+可以结合 `row-col` 自定义图片卡片与图文混排占位结构。
 
 ```html
-<view>
-  <wd-skeleton :row-col="imageGroup" />
-  <wd-skeleton :custom-style="{ marginTop: '20px' }" :row-col="imageGroup" />
-</view>
+<wd-skeleton :row-col="[{ height: '171px' }, 1, { width: '107px' }, [{ width: '93px' }, { width: '32px', marginLeft: '41px' }]]" />
+<wd-skeleton :custom-style="{ marginTop: '20px' }" :row-col="[{ height: '171px' }, 1, { width: '107px' }, [{ width: '93px' }, { width: '32px', marginLeft: '41px' }]]" />
 ```
 
-```ts
-const imageGroup = [
-  { height: '171px' }, 1, { width: '107px' }, 
-  [{ width: '93px' }, { width: '32px', marginLeft: '41px' }]
-]
-```
+## 特殊样式
 
-## 加载动画
+### 渐变加载动画
 
-支持 `gradient`、`flashed`
+设置 `animation="gradient"` 开启渐变加载动画。
 
 ```html
 <wd-skeleton animation="gradient" theme="paragraph" />
+```
+
+### 闪烁加载动画
+
+设置 `animation="flashed"` 开启闪烁加载动画。
+
+```html
 <view style="display: flex">
   <wd-skeleton :row-col="[{ size: '48px', type: 'circle' }]" />
   <wd-skeleton :custom-style="{ width: '100%', marginLeft: '12px' }" animation="flashed" theme="paragraph" />
 </view>
 ```
 
-## 插槽内容
+### 插槽内容
 
-可以通过插槽写入展示的内容，当请求结束，将loading设置为false，此时会隐藏骨架组件，同时展示插槽内容。
+通过默认插槽写入实际内容，`loading` 为 `true` 时显示骨架屏，切换为 `false` 后显示插槽内容。
+
+::: code-group
 
 ```html
-<wd-skeleton 
-  :row-col="[
-    [
-      { width: '48px', height: '48px' },
-      { width: '48px', height: '48px' },
-      { width: '48px', height: '48px' },
-      { width: '48px', height: '48px' },
-      { width: '48px', height: '48px' }
-    ],
-    [
-      { width: '48px', height: '16px' },
-      { width: '48px', height: '16px' },
-      { width: '48px', height: '16px' },
-      { width: '48px', height: '16px' },
-      { width: '48px', height: '16px' }
-    ]
-  ]" 
-  :loading="showContent"
->
+<wd-skeleton :row-col="grid" :loading="showContent">
   <wd-grid>
-    <wd-grid-item icon-size="32px" icon="picture" text="文字" />
-    <wd-grid-item icon-size="32px" icon="picture" text="文字" />
-    <wd-grid-item icon-size="32px" icon="picture" text="文字" />
-    <wd-grid-item icon-size="32px" icon="picture" text="文字" />
-    <wd-grid-item icon-size="32px" icon="picture" text="文字" />
+    <wd-grid-item icon-size="32px" icon="camera" text="文字" />
+    <wd-grid-item icon-size="32px" icon="camera" text="文字" />
+    <wd-grid-item icon-size="32px" icon="camera" text="文字" />
+    <wd-grid-item icon-size="32px" icon="camera" text="文字" />
+    <wd-grid-item icon-size="32px" icon="camera" text="文字" />
   </wd-grid>
 </wd-skeleton>
 ```
 
-```js
+```ts
 const showContent = ref(true)
 ```
 
+:::
+
+***
+
 ## Attributes
 
-| 参数      | 说明                                                                                                                                                                                                                                                                                                                           | 类型              | 可选值                              | 默认值 | 最低版本 |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- | ----------------------------------- | ------ | -------- |
-| theme     | 骨架图风格                                                                                                                                                                                                                                                                                                                     | SkeletonTheme     | `text` `avatar` `paragraph` `image` | -      | -        |
-| rowCol    | 用于设置行列数量、宽度高度、间距等【示例一】`[1, 1, 2]` 表示输出三行骨架图，第一行一列，第二行一列，第三行两列。 【示例二】`[1, 1, { width: '100px' }]` 表示自定义第三行的宽度为 `100px`。 【示例三】`[1, 2, [{ width, height }, { width, height, marginLeft }]]` 表示第三行有两列，且自定义宽度、高度和间距 | SkeletonRowCol    | -                                   | -      | -        |
-| loading   | 是否为加载状态，如果是则显示骨架图，如果不是则显示加载完成的内容                                                                                                                                                                                                                                                               | boolean           | -                                   | true   | -        |
-| animation | 动画效果                                                                                                                                                                                                                                                                                                                       | SkeletonAnimation | `gradient` `flashed`                | -      | -        |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| theme | 骨架屏主题，可选值为 `text`、`avatar`、`paragraph`、`image` | `SkeletonTheme` | `'text'` |
+| row-col | 自定义每行占位配置，用于设置行列数量、宽高、间距、圆角和占位类型等，支持数字、对象、对象数组 | `SkeletonRowCol[]` | `[]` |
+| loading | 是否显示骨架屏 | `boolean` | `true` |
+| animation | 动画类型，可选值为 `gradient`、`flashed` | `SkeletonAnimation` | `''` |
+| customClass | 自定义样式类名 | `string \| string[] \| Record<string, boolean>` | `''` |
+| custom-style | 自定义内联样式 | `CSSProperties` | `{}` |
 
 ## Slots
 
-| name    | 说明                  | 最低版本         |
-| ------- | --------------------- | ---------------- |
-| default | loading结束后展示内容 | 1.2.21 |
+| name | 说明 |
+| --- | --- |
+| default | `loading` 结束后展示的实际内容 |
+
+## 类型说明
+
+### SkeletonTheme
+
+可选值：`'text' | 'avatar' | 'paragraph' | 'image'`
+
+### SkeletonAnimation
+
+可选值：`'gradient' | 'flashed'`
+
+### SkeletonRowCol 配置示例
+
+```ts
+// 三行，分别显示为一列、一列、两列的占位符
+[1, 1, 2]
+
+// 三行，第三行自定义宽度
+[1, 1, { width: '100px' }]
+
+// 第三行包含两列，分别设置宽度和右外边距
+[1, 1, [{ width: '50%' }, { width: '50%', marginRight: '10px' }]]
+```

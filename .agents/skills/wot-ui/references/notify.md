@@ -1,21 +1,25 @@
 ---
-url: 'https://wot-ui.cn/component/notify.md'
+url: 'https://v2.wot-ui.cn/component/notify.md'
 ---
 
 # Notify 消息通知
 
 通知类组件，用于在页面顶部展示通知信息。
 
-## 基本用法
+## 组件状态
+
+### 基础用法
 
 需要在页面中引入该组件，作为挂载点。
+
+::: code-group
 
 ```html
 <wd-notify />
 ```
 
 ```ts
-import { useNotify } from '@/uni_modules/wot-design-uni'
+import { useNotify } from '@/uni_modules/wot-ui'
 
 const { showNotify, closeNotify } = useNotify()
 
@@ -26,9 +30,51 @@ showNotify('通知内容')
 closeNotify()
 ```
 
-## 通知类型
+:::
+
+### 自定义配置
+
+支持自定义颜色、弹出位置、展示时长以及是否显示关闭按钮。
+
+::: code-group
+
+```ts
+// 自定义颜色
+showNotify({
+  message: '自定义颜色',
+  color: '#ad0000',
+  background: '#ffe1e1'
+})
+
+// 自定义位置
+showNotify({
+  message: '自定义位置',
+  position: 'bottom'
+})
+
+// 自定义时长
+showNotify({
+  message: '自定义时长',
+  duration: 1000
+})
+
+// 显示关闭按钮
+showNotify({
+  message: '通知内容',
+  closable: true,
+  duration: 0
+})
+```
+
+:::
+
+## 组件类型
+
+### 通知类型
 
 支持 `primary`、`success`、`warning`、`danger` 四种通知类型，默认为 `danger`。
+
+::: code-group
 
 ```ts
 // 主要通知
@@ -44,29 +90,34 @@ showNotify({ type: 'danger', message: '通知内容' })
 showNotify({ type: 'warning', message: '通知内容' })
 ```
 
-## 自定义通知
+:::
+
+## 组件样式
+
+### 悬浮通知
+
+通过 `variant` 属性设置为 `floating` 可展示悬浮卡片式通知。悬浮通知具有独立的外边距、圆角与阴影，并且其前缀图标会自动适配当前 `type` 的状态主色。
+
+::: code-group
 
 ```ts
 showNotify({
-  message: '自定义颜色',
-  color: '#ad0000',
-  background: '#ffe1e1'
-})
-
-showNotify({
-  message: '自定义位置',
-  position: 'bottom'
-})
-
-showNotify({
-  message: '自定义时长',
-  duration: 1000
+  type: 'primary',
+  message: '通知内容',
+  variant: 'floating',
+  closable: true
 })
 ```
 
-## 使用 Notify 组件
+:::
+
+## 内容形态
+
+### 使用 Notify 组件
 
 如果需要在 Notify 内嵌入组件或其他自定义内容，可以直接使用 Notify 组件，并使用默认插槽进行定制。
+
+::: code-group
 
 ```html
 <wd-button type="primary" @click="showNotify">使用 Notify 组件调用</wd-button>
@@ -108,137 +159,70 @@ export default {
 }
 ```
 
-## 进阶`demo`
-
-```vue
-// App.vue
-<script setup lang="ts">
-  import { onLaunch } from '@dcloudio/uni-app'
-  import { setNotifyDefaultOptions } from '@/uni_modules/wot-design-uni'
-
-  onLaunch(() => {
-    setNotifyDefaultOptions({
-      // #ifdef H5
-      safeHeight: 44,
-      // #endif
-      onClick: (event) => console.log('onClick', event),
-      onClosed: () => console.log('onClosed'),
-      onOpened: () => console.log('onOpened')
-    })
-    // 隐藏原生tabBar
-    uni.hideTabBar()
-  })
-</script>
-
-<style lang="scss">
-  :root, page {
-    // 品牌色
-    --wot-color-theme: #1989fa;
-
-    // 模块标题/重要正文
-    --wot-color-title: #323233;
-    // // 副标题
-    // --color-content: #969799;
-    // // 次内容
-    // --nut-text-color: #c8c9cc;
-  }
-</style>
-```
-
-```vue
-// /components/layout/layout.vue
-<template>
-  <wd-config-provider>
-    <slot />
-    <TabBar />
-    <wd-notify />
-  </wd-config-provider>
-</template>
-
-<script lang="ts">
-  export default {
-    // #ifdef H5
-    name: 'Layout',
-    // #endif
-    options: { virtualHost: true, addGlobalClass: true, styleIsolation: 'shared' }
-  }
-</script>
-
-<script setup lang="ts">
-  import TabBar from './components/tabbar.vue'
-</script>
-```
-
-```vue
-// /pages/user.vue
-<template>
-  <layout>
-    <view>User</view>
-    <wd-button type="primary" @click="showNotify('消息通知')">消息通知</wd-button>
-  </layout>
-</template>
-
-<script lang="ts">
-  export default {
-    // #ifdef H5
-    name: 'User',
-    // #endif
-    options: { virtualHost: true, addGlobalClass: true, styleIsolation: 'shared' }
-  }
-</script>
-
-<script setup lang="ts">
-  import { useNotify } from '@/uni_modules/wot-design-uni'
-
-  const { showNotify } = useNotify()
-</script>
-```
+:::
 
 ## Attributes
 
-| 参数         | 说明                                                             | 类型    | 可选值                    | 默认值       | 最低版本 |
-| ------------ | ----------------------------------------------------------------| ------- | ------------------------- | ------------ | -------- |
-| type         | 类型                                                             | NotifyType | `primary` `success` `warning` `danger` | `danger` | -        |
-| message      | 展示文案，支持通过`\n`换行                                          | string | -                         | -            | -        |
-| duration     | 展示时长(ms)，值为 0 时，notify 不会消失                             | number | -                         | `3000`            | -        |
-| zIndex     | 层级                                                               | number | -                          | `99`            | -        |
-| position   | 弹出位置                                                            | NotifyPosition | `top` `bottom`     | `top`            | -        |
-| color     | 字体颜色                                                             | string | -     | -            | -        |
-| background   | 背景颜色                                                          | string | -     | -            | -        |
-| safeHeight   | 顶部安全高度                                                       | number / string | -     | -            | -        |
-| selector   | 指定唯一标识                                                       | number | -     | -            | -        |
-| root-portal | 是否从页面中脱离出来，用于解决各种 fixed 失效问题 | boolean | - | false | 1.11.0 |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| type | 类型，可选值为 `primary` `success` `warning` `danger` | `NotifyType` | `danger` |
+| message | 展示文案，支持通过`\n`换行 | `string \| number` | - |
+| duration | 展示时长(ms)，值为 0 时，notify 不会消失 | `number` | `3000` |
+| visible | 显示状态（支持 v-model） | `boolean` | `false` |
+| position | 弹出位置，可选值为 `top` `bottom` | `NotifyPosition` | `top` |
+| color | 字体颜色 | `string` | - |
+| background | 背景颜色 | `string` | - |
+| z-index | 将组件的 z-index 层级设置为一个固定值 | `number` | `99` |
+| safe-height | 顶部安全高度 | `number \| string` | - |
+| selector | 指定唯一标识 | `string` | - |
+| root-portal | 是否从页面中脱离出来，用于解决各种 fixed 失效问题 | `boolean` | `false` |
+| closable | 是否显示关闭按钮 | `boolean` | `false` |
+| variant | 展示形态，可选值为 `filled` `floating` | `NotifyVariant` | `filled` |
+| custom-class | 根节点样式类名 | `string` | - |
+| custom-style | 根节点样式 | `string` | - |
 
 ## Events
 
-| 事件名 | 说明                                      | 参数    | 最低版本 |
-| -------- | ----------------------------------------- | ------- | -------- |
-| click  | 点击时的回调函数                                  | (event: MouseEvent) => void | -        |
-| closed    | 关闭时的回调函数                                  | () => void | -        |
-| opened     | 展示后的回调函数                                 | () => void | -        |
+| 事件名 | 说明 | 参数 |
+| --- | --- | --- |
+| click | 点击时的回调函数 | `(event: MouseEvent) => void` |
+| closed | 关闭时的回调函数 | `() => void` |
+| opened | 展示后的回调函数 | `() => void` |
+
+## Slots
+
+| name | 说明 |
+| --- | --- |
+| default | 自定义通知内容 |
 
 ## Methods
 
-| 方法名称 | 说明                                      | 参数    | 最低版本 |
-| -------- | ----------------------------------------- | ------- | -------- |
-| showNotify  | 展示提示                                  | `NotifyOptions` / `string` | -        |
-| closeNotify    | 关闭提示                                  | - | -        |
-| setNotifyDefaultOptions     | 修改默认配置，影响所有的 `showNotify` 调用                                  | `NotifyOptions` | -        |
-| resetNotifyDefaultOptions  | 重置默认配置，影响所有的 `showNotify` 调用                                  | - | -        |
+| 方法名称 | 说明 | 参数 |
+| --- | --- | --- |
+| showNotify | 展示提示 | `NotifyOptions` / `string` |
+| closeNotify | 关闭提示 | - |
+| setNotifyDefaultOptions | 修改默认配置，影响所有的 `showNotify` 调用 | `NotifyOptions` |
+| resetNotifyDefaultOptions | 重置默认配置，影响所有的 `showNotify` 调用 | - |
 
 ## Options
 
 调用 `showNotify`、 `setNotifyDefaultOptions` 等方法时，支持传入以下选项：
-| 参数         | 说明                                                             | 类型    | 可选值                    | 默认值       | 最低版本 |
-| ------------ | ----------------------------------------------------------------| ------- | ------------------------- | ------------ | -------- |
-| type         | 类型                                                             | NotifyType | `primary` `success` `warning` `danger` | `danger` | -        |
-| message      | 展示文案，支持通过`\n`换行                                          | string | -                         | -            | -        |
-| duration     | 展示时长(ms)，值为 0 时，notify 不会消失                             | number | -                         | `3000`            | -        |
-| zIndex     | 层级                                                               | number | -                          | `99`            | -        |
-| position   | 弹出位置                                                            | NotifyPosition | `top` `bottom`     | `top`            | -        |
-| color     | 字体颜色                                                             | string | -     | -            | -        |
-| background   | 背景颜色                                                          | string | -     | -            | -        |
-| safeHeight   | 顶部安全高度                                                       | number / string | -     | -            | -        |
-| onClick   | 点击时的回调函数                                                       | (event: MouseEvent) => void | -     | -            | -        |
-| onClosed   | 关闭时的回调函数                                                       | () => void | -     | -            | -        |
-| onOpened   | 展示后的回调函数                                                       | () => void | -     | -            | -        |
+
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| type | 类型，可选值为 `primary` `success` `warning` `danger` | `NotifyType` | `danger` |
+| message | 展示文案，支持通过`\n`换行 | `string \| number` | - |
+| duration | 展示时长(ms)，值为 0 时，notify 不会消失 | `number` | `3000` |
+| position | 弹出位置，可选值为 `top` `bottom` | `NotifyPosition` | `top` |
+| color | 字体颜色 | `string` | - |
+| background | 背景颜色 | `string` | - |
+| zIndex | 将组件的 z-index 层级设置为一个固定值 | `number` | `99` |
+| safeHeight | 顶部安全高度 | `number \| string` | - |
+| rootPortal | 是否从页面中脱离出来，用于解决各种 fixed 失效问题 | `boolean` | `false` |
+| closable | 是否显示关闭按钮 | `boolean` | `false` |
+| variant | 展示形态，可选值为 `filled` `floating` | `NotifyVariant` | `filled` |
+| customClass | 根节点样式类名 | `string` | - |
+| customStyle | 根节点样式 | `string` | - |
+| onClick | 点击时的回调函数 | `(event: MouseEvent) => void` | - |
+| onClosed | 关闭时的回调函数 | `() => void` | - |
+| onOpened | 展示后的回调函数 | `() => void` | - |

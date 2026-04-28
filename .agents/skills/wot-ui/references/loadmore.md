@@ -1,5 +1,5 @@
 ---
-url: 'https://wot-ui.cn/component/loadmore.md'
+url: 'https://v2.wot-ui.cn/component/loadmore.md'
 ---
 
 # loadmore 加载更多
@@ -39,7 +39,7 @@ url: 'https://wot-ui.cn/component/loadmore.md'
 
 ## 点击继续加载
 
-当 state 为 error 时，点击文案，组件会触发`loadmore`事件
+当 `state` 为 `error` 时，点击组件区域会触发 `reload` 事件。
 
 ```html
 <wd-loadmore custom-class="loadmore" state="error" @reload="loadmore" />
@@ -60,6 +60,7 @@ url: 'https://wot-ui.cn/component/loadmore.md'
 ```
 
 ```typescript
+import { ref } from 'vue'
 import { onLoad, onReachBottom } from '@dcloudio/uni-app'
 
 
@@ -124,26 +125,36 @@ image {
 
 ## Attributes
 
-| 参数          | 说明                 | 类型   | 可选值                 | 默认值             | 最低版本 |
-| ------------- | -------------------- | ------ | ---------------------- | ------------------ | -------- |
-| state         | 加载状态             | string | loading/finished/error | -                  | -        |
-| loading-text  | 加载提示文案         | string | -                      | 加载中...          | -        |
-| finished-text | 全部加载完的提示文案 | string | -                      | 没有更多了         | -        |
-| error-text    | 加载失败的提示文案   | string | -                      | 加载失败，点击重试 | -        |
-| loading-props  | loading加载组件属性| `Partial<LoadingProps>` | -         | -       | 1.3.14        |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| state | 加载状态，可选值为 `loading`、`finished`、`error` | `LoadMoreState` | - |
+| loading-text | 加载状态文案 | `string` | 国际化文案“正在努力加载中...” |
+| finished-text | 加载完成文案 | `string` | 国际化文案“已加载完毕” |
+| error-text | 加载失败文案；“点击重试”为组件内独立提示文案，不包含在该属性默认值中 | `string` | 国际化文案“加载失败” |
+| loading-props | 内部 `wd-loading` 的属性配置，类型参见下方 `LoadingProps` | `Partial<LoadingProps>` | - |
+| custom-class | 根节点自定义类名 | `string` | `''` |
+| custom-style | 根节点自定义样式 | `string` | `''` |
 
 #### LoadingProps
 
-参见[LoadingProps](/component/loading.html#attributes)
+参见 [LoadingProps](/component/loading.html#attributes)。传入的 `customClass` 会自动追加 `wd-loadmore__loading` 类名。
+
+## Slots
+
+| name | 说明 |
+| --- | --- |
+| loading | 自定义加载中内容 |
+| finished | 自定义加载完成内容 |
+| error | 自定义加载失败内容 |
 
 ## Events
 
-| 事件名称 | 说明                                                | 参数 | 最低版本 |
-| -------- | --------------------------------------------------- | ---- | -------- |
-| reload   | state 为 error 加载错误时，点击文案触发 reload 事件 | -    | -        |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| reload | `state` 为 `error` 时，点击组件触发 | - |
 
 ## 外部样式类
 
-| 类名         | 说明       | 最低版本 |
-| ------------ | ---------- | -------- |
-| custom-class | 根节点样式 | -        |
+| 类名 | 说明 |
+| --- | --- |
+| custom-class | 根节点样式 |

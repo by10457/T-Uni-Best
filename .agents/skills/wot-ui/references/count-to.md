@@ -1,126 +1,101 @@
 ---
-url: 'https://wot-ui.cn/component/count-to.md'
+url: 'https://v2.wot-ui.cn/component/count-to.md'
 ---
 
 # CountTo 数字滚动
 
-数字滚动组件。
+用于数字滚动展示，支持主题、前后缀、小数精度与手动控制。
 
-## 基本用法
+## 组件类型
 
-设置 `endVal` 属性，表示最终值。
-设置 `startVal` 属性，表示起始值。
-设置 `duration` 属性，表示从起始值到结束值数字变动的时间。
-设置 `autoplay` 属性，表示是否自动播放。
-设置 `decimals` 属性，表示保留的小数位数。
-设置 `decimal` 属性，表示小数点符号。
-设置 `prefix` 属性，表示数字前缀。
-设置 `suffix` 属性，表示数字后缀。
-设置 `fontSize` 属性，表示字体大小。
-设置 `color` 属性，表示文本颜色。
+### 基本用法
 
-```vue
-<wd-count-to :endVal="2024" suffix="年" color="#16baaa"></wd-count-to>
-<wd-count-to prefix="￥" :startVal="0" :decimals="2" :endVal="186.321" :fontSize="32" suffix="%" color="#1e9fff"></wd-count-to>
-<wd-count-to prefix="￥" :startVal="0" :decimals="2" :endVal="21286.321" :fontSize="32" suffix="%" color="#ff5722"></wd-count-to>
-<wd-count-to prefix="￥" :startVal="0" :decimals="2" :endVal="21286.321" :fontSize="32" suffix="%" color="#ffb800" :duration="2000"></wd-count-to>
-```
-
-## 设置主题
-
-通过type参数设置文本主题，我们提供了五类属性：primary error success warning default-默认。
+设置 `end-val` 指定最终值，`start-val` 指定起始值，`duration` 指定滚动时长（ms）。
 
 ```html
-<wd-count-to type="primary" prefix="￥" :startVal="0" :endVal="888888" suffix="%"></wd-count-to>
-<wd-count-to type="error" prefix="￥" :startVal="0" :endVal="888888" suffix="%"></wd-count-to>
-<wd-count-to type="success" prefix="￥" :startVal="0" :endVal="888888" suffix="%"></wd-count-to>
-<wd-count-to type="warning" prefix="￥" :startVal="0" :endVal="888888" suffix="%"></wd-count-to>
-<wd-count-to type="info" prefix="￥" :startVal="0" :endVal="888888" suffix="%"></wd-count-to>
+<wd-count-to :end-val="2024" suffix="年" color="#16baaa" />
+<wd-count-to prefix="￥" :start-val="0" :decimals="2" :end-val="186.321" suffix="%" color="#1e9fff" />
+<wd-count-to prefix="￥" :start-val="0" :decimals="2" :end-val="21286.321" suffix="%" color="#ff5722" />
+<wd-count-to prefix="￥" :start-val="0" :decimals="2" :end-val="21286.321" suffix="%" color="#ffb800" :duration="2000" />
 ```
 
-## 手动控制
+## 组件样式
 
-通过 `start` 方法开始倒计时，通过 `pause` 方法暂停倒计时，通过 `reset` 方法重置倒计时。
+### 设置主题
+
+通过 `type` 设置文本主题，可选值为 `default`、`primary`、`success`、`warning`、`error`。
 
 ```html
-<wd-count-to
-  ref="countTo"
-  :auto-start="false"
-  prefix="￥"
-  :startVal="1000"
-  :decimals="3"
-  :endVal="9999.32"
-  :fontSize="32"
-  suffix="%"
-  color="#1e9fff"
-></wd-count-to>
+<wd-count-to type="primary" prefix="￥" :start-val="0" :end-val="888888" suffix="%" />
+<wd-count-to type="error" prefix="￥" :start-val="0" :end-val="888888" suffix="%" />
+<wd-count-to type="success" prefix="￥" :start-val="0" :end-val="888888" suffix="%" />
+<wd-count-to type="warning" prefix="￥" :start-val="0" :end-val="888888" suffix="%" />
+<wd-count-to type="default" prefix="￥" :start-val="0" :end-val="888888" suffix="%" />
+```
+
+## 特殊样式
+
+### 手动控制
+
+设置 `auto-start="false"` 后，可通过实例方法手动开始、暂停、重置。
+
+```html
+<wd-count-to ref="countTo" :auto-start="false" prefix="￥" :start-val="1000" :decimals="3" :end-val="9999.32" suffix="%" color="#1e9fff" />
 <wd-grid clickable border>
-  <wd-grid-item text="开始" icon="play-circle-stroke" @itemclick="start" />
-  <wd-grid-item text="暂停" icon="pause-circle" @itemclick="pause" />
-  <wd-grid-item text="重置" icon="refresh" @itemclick="reset" />
+  <wd-grid-item text="开始" icon="play-circle" @click="start" />
+  <wd-grid-item text="暂停" icon="pause-circle" @click="pause" />
+  <wd-grid-item text="重置" icon="refresh" @click="reset" />
 </wd-grid>
 ```
 
 ```ts
-import type { CountToInstance } from '@/uni_modules/wot-design-uni/components/wd-count-to/types'
+import type { CountToInstance } from '@/uni_modules/wot-ui/components/wd-count-to/types'
 
 const countTo = ref<CountToInstance>()
 
-const start = () => {
-  countTo.value!.start()
-}
-const pause = () => {
-  countTo.value!.pause()
-}
-const reset = () => {
-  countTo.value!.reset()
-}
+const start = () => countTo.value?.start()
+const pause = () => countTo.value?.pause()
+const reset = () => countTo.value?.reset()
 ```
 
 ## Attributes
 
-| 参数      | 说明                           | 类型    | 可选值                                      | 默认值  | 最低版本 |
-| --------- | ------------------------------ | ------- | ------------------------------------------- | ------- | -------- |
-| fontSize  | 字体大小                       | number  | 16                                          | default | 1.3.8    |
-| color     | 文本颜色                       | string  | -                                           | ''      | 1.3.8    |
-| type      | 主题类型                       | string  | 'primary' / 'error' / 'warning' / 'success' | default | 1.3.9    |
-| startVal  | 起始值                         | number  | -                                           | 0       | 1.3.8    |
-| endVal    | 最终值                         | number  | -                                           | 2024    | 1.3.8    |
-| duration  | 从起始值到结束值数字变动的时间 | number  | -                                           | 3000    | 1.3.8    |
-| autoplay  | 是否自动播放                   | boolean | -                                           | true    | 1.3.8    |
-| decimals  | 保留的小数位数                 | number  | (需大于等于 0)                              | 0       | 1.3.8    |
-| decimal   | 小数点符号                     | string  | -                                           | '.'     | 1.3.8    |
-| separator | 三位三位的隔开效果             | string  | -                                           | ','     | 1.3.8    |
-| prefix    | 前缀                           | string  | -                                           | -       | 1.3.8    |
-| suffix    | 后缀                           | string  | -                                           | -       | 1.3.8    |
-| useEasing | 是否具有连贯性                 | boolean | -                                           | true    | 1.3.8    |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| color | 文本颜色 | string | `''` |
+| type | 主题类型，可选值为 `default`、`primary`、`success`、`warning`、`error` | string | default |
+| start-val | 起始值 | number | 0 |
+| end-val | 最终值 | number | 2024 |
+| duration | 从起始值到结束值数字变动的时间（毫秒） | number | 3000 |
+| auto-start | 是否自动开始 | boolean | true |
+| decimals | 保留的小数位数，需大于等于 0 | number | 0 |
+| decimal | 小数点符号 | string | `.` |
+| separator | 千分位分隔符 | string | `,` |
+| prefix | 前缀文本 | string | `''` |
+| suffix | 后缀文本 | string | `''` |
+| use-easing | 是否使用缓动动画 | boolean | true |
+| custom-class | 根节点自定义类名 | string | `''` |
+| custom-style | 根节点自定义样式 | string | `''` |
 
 ## Events
 
-| 事件名称 | 说明                 | 参数 | 最低版本 |
-| -------- | -------------------- | ---- | -------- |
-| finish   | 动画完成时触发       | —    | 1.3.8    |
-| mounted  | 组件加载完成时时触发 | -    | 1.3.8    |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| mounted | 组件加载完成时触发 | - |
+| finish | 动画完成时触发 | - |
 
 ## Methods
 
-| 方法名 | 说明                                                        | 参数 | 最低版本 |
-| ------ | ----------------------------------------------------------- | ---- | -------- |
-| start  | 开始动画                                                    | —    | 1.3.8    |
-| pause  | 暂停动画                                                    | —    | 1.3.8    |
-| reset  | 重置动画，若 `auto-start` 为 `true`，重设后会自动开始倒计时 | —    | 1.3.8    |
+| 方法名 | 说明 | 参数 |
+| --- | --- | --- |
+| start | 开始动画 | - |
+| pause | 暂停动画 | - |
+| reset | 重置动画；若 `auto-start` 为 `true`，重置后自动开始 | - |
 
 ## Slots
 
-| 名称    | 说明     | 最低版本 |
-| ------- | -------- | -------- |
-| default | 默认插槽 | 1.3.8    |
-| prefix  | 前缀插槽 | 1.3.8    |
-| suffix  | 后缀插槽 | 1.3.8    |
-
-## 外部样式类
-
-| 类名         | 说明       | 最低版本 |
-| ------------ | ---------- | -------- |
-| custom-class | 根节点样式 | 1.3.8    |
-| custom-style | 根节点样式 | 1.3.8    |
+| 名称 | 说明 | 参数 |
+| --- | --- | --- |
+| default | 主体数字内容 | - |
+| prefix | 前缀内容 | - |
+| suffix | 后缀内容 | - |

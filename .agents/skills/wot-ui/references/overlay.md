@@ -1,5 +1,5 @@
 ---
-url: 'https://wot-ui.cn/component/overlay.md'
+url: 'https://v2.wot-ui.cn/component/overlay.md'
 ---
 
 # Overlay 遮罩层
@@ -8,6 +8,8 @@ url: 'https://wot-ui.cn/component/overlay.md'
 
 ## 基础用法
 
+### 基础组件
+
 使用 `show` 控制遮罩层的显示/隐藏。
 
 ```html
@@ -15,9 +17,13 @@ url: 'https://wot-ui.cn/component/overlay.md'
 <wd-overlay :show="show" @click="show = false" />
 ```
 
-## 嵌入内容
+## 特殊样式
 
-通过 `type` 修改指示器的类型，可选值为 'outline'，适用于通用模块加载。
+### 嵌入内容
+
+通过默认插槽可以在遮罩层上嵌入任意内容。
+
+::: code-group
 
 ```html
 <wd-button type="primary" @click="show = true">嵌入内容</wd-button>
@@ -43,12 +49,33 @@ url: 'https://wot-ui.cn/component/overlay.md'
 }
 ```
 
+:::
+
 ## Attributes
 
-| 参数        | 说明               | 类型              | 可选值 | 默认值 | 最低版本 |
-| ----------- | ------------------ | ----------------- | ------ | ------ | -------- |
-| show        | 是否展示遮罩层     | `boolean`         | true   | false  | -        |
-| duration    | 动画时长，单位毫秒 | `string / number` | -      | 300    | -        |
-| lockScroll  | 是否锁定背景滚动，锁定时蒙层里的内容也将无法滚动 | `boolean`         | false  | true   | -        |
-| zIndex      | 层级               | `number`          | -      | 10     | -        |
-| customStyle | 自定义样式         | `string`          | -      | -      | -        |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| show | 是否展示遮罩层 | `boolean` | `false` |
+| duration | 动画时长，单位为毫秒 | Record\<string, number> | number | boolean | `300` |
+| lock-scroll | 是否锁定背景滚动，锁定时蒙层里的内容也将无法滚动 | `boolean` | `true` |
+| z-index | 层级 | `number` | `10` |
+| custom-style | 根节点样式 | `string` | `''` |
+| custom-class | 根节点样式类名 | `string` | `''` |
+
+## Events
+
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| click | 点击遮罩层时触发 | - |
+| before-enter | 进入动画开始前触发 | - |
+| enter | 进入动画开始时触发 | - |
+| after-enter | 进入动画结束后触发 | - |
+| before-leave | 离开动画开始前触发 | - |
+| leave | 离开动画开始时触发 | - |
+| after-leave | 离开动画结束后触发 | - |
+
+## Slots
+
+| name | 说明 |
+| --- | --- |
+| default | 遮罩层内容 |

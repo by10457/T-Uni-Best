@@ -1,5 +1,5 @@
 ---
-url: 'https://wot-ui.cn/component/use-config-provider.md'
+url: 'https://v2.wot-ui.cn/component/use-config-provider.md'
 ---
 
 # useConfigProvider
@@ -13,20 +13,20 @@ url: 'https://wot-ui.cn/component/use-config-provider.md'
 ## 基础用法
 
 ```ts
-import { useConfigProvider } from '@/uni_modules/wot-design-uni'
+import { useConfigProvider } from '@/uni_modules/wot-ui'
 import { reactive, ref } from 'vue'
 
 // 使用 reactive
 const themeVars = reactive({
-  colorTheme: 'red',
-  buttonPrimaryBgColor: '#07c160'
+  primary6: '#ff4d4f',
+  buttonPrimaryBg: '#07c160'
 })
 
 useConfigProvider({ themeVars })
 
 // 或者使用 ref
 const themeVarsRef = ref({
-  colorTheme: 'blue'
+  primary6: '#2c68ff'
 })
 
 useConfigProvider({ themeVars: themeVarsRef })

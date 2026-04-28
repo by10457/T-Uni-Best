@@ -1,178 +1,173 @@
 ---
-url: 'https://wot-ui.cn/component/datetime-picker-view.md'
+url: 'https://v2.wot-ui.cn/component/datetime-picker-view.md'
 ---
 
 # DatetimePickerView 日期时间选择器视图
 
-为 Picker 组件的封装，在其内部构建好日期时间选项。
+用于构建日期时间滚筒选项的基础视图组件。
 
-## 基本用法
+## 组件类型
 
-`v-model` 设置绑定值，默认为 `datetime` 类型，展示年月日时分，绑定值为 `时间戳` 类型，如果为 `time` 类型，绑定值为字符串。
+### 基本用法
+
+`v-model` 绑定选中值；默认 `datetime` 类型，值为时间戳。
 
 ```html
-<wd-toast />
-
-<wd-datetime-picker-view v-model="value" label="日期选择" @change="handleChange" />
+<wd-datetime-picker-view v-model="value" @change="handleChange" />
 ```
 
-```typescript
-import { useToast } from '@/uni_modules/wot-design-uni'
-const toast = useToast()
+```ts
 const value = ref<number>(Date.now())
-
-function onChange1({ value }) {
-  toast.show('选择了' + new Date(value))
+const handleChange = ({ value }: { value: number | string }) => {
+  console.log(value)
 }
 ```
 
-## date 类型
+## 组件变体
 
-`date` 类型只展示年月日。
+### 日期类型
 
-```html
-<wd-datetime-picker-view type="date" v-model="value" label="年月日" />
+支持 `datetime`、`date`、`year-month`、`year`、`time` 五种类型。
+
+::: code-group
+
+```html [模板]
+<wd-datetime-picker-view type="date" v-model="dateValue" />
+<wd-datetime-picker-view type="year-month" v-model="yearMonthValue" />
+<wd-datetime-picker-view type="year" v-model="yearValue" />
+<wd-datetime-picker-view type="time" v-model="timeValue" />
+<wd-datetime-picker-view type="datetime" v-model="datetimeValue" />
 ```
 
-```typescript
+```ts [脚本]
+const dateValue = ref<number>(Date.now())
+const yearMonthValue = ref<number>(Date.now())
+const yearValue = ref<number>(Date.now())
+const timeValue = ref<string>('11:12')
+const datetimeValue = ref<number>(Date.now())
+```
+
+:::
+
+### 开启秒选择
+
+在 `time` 和 `datetime` 类型下可通过 `use-second` 展示秒列。
+
+```html
+<wd-datetime-picker-view type="time" v-model="timeValue" use-second />
+<wd-datetime-picker-view type="datetime" v-model="value" use-second />
+```
+
+```ts
+const timeValue = ref<string>('11:12:30')
 const value = ref<number>(Date.now())
 ```
 
-## year-month 类型
+## 组件样式
 
-`year-month` 类型只展示年月。
+### 修改内部格式
 
-```html
-<wd-datetime-picker-view type="year-month" v-model="value" label="年月" />
-```
-
-```typescript
-const value = ref<number>(Date.now())
-```
-
-## year 类型
-
-`year` 类型只展示年月。
+通过 `formatter` 自定义滚筒文案格式。
 
 ```html
-<wd-datetime-picker-view type="year" v-model="value" label="年" />
+<wd-datetime-picker-view v-model="value" :formatter="formatter" />
 ```
 
-```typescript
-const value = ref<number>(Date.now())
-```
-
-## time 类型
-
-`time` 类型只展示时分，绑定值为 `HH:mm` 格式。
-
-```html
-<wd-datetime-picker-view type="time" v-model="value" label="时分" />
-```
-
-```typescript
-const value4 = ref<string>('11:12')
-```
-
-## time 类型（带秒）
-
-`time` 类型设置 `use-second` 属性可以展示时分秒，绑定值为 `HH:mm:ss` 格式。
-
-```html
-<wd-datetime-picker-view type="time" v-model="value" label="时分秒" use-second />
-```
-
-```typescript
-const value = ref<string>('11:12:30')
-```
-
-## datetime 类型（带秒）
-
-`datetime` 类型设置 `use-second` 属性可以展示年月日时分秒，绑定值为时间戳。
-
-```html
-<wd-datetime-picker-view type="datetime" v-model="value" label="年月日时分秒" use-second />
-```
-
-```typescript
-const value = ref<number>(Date.now())
-```
-
-## 修改内部格式
-
-给 `formatter` 属性传入一个函数，接收 `type` 和 `value` 值，返回展示的文本内容。`type` 有 `year`、`month`、`date`、`hour`、`minute` 类型，`value` 为 `number` 类型。
-使用自定义`formatter`会关闭内置的默认`display-format`函数。
-
-```html
-<wd-datetime-picker-view v-model="value" label="内部格式" :formatter="formatter" />
-```
-
-```typescript
-const value = ref<number>(Date.now())
-
-const formatter = (type, value) => {
+```ts
+const formatter = (type: string, value: number) => {
   switch (type) {
     case 'year':
-      return value + '年'
+      return `${value}年`
     case 'month':
-      return value + '月'
+      return `${value}月`
     case 'date':
-      return value + '日'
+      return `${value}日`
     case 'hour':
-      return value + '时'
+      return `${value}时`
     case 'minute':
-      return value + '分'
+      return `${value}分`
+    case 'second':
+      return `${value}秒`
     default:
-      return value
+      return `${value}`
   }
 }
 ```
 
-## 过滤选项
+### 过滤选项
 
-给 `filter` 属性传入一个函数，接收 `type` 和 `values` 值，返回列的选项列表。`type` 有 `year`、`month`、`date`、`hour`、`minute` 类型，`values` 为 number数组。
+通过 `filter` 按列过滤可选值。
 
 ```html
-<wd-datetime-picker-view v-model="value" label="过滤选项" :filter="filter" />
+<wd-datetime-picker-view v-model="value" :filter="filter" />
 ```
 
-```typescript
-const value = ref<number>(Date.now())
-
-const filter = (type, values) => {
+```ts
+const filter = ({ type, values }: { type: string; values: number[] }) => {
   if (type === 'minute') {
     return values.filter((value) => value % 5 === 0)
   }
   return values
 }
-
 ```
 
 ## Attributes
 
-| 参数 | 说明 | 类型 | 可选值 | 默认值 | 最低版本 |
-|-----|------|-----|-------|-------|---------|
-| v-model | 选中项，当 type 为 time 时，类型为字符串，否则为 `timestamp` | `string` / `timestamp` | - | - |
-| type | 选择器类型 | string | date / year-month / time / year | datetime | - |
-| loading | 加载中 | boolean | - | false | - |
-| loading-color | 加载的颜色，只能使用十六进制的色值写法，且不能使用缩写 | string | - | #4D80F0 | - |
-| columns-height | picker内部滚筒高 | number | - | 231 | - |
-| item-height | picker item的高度 | number | - | 35 | 1.13.0 |
-| formatter | 自定义弹出层选项文案的格式化函数，返回一个字符串 | function | - | - | - |
-| filter | 自定义过滤选项的函数，返回列的选项数组 | function | - | - | - |
-| minDate | 最小日期，13 位的时间戳    | `timestamp` | - | 当前日期 - 10年 | - |
-| maxDate | 最大日期，13 位的时间戳  | `timestamp` | - | 当前日期 + 10年 | - |
-| minHour | 最小小时，time类型时生效 | number | - | 0 | - |
-| maxHour | 最大小时，time类型时生效 | number | - | 23 | - |
-| minMinute | 最小分钟，time类型时生效 | number | - | 0 | - |
-| maxMinute | 最大分钟，time类型时生效 | number | - | 59 | - |
-| immediate-change | 是否在手指松开时立即触发picker-view的 change 事件。若不开启则会在滚动动画结束后触发 change 事件，1.2.25版本起提供，仅微信小程序和支付宝小程序支持。 | boolean | - | false | 1.2.25 |
-| use-second | 是否显示秒选择，仅在 time 和 datetime 类型下生效 | boolean | - | false | 1.10.0 |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| v-model / modelValue | 选中项，`time` 类型为字符串，其余类型为时间戳 | `string \| number` | - |
+| type | 选择器类型，可选值为 `datetime`、`date`、`year-month`、`time`、`year` | DateTimeType | datetime |
+| item-height | 单项高度 | number | 44 |
+| visible-item-count | 可见项数量 | number | 6 |
+| value-key | 选项值字段名 | string | value |
+| label-key | 选项文案字段名 | string | label |
+| formatter | 自定义选项文案格式化函数 | DatetimePickerViewFormatter | - |
+| filter | 自定义过滤函数 | DatetimePickerViewFilter | - |
+| column-formatter | 自定义列格式化函数 | DatetimePickerViewColumnFormatter | - |
+| min-date | 最小日期（时间戳） | number | 当前年份前 10 年 1 月 1 日 |
+| max-date | 最大日期（时间戳） | number | 当前年份后 10 年 12 月 31 日 |
+| min-hour | 最小小时（`time` 类型生效） | number | 0 |
+| max-hour | 最大小时（`time` 类型生效） | number | 23 |
+| min-minute | 最小分钟（`time` 类型生效） | number | 0 |
+| max-minute | 最大分钟（`time` 类型生效） | number | 59 |
+| use-second | 是否显示秒选择，仅 `time` 和 `datetime` 生效 | boolean | false |
+| min-second | 最小秒数，仅 `time` 和 `datetime` 生效 | number | 0 |
+| max-second | 最大秒数，仅 `time` 和 `datetime` 生效 | number | 59 |
+| immediate-change | 是否在手指松开时立即触发 change（仅微信/支付宝小程序） | boolean | false |
+| boundary-min-date | 区间模式开始时间最小边界（用于联动） | number | - |
+| boundary-max-date | 区间模式结束时间最大边界（用于联动） | number | - |
+| custom-class | 根节点自定义类名 | string | `''` |
+| custom-style | 根节点自定义样式 | string | `''` |
 
 ## Events
 
-| 事件名称 | 说明 | 参数 | 最低版本 |
-|--------|------|-----|---------|
-| change | 切换选项时触发 | 选中的值 `{ value }`，value 为当前选中日期的时间戳，'time' 类型则为字符串 | - |
-| pickstart | 当滚动选择开始时候触发事件 | - | - | - |
-| pickend | 当滚动选择结束时候触发事件 | - | - | - |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| change | 选中项变化时触发 | `{ value, columns }` |
+| pickstart | 滚动开始时触发 | - |
+| pickend | 滚动结束时触发 | - |
+
+## Methods
+
+| 方法名称 | 说明 | 参数 |
+| --- | --- | --- |
+| getSelectedOptions | 获取当前选中项对象数组 | - |
+| correctValue | 纠正并返回合法值 | `value: string \| number` |
+| getOriginColumns | 获取原始列定义 | - |
+
+## Types
+
+### DatetimePickerViewColumn
+
+| 键名 | 说明 | 类型 |
+| --- | --- | --- |
+| type | 列类型 | `year \| month \| date \| hour \| minute \| second` |
+| values | 当前列可选值数组 | number\[] |
+
+### DatetimePickerViewOption
+
+| 键名 | 说明 | 类型 |
+| --- | --- | --- |
+| value | 选项值 | number |
+| label | 选项展示文本 | string |
+| disabled | 是否禁用 | boolean |

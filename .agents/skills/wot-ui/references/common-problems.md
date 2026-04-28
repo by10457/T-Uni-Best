@@ -1,5 +1,5 @@
 ---
-url: 'https://wot-ui.cn/guide/common-problems.md'
+url: 'https://v2.wot-ui.cn/guide/common-problems.md'
 ---
 
 # 常见问题 FAQ
@@ -27,118 +27,32 @@ url: 'https://wot-ui.cn/guide/common-problems.md'
 有！
 可以加入[Wot UI 互助群](/guide/join-group.html)，分享心得、交流体会。
 
-## Sass抛出大量错误和警告？
+## Sass抛出大量警告？
 
-`Dart Sass 3.0.0` 废弃了一批API，而组件库目前还未兼容，因此请确保你的`sass`版本为`1.78.0`及之前的版本。可以通过以下命令安装指定版本：
-::: code-group
+如果遇到运行时抛出以下警告：
 
-```bash [npm]
-npm i sass@1.78.0 -D
+```sh
+Deprecation Warning [legacy-js-api]: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
 ```
 
-```bash [yarn]
-yarn add sass@1.78.0 -D
-```
-
-```bash [pnpm]
-pnpm add sass@1.78.0 -D
-```
-
-:::
-
-## 小程序样式隔离
-
-### 在页面中使用 Wot UI 组件时，可直接在页面的样式文件中覆盖样式
-
-```vue
-<wd-button type="primary">主要按钮</wd-button>
-```
-
-```scss
-/* 页面样式 */
-:deep(.wd-button) {
-  color: red !important;
-}
-```
-
-### 为什么在组件中无法覆盖组件库样式？
-
-在自定义组件中使用 Wot UI 组件时，需开启`styleIsolation: 'shared'`选项
-
-```vue
-<wd-button type="primary">主要按钮</wd-button>
-```
-
-`Vue 3.2` 及以下版本可以使用如下配置开启`styleIsolation: 'shared'`选项：
+可以在 `vite.config.ts` 中这样做：
 
 ```ts
-// vue
-<script lang="ts">
-export default {
-  options: {
-    styleIsolation: 'shared'
-  }
-}
-</script>
-<script lang="ts" setup>
-</script>
-```
-
-```scss
-/* 组件样式 */
-:deep(.wd-button) {
-  color: red !important;
-}
-```
-
-`Vue 3.3+` 可以通过`defineOptions`开启`styleIsolation: 'shared'`选项：
-
-```ts
-<script lang="ts" setup>
-defineOptions({
-  options: {
-    styleIsolation: 'shared'
-  }
+export default defineConfig({
+  // ...
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler',
+        silenceDeprecations: ['legacy-js-api']
+      }
+    }
+  },
+// ...
 })
-</script>
 ```
 
-## 小程序使用外部样式类
-
-Wot UI 开放了大量的自定义样式类供开发者使用，具体的样式类名称可查阅对应组件的“外部样式类”部分。需要注意的是普通样式类和自定义样式类的优先级是未定义的，因此使用时请添加`!important`以保证外部样式类的优先级。
-
-::: tip 请注意
-`Wot UI` 的组件均设置了`scoped`，所以它的 CSS 只会影响当前组件的元素，和 Shadow DOM 中的样式封装类似，处于 `scoped` 样式中的选择器如果想要做更“深度”的选择，也即：影响到子组件，可以使用 `:deep()` 这个伪类：
-
-```css
-<style scoped>
-.a :deep(.b) {
-  /* ... */
-}
-</style>
-```
-
-上面的代码会被编译成：
-
-```css
-.a[data-v-f3f3eg9] .b {
-  /* ... */
-}
-```
-
-详细可见[单文件组件 CSS 功能](https://cn.vuejs.org/api/sfc-css-features.html#sfc-css-features)。
-:::
-
-```vue
-<wd-button custom-class="custom-button" type="primary">主要按钮</wd-button>
-```
-
-```scss
-/* 组件样式 */
-:deep(.custom-button) {
-  color: red !important;
-}
-```
+`Sass` 废弃了大批 API ，而 `uni-app` 仍然在使用这些 API ，导致警告的抛出。
 
 ## 小程序自定义组件渲染问题
 
@@ -206,46 +120,33 @@ export default {
 
 我们为每个组件提供了`css 变量`，可以参考[config-provider](../component/config-provider)组件的使用介绍来定制主题。
 
-## Toast 和 MessageBox 组件调用无效果？
+## Toast 和 Dialog 组件调用无效果？
 
-首先要检查一下用法是否正确，`uni-app`平台不支持全局挂载组件，所以`Message`、`Toast`等组件仍需在 SFC 中显式使用，例如:
+首先要检查一下用法是否正确，`uni-app`平台不支持全局挂载组件，所以`Dialog`、`Toast`等组件仍需在 SFC 中显式使用，例如:
 
 ```html
 <wd-toast></wd-toast>
 ```
 
-`Message`、`Toast`的函数式调用是基于`provide/inject`实现的，所以你的调用要确保在`setup`中。
+`Dialog`、`Toast`的函数式调用是基于`provide/inject`实现的，所以你的调用要确保在`setup`中。
 
 ## 编译到支付宝小程序 Popup 组件的遮罩无法显示？
 
-uni-app 3.99.2023122704 将支付宝小程序的`styleIsolation`默认值设置为了`apply-shared`，而支付宝小程序默认的`styleIsolation`为`shared`，所以导致更新到`3.99.2023122704`版本后，支付宝小程序自定义组件样式穿透无法生效，参见[issue](https://ask.dcloud.net.cn/question/187142)。
-解决办法：在`mainfest.json`中设置`styleIsolation`为`shared`。
+由于平台更新改变了默认的样式隔离策略导致的。详见 [样式覆盖 - 特定平台样式穿透失效](./custom-style.md#特定平台样式穿透失效)。
 
-```json
-{
-  // ...
-  "mp-alipay": {
-    // ...
-    "styleIsolation": "shared"
-    // ...
-  }
-  // ...
-}
-```
+## 为什么组件库文档中都是从`@/uni_modules/wot-ui`导入方法和工具类？
 
-## 为什么组件库文档中都是从`@/uni_modules/wot-design-uni`导入方法和工具类？
-
-当前组件库本身的开发方式是将组件库代码放到`@/uni_modules/wot-design-uni`这个目录的，所以文档中都是从`@/uni_modules/wot-design-uni`导入方法和工具类，使用`npm`方式安装组件库的时候可以这样调整：
+当前组件库本身的开发方式是将组件库代码放到`@/uni_modules/wot-ui`这个目录的，所以文档中都是从`@/uni_modules/wot-ui`导入方法和工具类，使用`npm`方式安装组件库的时候可以这样调整：
 
 ```ts
 // useToast、useNotify等同理
-import { useMessage } from '@/uni_modules/wot-design-uni'
+import { useDialog } from '@/uni_modules/wot-ui'
 ```
 
 替换为
 
 ```ts
-import { useMessage } from 'wot-design-uni'
+import { useDialog } from '@wot-ui/ui'
 ```
 
 ## uni-app 如何自定义编译平台，例如钉钉小程序？
@@ -275,7 +176,7 @@ import { useMessage } from 'wot-design-uni'
 ## 当前组件库提供的用于控制组件显示隐藏 hooks 不生效怎么办？
 
 :::tip 注意
-多次执行`use`后，`useToast`、`useMessage`、`useNotify`、`useQueue`等 hooks 不生效的问题已在1.3.14版本修复，请升级到最新版本。
+多次执行`use`后，`useToast`、`useDialog`、`useNotify`、`useQueue`等 hooks 不生效的问题已在1.3.14版本修复，请升级到最新版本。
 :::
 
 ***可以按照以下步骤进行排查***
@@ -286,7 +187,7 @@ import { useMessage } from 'wot-design-uni'
 <wd-toast></wd-toast>
 ```
 
-2. `useToast`、`useMessage`、`useNotify`、`useQueue`等 hooks 不生效，请检查是否在`setup`中调用，如果`setup`中调用，请检查当前页面是否存在多次执行`use`的场景，例如在多个组件中执行，这样会导致上一次`use`的失效。针对此场景，组件的函数式调用都支持传入`selector`参数，可以通过`selector`参数来指定组件，例如：
+2. `useToast`、`useDialog`、`useNotify`、`useQueue`等 hooks 不生效，请检查是否在`setup`中调用，如果`setup`中调用，请检查当前页面是否存在多次执行`use`的场景，例如在多个组件中执行，这样会导致上一次`use`的失效。针对此场景，组件的函数式调用都支持传入`selector`参数，可以通过`selector`参数来指定组件，例如：
 
 ```html
 <wd-toast></wd-toast>
@@ -327,9 +228,9 @@ function handleOpened() {
 
 ```
 
-## 为何messageBox弹出了多个？
+## 为何 Dialog 弹出了多个？
 
-检查一下弹出多个`messageBox`的页面是否存在多个相同`selector`或无`selector`的`<wd-message-box></wd-message-box>`标签(当前页面包括页面中使用的组件)。`toast`亦是同理，在子组件中使用`messageBox`等组件需要指定`selector`并确保`selector`唯一。
+检查一下弹出多个`Dialog`的页面是否存在多个相同`selector`或无`selector`的`<wd-dialog></wd-dialog>`标签(当前页面包括页面中使用的组件)。`toast`亦是同理，在子组件中使用`Dialog`等组件需要指定`selector`并确保`selector`唯一。
 
 ## Toast、Message、Loading 等如何全局调用？
 
@@ -341,4 +242,4 @@ function handleOpened() {
 
 ## 关于我们
 
-**如果您的问题不在上述列表中或您有更好的建议，请联系我们 [Moonofweisheng](https://github.com/Moonofweisheng/wot-design-uni)**
+**如果您的问题不在上述列表中或您有更好的建议，请联系我们 [Moonofweisheng](https://github.com/wot-ui/wot-ui)**

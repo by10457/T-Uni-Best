@@ -1,24 +1,22 @@
 ---
-url: 'https://wot-ui.cn/component/divider.md'
+url: 'https://v2.wot-ui.cn/component/divider.md'
 ---
 
 # Divider 分割线
 
 用于将内容分隔为多个区域。
 
-:::danger 请注意
-`hairline`、`dashed`、`content-position`、`vertical`属性为 1.5.0 版本新增支持，在此之前仅支持默认插槽显示文本和自定义`color`。
-:::
+## 组件类型
 
-## 基本使用
+### 基本使用
 
 默认渲染一条水平分割线。
 
 ```html
-<wd-divider></wd-divider>
+<wd-divider />
 ```
 
-## 展示文本
+### 展示文本
 
 使用默认插槽在分割线中间插入内容。
 
@@ -26,17 +24,9 @@ url: 'https://wot-ui.cn/component/divider.md'
 <wd-divider>展示文本</wd-divider>
 ```
 
-## 自定义渲染内容
+## 组件变体
 
-使用默认插槽在分割线中间插入自定义内容。
-
-```html
-<wd-divider>
-  <wd-icon name="arrow-down" size="20" color="#1989fa" />
-</wd-divider>
-```
-
-## 内容位置
+### 内容位置
 
 通过 `content-position` 指定内容所在位置。
 
@@ -46,25 +36,39 @@ url: 'https://wot-ui.cn/component/divider.md'
 <wd-divider content-position="right">右侧</wd-divider>
 ```
 
-## 虚线
+### 虚线
 
-添加 `dashed` 属性使分割线渲染为虚线。
+添加 `dashed` 使分割线渲染为虚线。
 
 ```html
 <wd-divider dashed>虚线分割</wd-divider>
 ```
 
-## 自定义颜色
+## 组件样式
 
-设置 `color` 属性。
+### 自定义渲染内容
+
+使用默认插槽渲染自定义内容。
+
+```html
+<wd-divider>
+  <wd-icon name="down" size="20" />
+</wd-divider>
+```
+
+### 自定义颜色
+
+设置 `color` 自定义分割线颜色。
 
 ```html
 <wd-divider color="#4D80F0">自定义颜色</wd-divider>
 ```
 
-## 垂直分割线
+## 特殊样式
 
-添加 `vertical` 属性使分割线渲染为垂直分割线。
+### 垂直分割线
+
+添加 `vertical` 使分割线渲染为垂直方向，垂直模式下默认插槽不生效。
 
 ```html
 <view class="content">
@@ -88,22 +92,24 @@ url: 'https://wot-ui.cn/component/divider.md'
 
 ## Attributes
 
-| 参数             | 说明                           | 类型    | 可选值                  | 默认值   | 最低版本         |
-| ---------------- | ------------------------------ | ------- | ----------------------- | -------- | ---------------- |
-| color            | 自定义颜色，支持所有颜色的写法 | string  | -                       | -        | -                |
-| hairline         | 是否显示边框                   | boolean | -                       | true     | 1.5.0 |
-| dashed           | 是否显示为虚线                 | boolean | -                       | false    | 1.5.0 |
-| content-position | 内容位置                       | string  | `left`/`center`/`right` | `center` | 1.5.0 |
-| vertical         | 是否显示为垂直分割线           | boolean | -                       | false    | 1.5.0 |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| color | 自定义颜色，支持所有合法颜色值 | `string` | - |
+| content-position | 内容位置，可选值为 `left`、`center`、`right` | `DividerPosition` | `'center'` |
+| dashed | 是否显示为虚线 | `boolean` | `false` |
+| vertical | 是否显示为垂直分割线 | `boolean` | `false` |
+| hairline | 是否显示为 0.5px 细线 | `boolean` | `true` |
+| custom-class | 根节点自定义类名 | `string` | `''` |
+| custom-style | 根节点自定义样式 | `string` | `''` |
 
-## Slot
+## Slots
 
-| name    | 说明 | 最低版本 |
-| ------- | ---- | -------- |
-| default | 内容，仅在 `vertical` 为 `false` 时生效 | -        |
+| 名称 | 说明 | 参数 |
+| --- | --- | --- |
+| default | 分割线内容，仅在 `vertical` 为 `false` 时生效 | - |
 
 ## 外部样式类
 
-| 类名         | 说明       | 最低版本 |
-| ------------ | ---------- | -------- |
-| custom-class | 根节点样式 | -        |
+| 类名 | 说明 |
+| --- | --- |
+| custom-class | 根节点样式类 |

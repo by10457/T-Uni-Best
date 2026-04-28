@@ -1,311 +1,260 @@
 ---
-url: 'https://wot-ui.cn/component/tabs.md'
+url: 'https://v2.wot-ui.cn/component/tabs.md'
 ---
 
 # Tab 标签页
 
-标签页组件，用于在不同的内容区域之间进行切换。
+标签页组件，用于在不同内容区域之间进行切换。
 
-## 基本用法
+## 组件类型
 
-`v-model` 为绑定值，可以为 number 类型（选中的 tab 的下标）和 string 类型（标签名）。
+### 基本用法
 
-:::tip 提示
-当`v-model`为`number`类型时，`wd-tab`可以不必设置`name`。同时如果 value 超出了 tab 数量，会用 0 自动兜底。
-:::
+`v-model` 可以使用数字下标，也可以使用字符串名称。
 
 ```html
-<wd-tabs v-model="tab">
+<wd-tabs v-model="tab1" @change="handleChange">
   <block v-for="item in 4" :key="item">
     <wd-tab :title="`标签${item}`">
-      <view class="content">内容{{ item}}</view>
+      <view class="content">内容{{ tab1 + 1 }}</view>
     </wd-tab>
   </block>
 </wd-tabs>
 ```
 
-```typescript
-const tab = ref<number>(0)
-```
+```ts
+const tab1 = ref(0)
 
-```scss
-.content {
-  line-height: 120px;
-  text-align: center;
+function handleChange(event) {
+  console.log(event)
 }
 ```
 
-## name 匹配
+### name 匹配
 
-为`wd-tab`设置`name`作为唯一标识。
+为 `wd-tab` 设置 `name` 后，可通过字符串值匹配当前激活项。
 
 ```html
 <wd-tabs v-model="tab">
-  <block v-for="item in tabs" :key="item">
-    <wd-tab :title="`${item}`" :name="item">
-      <view class="content">内容{{ item }}</view>
-    </wd-tab>
-  </block>
+  <wd-tab v-for="item in tabs" :key="item" :title="item" :name="item">
+    <view class="content">内容{{ tab }}</view>
+  </wd-tab>
 </wd-tabs>
 ```
 
-```typescript
-const tabs = ref(['这', '是', '一', '个', '例子'])
-const tab = ref('例子')
+```ts
+const tabs = ref(['this', 'is', 'a', 'individual', 'example'])
+const tab = ref('a')
 ```
 
-```scss
-.content {
-  line-height: 120px;
-  text-align: center;
-}
-```
+### 使用徽标
 
-## 使用徽标1.4.0
-
-使用`bage-props`设置徽标属性，可以参考[Badge 组件的 props](/component/badge#attributes)。
+通过 `badge-props` 为标签添加徽标。
 
 ```html
-<wd-tabs v-model="tabWithBadge" @change="handleChange">
-  <wd-tab v-for="(item, index) in tabsWithBadge" :key="index" :title="`${item.title}`" :badge-props="item.badgeProps">
+<wd-tabs v-model="tabWithBadge">
+  <wd-tab v-for="(item, index) in tabsWithBadge" :key="index" :title="item.title" :badge-props="item.badgeProps">
     <view class="content">{{ item.title }}徽标</view>
   </wd-tab>
 </wd-tabs>
 ```
 
-```typescript
-const tabWithBadge = ref(0)
-const tabsWithBadge = ref([
-  {
-    title: '普通数值',
-    badgeProps: {
-      modelValue: 10,
-      right: '-8px'
-    }
-  },
-  {
-    title: '最大值',
-    badgeProps: {
-      modelValue: 100,
-      max: 99,
-      right: '-8px'
-    }
-  },
-  {
-    title: '点状',
-    badgeProps: {
-      isDot: true,
-      right: '-8px',
-      showZero: true
-    }
-  }
-])
-```
+## 组件状态
 
-## 自动调整底部条宽度
+### 粘性布局
 
-设置 `auto-line-width` 属性，自动调整底部条宽度为文本内容宽度。
+设置 `sticky` 开启吸顶布局，可配合 `offset-top` 控制吸顶偏移量。
 
 ```html
-<wd-tabs v-model="tab" @change="handleChange" auto-line-width>
-  <block v-for="item in tabs" :key="item">
-    <wd-tab :title="`${item}`" :name="item">
-      <view class="content">内容{{ tab }}</view>
-    </wd-tab>
-  </block>
+<wd-tabs v-model="tab2" sticky>
+  <wd-tab v-for="item in 4" :key="item" :title="`标签${item}`">
+    <view class="content">内容{{ tab2 + 1 }}</view>
+  </wd-tab>
 </wd-tabs>
 ```
 
-```typescript
-const tabs = ref(['Wot', 'Design', 'Uni'])
-const tab = ref('Design')
-```
+### 禁用 Tab
 
-## 粘性布局
-
-设置 `sticky` 属性，使用粘性布局。可以设置 `offset-top` 属性，当距离窗口顶部多少像素时，固定标签头。在`H5`端使用自定义导航栏时需要参考[sticky 的吸顶距离](/component/sticky.html#吸顶距离)进行配置。
+通过 `wd-tab` 的 `disabled` 属性禁用单个页签。
 
 ```html
-<wd-tabs v-model="tab" sticky>
-  <block v-for="item in 4" :key="item">
-    <wd-tab :title="`标签${item}`">
-      <view class="content">内容{{ item}}</view>
-    </wd-tab>
-  </block>
+<wd-tabs v-model="tab3">
+  <wd-tab v-for="item in 4" :key="item" :title="`标签${item}`" :disabled="item === 1">
+    <view class="content">内容{{ tab3 + 1 }}</view>
+  </wd-tab>
 </wd-tabs>
 ```
 
-## 禁用 Tab
+## 组件样式
 
-在 `wd-tab` 上设置 `disabled` 属性，禁用某个页签。
+### 底部条样式
+
+通过 `line-theme` 调整底部条表现，支持 `normal`、`text`、`underline`、`dot`。
 
 ```html
-<wd-tabs v-model="tab">
-  <block v-for="item in 4" :key="item">
-    <wd-tab :title="`标签${item}`" :disabled="item === 1">
-      <view class="content">内容{{ item }}</view>
-    </wd-tab>
-  </block>
+<wd-tabs v-model="tabLineTheme.normal" line-theme="normal">
+  <wd-tab v-for="item in 4" :key="item" :title="`normal ${item}`">
+    <view class="content">内容{{ item }}</view>
+  </wd-tab>
 </wd-tabs>
 ```
 
-## 点击事件
+## 特殊样式
 
-监听页签的点击事件.
+### 点击事件
+
+监听 `click` 获取当前点击的页签信息。
 
 ```html
-<wd-tabs v-model="tab" @click="handleClick">
-  <block v-for="item in 4" :key="item">
-    <wd-tab :title="`标签${item}`">
-      <view class="content">内容{{ item }}</view>
-    </wd-tab>
-  </block>
+<wd-tabs v-model="tab4" @click="handleClick" @change="handleChange">
+  <wd-tab v-for="item in 4" :key="item" :title="`标签${item}`">
+    <view class="content">内容{{ tab4 + 1 }}</view>
+  </wd-tab>
 </wd-tabs>
 ```
 
-## 手势滑动
+```ts
+function handleClick({ index, name }) {
+  console.log(index, name)
+}
+```
 
-设置 `swipeable` 属性，支持手势滑动。
+### 切换动画
+
+设置 `animated` 开启内容切换动画。
 
 ```html
-<wd-tabs v-model="tab" swipeable>
-  <block v-for="item in 4" :key="item">
-    <wd-tab :title="`标签${item}`">
-      <view class="content">内容{{ item }}</view>
-    </wd-tab>
-  </block>
+<wd-tabs v-model="tab8" animated>
+  <wd-tab v-for="item in 4" :key="item" :title="`标签${item}`">
+    <view class="content">内容{{ tab8 + 1 }}</view>
+  </wd-tab>
 </wd-tabs>
 ```
 
-## 切换动画
+### 手势滑动
 
-设置 `animated` 属性，开启切换标签内容时的过渡动画。
+设置 `swipeable` 开启手势滑动，常与 `animated` 组合使用。
 
 ```html
-<wd-tabs v-model="tab" animated>
-  <block v-for="item in 4" :key="item">
-    <wd-tab :title="`标签${item}`">
-      <view class="content">内容{{ item }}</view>
-    </wd-tab>
-  </block>
+<wd-tabs v-model="tab5" swipeable animated>
+  <wd-tab v-for="item in 4" :key="item" :title="`标签${item}`">
+    <view class="content">内容{{ tab5 + 1 }}</view>
+  </wd-tab>
 </wd-tabs>
 ```
 
-## 左对齐超出即可滚动 1.4.0
+### 超出滚动与导航地图
 
-`slidable`设置为`always`时，所有的标签会向左侧收缩对齐，超出即可滑动。
+标签数量超过 `slidable-num` 后可滑动，超过 `map-num` 后会显示导航地图；将 `slidable` 设为 `always` 时可始终左对齐滚动。
 
 ```html
-<wd-tabs v-model="tab" slidable="always">
-  <block v-for="item in 5" :key="item">
-    <wd-tab :title="`超大标签${item}`">
-      <view class="content">内容{{ item }}</view>
-    </wd-tab>
-  </block>
+<wd-tabs v-model="tab6">
+  <wd-tab v-for="item in 7" :key="item" :title="`标签${item}`">
+    <view class="content">内容{{ tab6 + 1 }}</view>
+  </wd-tab>
+</wd-tabs>
+
+<wd-tabs v-model="tab9" slidable="always">
+  <wd-tab v-for="item in 5" :key="item" :title="`超大标签${item}`">
+    <view class="content">内容{{ tab9 + 1 }}</view>
+  </wd-tab>
 </wd-tabs>
 ```
 
-***
+### 在弹出框中使用
 
-标签页在标签数大于等于 6 个时，可以滑动；当标签数大于等于 10 个时，将会显示导航地图，便于快速定位到某个标签。可以通过设置 `slidable-num` 修改可滑动的数量阈值；设置 `map-num` 修改显示导航地图的阈值。`slidable`设置为`always`时，所有的标签会向左侧收缩对齐，超出即可滑动。
+在微信小程序等场景中，弹出层打开后可调用 `updateLineStyle` 更新激活项样式。
 
-## 在弹出框中使用
+::: code-group
 
-微信小程序端，在弹出框中使用本组件时，需要调用 `updateLineStyle` 方法更新激活项样式，参见[常见问题](/guide/common-problems.html#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%8A%E4%BD%BF%E7%94%A8popup%E3%80%81actionsheet%E3%80%81dropdownitem%E7%AD%89%E5%BC%B9%E5%87%BA%E6%A1%86%E7%BB%84%E4%BB%B6%E5%8C%85%E8%A3%B9slider%E3%80%81tabs%E7%AD%89%E7%BB%84%E4%BB%B6%E6%97%B6-slider%E3%80%81tabs%E8%A1%A8%E7%8E%B0%E5%BC%82%E5%B8%B8)。
-
-```html
-<wd-button @click="handleClick">打开弹窗</wd-button>
-<wd-popup v-model="showPopup" position="bottom" @after-enter="handlePopupShow" closable custom-style="height: 200px;padding: 0 24rpx;">
-  <view class="title">在弹出框中使用</view>
-  <wd-tabs v-model="tab" ref="tabsRef">
-    <wd-tab v-for="item in tabs" :key="item" :title="`${item}`" :name="item">
-      <view class="content">内容{{ tab }}</view>
+```html [vue]
+<wd-button @click="handleOpenClick">打开弹窗</wd-button>
+<wd-popup v-model="showPopup" position="bottom" @after-enter="handlePopupShow" closable>
+  <wd-tabs v-model="tab10" ref="tabsRef">
+    <wd-tab v-for="item in tabs" :key="item" :title="item" :name="item">
+      <view class="content">内容{{ tab10 }}</view>
     </wd-tab>
   </wd-tabs>
 </wd-popup>
 ```
 
-```ts
-const tab = ref<number>(3)
-const tabs = ref(['这', '是', '一', '个', '例子'])
+```ts [ts]
+import type { TabsInstance } from '@/uni_modules/wot-ui/components/wd-tabs/types'
 
-const showPopup = ref(false) // 控制popup显示
-const tabsRef = ref<TabsInstance>() // 获取分段器实例
-/**
- * 点击按钮打开popup
- */
+const showPopup = ref(false)
+const tabsRef = ref<TabsInstance>()
+
 function handleOpenClick() {
   showPopup.value = true
 }
-/**
- * popup打开后更新分段器样式
- */
+
 function handlePopupShow() {
   tabsRef.value?.updateLineStyle(false)
 }
 ```
 
-```css
-.title {
-  display: flex;
-  font-size: 32rpx;
-  align-items: center;
-  justify-content: center;
-  padding: 24rpx 0;
-}
-```
+:::
 
 ## Tabs Attributes
 
-| 参数          | 说明                                                                                     | 类型            | 可选值   | 默认值 | 最低版本 |
-| ------------- | ---------------------------------------------------------------------------------------- | --------------- | -------- | ------ | -------- |
-| v-model       | 绑定值                                                                                   | string / number | -        | -      | -        |
-| slidable-num  | 可滑动的标签数阈值，`slidable`设置为`auto`时生效                                         | number          | -        | 6      | -        |
-| map-num       | 显示导航地图的标签数阈值                                                                 | number          | -        | 10     | -        |
-| map-title     | 导航地图标题                                                                             | string          | -        | -      | 1.4.0    |
-| sticky        | 粘性布局                                                                                 | boolean         | -        | false  | -        |
-| offset-top    | 粘性布局时距离窗口顶部距离                                                               | number          | -        | 0      | -        |
-| swipeable     | 开启手势滑动                                                                             | boolean         | -        | false  | -        |
-| autoLineWidth | 底部条宽度跟随文字，指定`lineWidth`时此选项不生效                                        | boolean         | -        | false  | 1.4.0    |
-| lineWidth     | 底部条宽度，单位像素                                                                     | number          | -        | 19     | -        |
-| lineHeight    | 底部条高度，单位像素                                                                     | number          | -        | 3      | -        |
-| color         | 文字颜色                                                                                 | string          | -        | -      | -        |
-| inactiveColor | 非活动标签文字颜色                                                                       | string          | -        | -      | -        |
-| animated      | 是否开启切换标签内容时的转场动画                                                         | boolean         | -        | false  | -        |
-| duration      | 切换动画过渡时间，单位毫秒                                                               | number          | -        | 300    | -        |
-| slidable      | 是否开启滚动导航                                                                         | TabsSlidable    | `always` | `auto` | 1.4.0    |
-| showScrollbar | 标签可滑动时是否显示滚动条                                                               | boolean         | -        | false  | 1.14.0 |
-| badge-props   | 自定义徽标的属性，传入的对象会被透传给 [Badge 组件的 props](/component/badge#attributes) | BadgeProps      | -        | -      | 1.4.0    |
-
-## Tab Attributes
-
-| 参数     | 说明                                                    | 类型    | 可选值 | 默认值 | 最低版本 |
-| -------- | ------------------------------------------------------- | ------- | ------ | ------ | -------- |
-| name     | 标签页名称                                              | string  | -      | -      | -        |
-| title    | 标题                                                    | string  | -      | -      | -        |
-| disabled | 禁用                                                    | boolean | -      | false  | -        |
-| lazy     | 延迟渲染，默认开启，开启`animated`后此选项始终为`false` | boolean | -      | true   | 1.4.0    |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| v-model | 当前激活项，可为索引或名称 | `number | string` | `0` |
+| slidable-num | 自动开启滚动的标签数量阈值 | `number` | `6` |
+| map-num | 显示导航地图的标签数量阈值 | `number` | `10` |
+| map-title | 导航地图标题 | `string` | - |
+| sticky | 是否开启粘性布局 | `boolean` | `false` |
+| offset-top | 吸顶偏移量 | `number` | `0` |
+| swipeable | 是否开启手势滑动 | `boolean` | `false` |
+| line-theme | 底部条样式，可选值为 `normal`、`text`、`underline`、`dot` | `TabsLineTheme` | `normal` |
+| line-width | 底部条宽度 | `number | string` | - |
+| line-height | 底部条高度 | `number | string` | - |
+| color | 激活项文字颜色 | `string` | `''` |
+| inactive-color | 非激活项文字颜色 | `string` | `''` |
+| animated | 是否开启切换动画 | `boolean` | `false` |
+| duration | 动画时长，单位毫秒 | `number` | `300` |
+| slidable | 是否开启滚动导航，可选值为 `auto`、`always` | `TabsSlidable` | `auto` |
+| show-scrollbar | 滚动时是否显示滚动条 | `boolean` | `false` |
+| custom-class | 根节点自定义类名 | `string` | `''` |
+| custom-style | 根节点自定义样式 | `string` | `''` |
 
 ## Tabs Events
 
-| 事件名称 | 说明                 | 参数                                                            | 最低版本 |
-| -------- | -------------------- | --------------------------------------------------------------- | -------- |
-| change   | 绑定值变化时触发     | event = { index, name },index 为 tab 下标，name 为 tab 绑定的值 | -        |
-| click    | 点击标题时触发       | event = { index, name },index 为 tab 下标，name 为 tab 绑定的值 | -        |
-| disabled | 点击禁用的标题时触发 | event = { index, name },index 为 tab 下标，name 为 tab 绑定的值 | -        |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| change | 激活项变化时触发 | `{ index, name }` |
+| click | 点击页签标题时触发 | `{ index, name }` |
+| disabled | 点击禁用页签时触发 | `{ index, name }` |
+| update:modelValue | 激活项变化时触发 | `number | string` |
 
-## Methods
+## Tabs Methods
 
-对外暴露函数
+| 方法名 | 说明 | 参数 | 返回值 |
+| --- | --- | --- | --- |
+| setActive | 设置激活项 | `(value: number \| string, init: boolean, setScroll: boolean)` | - |
+| scrollIntoView | 使选中项滚动到可视区域 | - | - |
+| updateLineStyle | 更新激活项底部条样式 | `(animation?: boolean)` | - |
 
-| 事件名称        | 说明                                                                                                | 参数                                                                   | 最低版本 |
-| --------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------- |
-| setActive       | 设置激活项，参数分别为：`value` 激活值，`init` 是否已初始化 ，`setScroll` 是否设置 scroll-view 滚动 | `(value: number \| string, init: boolean, setScroll: boolean) => void` | -        |
-| scrollIntoView  | 使选中项滚动到可视区域                                                                              | -                                                                      | -        |
-| updateLineStyle | 更新激活项边框线样式，参数`animation`用于是否开启动画，默认开启                                     | `(animation: boolean) => void`                                         | -        |
+## Tabs Slots
 
-## 外部样式类
+| 名称 | 说明 |
+| --- | --- |
+| default | Tab 内容 |
 
-| 类名         | 说明       | 最低版本 |
-| ------------ | ---------- | -------- |
-| custom-class | 根节点样式 | -        |
+## Tab Attributes
+
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| name | 标签唯一标识，默认取索引 | `number | string` | - |
+| title | 标签标题 | `string` | - |
+| disabled | 是否禁用 | `boolean` | `false` |
+| lazy | 是否懒加载内容 | `boolean` | `true` |
+| badge-props | 徽标属性，透传给 Badge 组件 | `Partial<BadgeProps>` | - |
+| custom-class | 根节点自定义类名 | `string` | `''` |
+| custom-style | 根节点自定义样式 | `string` | `''` |
+
+## Tab Slots
+
+| 名称 | 说明 |
+| --- | --- |
+| default | 页签内容 |

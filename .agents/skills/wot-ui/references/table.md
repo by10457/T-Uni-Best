@@ -1,492 +1,448 @@
 ---
-url: 'https://wot-ui.cn/component/table.md'
+url: 'https://v2.wot-ui.cn/component/table.md'
 ---
 
 # Table 表格
 
-用于展示多条结构类似的数据， 可对数据进行排序等操作。
+用于展示多条结构类似的数据，支持固定列、排序、合并单元格与虚拟滚动等能力。
 
-::: warning 提示
-`1.5.0`后取消了`height`的默认值，需要自行设置，最好设置为`number`类型，方便未来适配虚拟列表。
-:::
+## 组件类型
 
-## 基础用法
+### 基本用法
 
-通过`data`设置表格数据。
+通过 `data` 传入表格数据，通过多个 `wd-table-column` 定义列结构。`sort-method` 事件在点击可排序列表头时触发，`row-click` 事件在点击行时触发。
 
-::: details 基础用法
+::: code-group
 
-```html
-<wd-table :data="dataList" :height="400">
-  <wd-table-col prop="name" label="姓名"></wd-table-col>
-  <wd-table-col prop="school" label="求学之所"></wd-table-col>
-  <wd-table-col prop="major" label="专业"></wd-table-col>
+```html [template]
+<wd-table :data="dataList" :height="400" @sort-method="handleSort" @row-click="handleRowClick">
+  <wd-table-column prop="name" label="姓名" align="center" width="50%"></wd-table-column>
+  <wd-table-column prop="grade" label="分数" align="center" width="50%"></wd-table-column>
 </wd-table>
 ```
 
-```ts
-const dataList = reactive([
+```ts [script]
+import type { TableColumn } from '@/uni_modules/wot-ui/components/wd-table-column/types'
+import { ref } from 'vue'
+
+interface TableData {
+  name: string
+  school: string
+  major: string
+  gender: string
+  graduation: string
+  grade: number
+  compare: string
+  hobby: string
+}
+
+const dataList = ref<TableData[]>([
   {
-    name: '赵云',
-    school: '武汉市阳逻妇幼保健学院',
-    major: '计算机科学与技术专业'
-  },
-  {
-    name: '孔明',
-    school: '武汉市阳逻卧龙学院',
-    major: '计算机科学与技术专业'
+    name: '关羽',
+    school: '武汉市阳逻绿豆学院',
+    major: '计算机科学与技术专业',
+    gender: '男',
+    graduation: '2022年1月12日',
+    grade: 66,
+    compare: '48%',
+    hobby: '颜良文丑，以吾观之，如土鸡瓦犬耳。'
   },
   {
     name: '刘备',
     school: '武汉市阳逻编织学院',
-    major: '计算机科学与技术专业'
+    major: '计算机科学与技术专业',
+    gender: '男',
+    graduation: '2022年1月12日',
+    grade: 68,
+    compare: '21%',
+    hobby: '我得孔明，如鱼得水也'
   }
 ])
-```
 
-:::
+function handleSort(column: TableColumn) {
+  dataList.value = dataList.value.reverse()
+}
 
-## 固定列
-
-通过`fixed`设置表格列是否固定展示，默认`false`。
-:::warning 提示
-目前仅支持固定在左侧，且固定列组件的排列顺序要和实际想要展示的顺序相同。
-:::
-
-```html
-<wd-table :data="dataList" :height="400">
-  <wd-table-col prop="name" label="姓名" fixed></wd-table-col>
-  <wd-table-col prop="school" label="求学之所"></wd-table-col>
-  <wd-table-col prop="major" label="专业"></wd-table-col>
-</wd-table>
-```
-
-## 显示索引
-
-通过`index`设置表格是否显示序号列，默认为`false`。同时也可以传入对象对序号列进行配置，参数同`TableColumnProps`
-
-```html
-<wd-table :data="dataList" height="328px" :index="true" :height="400">
-  <wd-table-col prop="name" label="姓名" sortable></wd-table-col>
-  <wd-table-col prop="grade" label="分数" sortable></wd-table-col>
-  <wd-table-col prop="hobby" label="一言以蔽之" sortable :width="160"></wd-table-col>
-</wd-table>
-
-<wd-table :data="dataList" height="328px" :index="{ align: 'center', width: 200 }">
-  <wd-table-col prop="name" label="姓名" sortable align="center"></wd-table-col>
-  <wd-table-col prop="grade" label="分数" sortable align="center"></wd-table-col>
-  <wd-table-col prop="hobby" label="一言以蔽之" sortable :width="160"></wd-table-col>
-</wd-table>
-```
-
-## 斑马纹
-
-通过`stripe`设置表格是否展示斑马纹，默认`true`。
-
-```html
-<wd-table :data="dataList" :stripe="false" :height="400">
-  <wd-table-col prop="name" label="姓名"></wd-table-col>
-  <wd-table-col prop="school" label="求学之所"></wd-table-col>
-  <wd-table-col prop="major" label="专业"></wd-table-col>
-</wd-table>
-```
-
-## 边框
-
-通过`border`设置表格是否展示边框，默认`true`。
-
-```html
-<wd-table :data="dataList" :border="false" :height="400">
-  <wd-table-col prop="name" label="姓名"></wd-table-col>
-  <wd-table-col prop="school" label="求学之所"></wd-table-col>
-  <wd-table-col prop="major" label="专业"></wd-table-col>
-</wd-table>
-```
-
-## 表格高度
-
-通过`height`设置表格高度，设置高度后会自动固定表头。
-
-```html
-<wd-table :data="dataList" :height="400">
-  <wd-table-col prop="name" label="姓名"></wd-table-col>
-  <wd-table-col prop="school" label="求学之所"></wd-table-col>
-  <wd-table-col prop="major" label="专业"></wd-table-col>
-</wd-table>
-```
-
-## 排序事件
-
-当存在列参与排序时，点击会触发`sort-method`排序事件。
-
-```html
-<wd-table :data="dataList" @sort-method="handleSort" :height="400">
-  <wd-table-col prop="name" label="姓名"></wd-table-col>
-  <wd-table-col prop="school" label="求学之所" sortable></wd-table-col>
-  <wd-table-col prop="major" label="专业"></wd-table-col>
-</wd-table>
-```
-
-```ts
-function handleSort(e) {
-  console.log('这里是排序事件')
+function handleRowClick({ rowIndex }: { rowIndex: number }) {
+  console.log(rowIndex)
 }
 ```
 
-## 自定义列模板
+:::
 
-自定义列的显示内容，可组合其他组件使用。
-通过 `Scoped slot` 可以获取到 `row`, `index` 的数据，用法参考 demo。
+### 固定列
 
-::: details 查看自定义列模版 demo
+通过 `wd-table-column` 的 `fixed` 属性固定列。固定列仅支持固定在左侧，**固定列的书写顺序需要与最终展示顺序一致**。
 
 ```html
-<wd-table :data="dataList" @sort-method="handleSort" :height="400">
-  <wd-table-col prop="name" label="姓名" fixed="true" width="320rpx" sortable></wd-table-col>
-  <wd-table-col prop="grade" label="分数" width="220rpx" sortable>
-    <template #value="{row}">
-      <view class="custom-class">
+<wd-table :data="dataList" :height="400" @sort-method="handleSort" @row-click="handleRowClick">
+  <wd-table-column prop="name" label="姓名" fixed sortable align="center"></wd-table-column>
+  <wd-table-column prop="grade" label="分数" fixed sortable align="center"></wd-table-column>
+  <wd-table-column prop="hobby" label="一言一笔之" sortable :width="160"></wd-table-column>
+  <wd-table-column prop="school" label="求学之所" :width="180"></wd-table-column>
+  <wd-table-column prop="major" label="专业"></wd-table-column>
+  <wd-table-column prop="gender" label="性别"></wd-table-column>
+</wd-table>
+```
+
+### 显示索引
+
+通过 `index` 开启序号列。传入对象时，可配置索引列的宽度、对齐方式等属性（`prop` 除外的所有 `TableColumn` 属性）。
+
+```html
+<wd-table :data="dataList" :height="400" :index="{ align: 'center' }" @sort-method="handleSort">
+  <wd-table-column prop="name" label="姓名" sortable align="center"></wd-table-column>
+  <wd-table-column prop="grade" label="分数" sortable align="center"></wd-table-column>
+  <wd-table-column prop="hobby" label="一言一笔之" sortable :width="160"></wd-table-column>
+  <wd-table-column prop="school" label="求学之所" :width="180"></wd-table-column>
+  <wd-table-column prop="major" label="专业"></wd-table-column>
+  <wd-table-column prop="gender" label="性别"></wd-table-column>
+</wd-table>
+```
+
+### 自定义列模板
+
+`wd-table-column` 提供 `value` 作用域插槽，插槽参数为 `{ row, index }`，可拿到当前行数据与行索引，自定义单元格内容。
+
+```html
+<wd-table :data="dataList" :height="400" @sort-method="handleSort" @row-click="handleRowClick">
+  <wd-table-column prop="name" label="姓名" fixed sortable align="center"></wd-table-column>
+  <wd-table-column prop="grade" label="分数" fixed sortable align="center">
+    <template #value="{ row }">
+      <view>
         <text>{{ row.grade }}</text>
         <text>同比{{ row.compare }}</text>
       </view>
     </template>
-  </wd-table-col>
-  <wd-table-col prop="hobby" label="一言以蔽之" sortable></wd-table-col>
-  <wd-table-col prop="school" label="求学之所"></wd-table-col>
-  <wd-table-col prop="major" label="专业"></wd-table-col>
-  <wd-table-col prop="gender" label="性别"></wd-table-col>
-  <wd-table-col prop="graduation" label="学成时间"></wd-table-col>
+  </wd-table-column>
+  <wd-table-column prop="hobby" label="一言一笔之" sortable :width="160"></wd-table-column>
+  <wd-table-column prop="school" label="求学之所" :width="180"></wd-table-column>
+  <wd-table-column prop="major" label="专业"></wd-table-column>
+  <wd-table-column prop="gender" label="性别"></wd-table-column>
+  <wd-table-column prop="graduation" label="学成时间"></wd-table-column>
 </wd-table>
 ```
 
-```ts
-import { ref } from 'vue'
-interface TableData {
-  name: string
-  school: string
-  major: string
-  gender: string
-  graduation: string
-  grade: number
-  compare: string
-  hobby: string
-}
+### 合并单元格
 
-const dataList = ref<TableData[]>([
-  {
-    name: '张飞',
-    school: '武汉市阳逻杀猪学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 56,
-    compare: '10%',
-    hobby: '燕人张飞在此！'
-  },
-  {
-    name: '关羽',
-    school: '武汉市阳逻绿豆学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 66,
-    compare: '11%',
-    hobby: '颜良文丑，以吾观之，如土鸡瓦犬耳。'
-  },
-  {
-    name: '刘备',
-    school: '武汉市阳逻编织学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 45,
-    compare: '1%',
-    hobby: '我得空明，如鱼得水也'
-  },
-  {
-    name: '赵云',
-    school: '武汉市阳逻妇幼保健学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 69,
-    compare: '14%',
-    hobby: '子龙，子龙，世无双'
-  },
-  {
-    name: '孔明',
-    school: '武汉市阳逻卧龙学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 88,
-    compare: '21%',
-    hobby: '兴汉讨贼，克复中原'
-  },
-  {
-    name: '姜维',
-    school: '武汉市阳逻停水停电技术学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 87,
-    compare: '32%',
-    hobby: '我计不成，乃天命也！'
-  }
-])
+通过 `span-method` 控制单元格跨行跨列。回调接收 `{ row, column, rowIndex, columnIndex }` 四个参数，返回 `{ rowspan, colspan }` 或 `void`（等同 `{ rowspan: 1, colspan: 1 }`）。`rowspan`/`colspan` 为 `0` 表示该单元格被合并隐藏。
 
-/**
- * 排序
- * @param e
- */
-function handleSort(e) {
-  dataList.value = dataList.value.reverse()
-}
+::: code-group
+
+```html [template]
+<wd-table :data="spanData" :span-method="handleSpan" :height="400">
+  <wd-table-column prop="name" label="姓名" align="center"></wd-table-column>
+  <wd-table-column prop="grade" label="分数" align="center"></wd-table-column>
+  <wd-table-column prop="school" label="求学之所"></wd-table-column>
+  <wd-table-column prop="major" label="专业"></wd-table-column>
+</wd-table>
 ```
 
-```css
-.custom-class {
-  height: 80rpx;
-  width: 220rpx;
-  display: flex;
-  flex-direction: col;
-  align-items: center;
+```ts [script]
+import type { SpanMethodParams } from '@/uni_modules/wot-ui/components/wd-table/types'
+import { computed } from 'vue'
+
+const spanData = computed(() => dataList.value.slice(0, 5))
+
+function handleSpan({ rowIndex, columnIndex }: SpanMethodParams) {
+  if (rowIndex === 0 && columnIndex === 0) {
+    return { rowspan: 1, colspan: 2 }
+  }
+  if (rowIndex === 0 && columnIndex === 1) {
+    return { rowspan: 0, colspan: 0 }
+  }
+  if (rowIndex === 2 && columnIndex === 0) {
+    return { rowspan: 2, colspan: 1 }
+  }
+  if (rowIndex === 3 && columnIndex === 0) {
+    return { rowspan: 0, colspan: 0 }
+  }
 }
 ```
 
 :::
 
-## 不固定表头结合分页器使用
+### 合并自定义列
 
-使用`pagination`组件，通过`v-model`绑定分页器当前页码，通过`total`设置分页器总条数，实现分页加载效果。
+`span-method` 可以与 `value` 插槽组合使用，对自定义渲染的列同样生效。
 
-设置`fixed-header`为`false`，取消固定表头。
+::: code-group
 
-::: details 查看结合分页器使用 demo
-
-```html
-<wd-table :data="paginationData" :height="400" :fixed-header="false">
-  <wd-table-col prop="name" label="姓名" fixed align="center"></wd-table-col>
-  <wd-table-col prop="grade" label="分数" fixed align="center"></wd-table-col>
-  <wd-table-col prop="hobby" label="一言以蔽之" :width="160"></wd-table-col>
-  <wd-table-col prop="school" label="求学之所" :width="180"></wd-table-col>
-  <wd-table-col prop="major" label="专业"></wd-table-col>
-  <wd-table-col prop="gender" label="性别"></wd-table-col>
+```html [template]
+<wd-table :data="spanData" :span-method="handleCustomSpan" :height="400">
+  <wd-table-column prop="name" label="姓名" fixed sortable align="center"></wd-table-column>
+  <wd-table-column prop="grade" label="分数" align="center">
+    <template #value="{ row }">
+      <view>
+        <text>{{ row.grade }}</text>
+        <text>同比{{ row.compare }}</text>
+      </view>
+    </template>
+  </wd-table-column>
+  <wd-table-column prop="hobby" label="一言一笔之" :width="160"></wd-table-column>
+  <wd-table-column prop="school" label="求学之所" :width="180"></wd-table-column>
+  <wd-table-column prop="major" label="专业"></wd-table-column>
 </wd-table>
-<wd-pagination custom-style="border: 1px solid #ececec;border-top:none" v-model="page" :total="total"></wd-pagination>
 ```
 
-```ts
-interface TableData {
-  name: string
-  school: string
-  major: string
-  gender: string
-  graduation: string
-  grade: number
-  compare: string
-  hobby: string
-}
-
-const dataList = ref<TableData[]>([
-  {
-    name: '关羽',
-    school: '武汉市阳逻绿豆学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 66,
-    compare: '48%',
-    hobby: '颜良文丑，以吾观之，如土鸡瓦犬耳。'
-  },
-  {
-    name: '刘备',
-    school: '武汉市阳逻编织学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 68,
-    compare: '21%',
-    hobby: '我得空明，如鱼得水也'
-  },
-  {
-    name: '赵云',
-    school: '武汉市阳逻妇幼保健学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 91,
-    compare: '12%',
-    hobby: '子龙，子龙，世无双'
-  },
-  {
-    name: '赵云',
-    school: '武汉市阳逻妇幼保健学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 91,
-    compare: '12%',
-    hobby: '子龙，子龙，世无双'
-  },
-  {
-    name: '孔明',
-    school: '武汉市阳逻卧龙学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 99,
-    compare: '18%',
-    hobby: '兴汉讨贼，克复中原'
-  },
-  {
-    name: '赵云',
-    school: '武汉市阳逻妇幼保健学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 36,
-    compare: '48%',
-    hobby: '子龙，子龙，世无双'
-  },
-  {
-    name: '关羽',
-    school: '武汉市阳逻绿豆学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 66,
-    compare: '48%',
-    hobby: '颜良文丑，以吾观之，如土鸡瓦犬耳。'
-  },
-  {
-    name: '刘备',
-    school: '武汉市阳逻编织学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 68,
-    compare: '21%',
-    hobby: '我得空明，如鱼得水也'
-  },
-  {
-    name: '赵云',
-    school: '武汉市阳逻妇幼保健学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 91,
-    compare: '12%',
-    hobby: '子龙，子龙，世无双'
-  },
-  {
-    name: '孔明',
-    school: '武汉市阳逻卧龙学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 99,
-    compare: '18%',
-    hobby: '兴汉讨贼，克复中原'
-  },
-  {
-    name: '赵云',
-    school: '武汉市阳逻妇幼保健学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 36,
-    compare: '48%',
-    hobby: '子龙，子龙，世无双'
-  },
-  {
-    name: '关羽',
-    school: '武汉市阳逻绿豆学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 66,
-    compare: '48%',
-    hobby: '颜良文丑，以吾观之，如土鸡瓦犬耳。'
-  },
-  {
-    name: '刘备',
-    school: '武汉市阳逻编织学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 68,
-    compare: '21%',
-    hobby: '我得空明，如鱼得水也'
-  },
-  {
-    name: '赵云',
-    school: '武汉市阳逻妇幼保健学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 91,
-    compare: '12%',
-    hobby: '子龙，子龙，世无双'
-  },
-  {
-    name: '孔明',
-    school: '武汉市阳逻卧龙学院',
-    major: '计算机科学与技术专业',
-    gender: '男',
-    graduation: '2022年1月12日',
-    grade: 99,
-    compare: '18%',
-    hobby: '兴汉讨贼，克复中原'
+```ts [script]
+function handleCustomSpan({ rowIndex, columnIndex }: SpanMethodParams) {
+  if (rowIndex === 0 && columnIndex === 0) {
+    return { rowspan: 2, colspan: 1 }
   }
-])
-const page = ref<number>(1)
-const pageSize = ref<number>(10)
+  if (rowIndex === 1 && columnIndex === 0) {
+    return { rowspan: 0, colspan: 0 }
+  }
+  if (rowIndex === 3 && columnIndex === 2) {
+    return { rowspan: 1, colspan: 2 }
+  }
+  if (rowIndex === 3 && columnIndex === 3) {
+    return { rowspan: 0, colspan: 0 }
+  }
+}
+```
 
-const total = ref<number>(dataList.value.length)
+:::
+
+### 固定列合并
+
+固定列场景下同样支持单元格合并，`span-method` 与 `fixed` 可同时使用。
+
+::: code-group
+
+```html [template]
+<wd-table :data="spanData" :span-method="handleFixedSpan" :height="400">
+  <wd-table-column prop="name" label="姓名" fixed align="center"></wd-table-column>
+  <wd-table-column prop="grade" label="分数" align="center"></wd-table-column>
+  <wd-table-column prop="hobby" label="一言一笔之" :width="160"></wd-table-column>
+  <wd-table-column prop="school" label="求学之所" :width="180"></wd-table-column>
+  <wd-table-column prop="major" label="专业"></wd-table-column>
+  <wd-table-column prop="gender" label="性别"></wd-table-column>
+</wd-table>
+```
+
+```ts [script]
+function handleFixedSpan({ rowIndex, columnIndex }: SpanMethodParams) {
+  if (rowIndex === 1 && columnIndex === 1) {
+    return { rowspan: 2, colspan: 1 }
+  }
+  if (rowIndex === 2 && columnIndex === 1) {
+    return { rowspan: 0, colspan: 0 }
+  }
+  if (rowIndex === 3 && columnIndex === 3) {
+    return { rowspan: 1, colspan: 2 }
+  }
+  if (rowIndex === 3 && columnIndex === 4) {
+    return { rowspan: 0, colspan: 0 }
+  }
+}
+```
+
+:::
+
+### 固定表头合并
+
+设置 `height` 后表头默认固定（`fixed-header` 默认为 `true`），此时仍可通过 `span-method` 合并表体单元格。
+
+::: code-group
+
+```html [template]
+<wd-table :data="dataList" :span-method="handleHeaderSpan" :height="300">
+  <wd-table-column prop="name" label="姓名" align="center"></wd-table-column>
+  <wd-table-column prop="grade" label="分数" align="center"></wd-table-column>
+  <wd-table-column prop="school" label="求学之所"></wd-table-column>
+  <wd-table-column prop="major" label="专业"></wd-table-column>
+</wd-table>
+```
+
+```ts [script]
+function handleHeaderSpan({ rowIndex, columnIndex }: SpanMethodParams) {
+  if (rowIndex === 0 && columnIndex === 2) {
+    return { rowspan: 2, colspan: 1 }
+  }
+  if (rowIndex === 1 && columnIndex === 2) {
+    return { rowspan: 0, colspan: 0 }
+  }
+  if (rowIndex === 4 && columnIndex === 3) {
+    return { rowspan: 2, colspan: 1 }
+  }
+  if (rowIndex === 5 && columnIndex === 3) {
+    return { rowspan: 0, colspan: 0 }
+  }
+}
+```
+
+:::
+
+### 虚拟滚动
+
+大数据量场景可开启 `virtual`，通过 `row-height` 指定固定行高（必填），`buffer` 控制可视区域上下额外预渲染行数。
+
+::: code-group
+
+```html [template]
+<wd-table :data="virtualData" :height="400" virtual :row-height="50">
+  <wd-table-column prop="index" label="序号" width="80" align="center"></wd-table-column>
+  <wd-table-column prop="name" label="姓名" width="120" align="center"></wd-table-column>
+  <wd-table-column prop="score" label="分数" width="100" align="center"></wd-table-column>
+  <wd-table-column prop="remark" label="备注" width="200"></wd-table-column>
+</wd-table>
+```
+
+```ts [script]
+const virtualData = Array.from({ length: 10000 }, (_, index) => ({
+  index: index + 1,
+  name: `蜀兵${index + 1}号`,
+  score: Math.floor(Math.random() * 100),
+  remark: `这是蜀兵${index + 1}号的备注信息`
+}))
+```
+
+:::
+
+## 组件状态
+
+### 无边框
+
+设置 `border` 为 `false` 可隐藏单元格边框。
+
+```html
+<wd-table :data="dataList" :height="400" :border="false">
+  <wd-table-column prop="name" label="姓名" align="center" width="50%"></wd-table-column>
+  <wd-table-column prop="grade" label="分数" align="center" width="50%"></wd-table-column>
+</wd-table>
+```
+
+### 无斑马纹
+
+设置 `stripe` 为 `false` 可关闭奇偶行区分背景。
+
+```html
+<wd-table :data="dataList" :height="400" :stripe="false">
+  <wd-table-column prop="name" label="姓名" align="center" width="50%"></wd-table-column>
+  <wd-table-column prop="grade" label="分数" align="center" width="50%"></wd-table-column>
+</wd-table>
+```
+
+### 不显示表头
+
+设置 `show-header` 为 `false` 可隐藏表头区域。
+
+```html
+<wd-table :data="dataList" :height="400" :show-header="false">
+  <wd-table-column prop="name" label="姓名" align="center" width="50%"></wd-table-column>
+  <wd-table-column prop="grade" label="分数" align="center" width="50%"></wd-table-column>
+</wd-table>
+```
+
+## 特殊样式
+
+### 不固定表头结合分页器
+
+将 `fixed-header` 设为 `false` 后，表头随表体一起滚动，可将表格与分页器组合展示。
+
+::: code-group
+
+```html [template]
+<wd-table :data="paginationData" :fixed-header="false">
+  <wd-table-column prop="name" label="姓名" fixed align="center"></wd-table-column>
+  <wd-table-column prop="grade" label="分数" fixed align="center"></wd-table-column>
+  <wd-table-column prop="hobby" label="一言一笔之" :width="160"></wd-table-column>
+  <wd-table-column prop="school" label="求学之所" :width="180"></wd-table-column>
+  <wd-table-column prop="major" label="专业"></wd-table-column>
+  <wd-table-column prop="gender" label="性别"></wd-table-column>
+</wd-table>
+<wd-pagination v-model="page" :total="total"></wd-pagination>
+```
+
+```ts [script]
+import { computed, ref } from 'vue'
+
+const page = ref(1)
+const pageSize = ref(10)
+const total = ref(dataList.value.length)
 
 const paginationData = computed(() => {
-  // 按页码和每页条数截取数据
   return dataList.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value)
 })
 ```
 
 :::
 
-## Attributes
+## Table Attributes
 
-| 参数            | 说明                                                | 类型                         | 可选值 | 默认值 | 最低版本         |
-| --------------- | --------------------------------------------------- | ---------------------------- | ------ | ------ | ---------------- |
-| data            | 显示的数据                                          | Array                        | -      | -      | 0.0.39           |
-| border          | 是否带有边框                                        | boolean                      | -      | true   | 0.0.39           |
-| stripe          | 是否为斑马纹表                                      | boolean                      | -      | true   | 0.0.39           |
-| height          | Table 的高度，无默认值，设置后自动开启固定表头。        | `number / string`            | -      | -      | 0.0.39           |
-| rowHeight       | 行高                                                | `number / string`            | -      | 50     | 0.0.39           |
-| showHeader      | 是否显示表头                                        | boolean                      | -      | true   | 0.0.39           |
-| ellipsis        | 是否超出 2 行隐藏                                   | boolean                      | -      | true   | 0.0.39           |
-| index           | 是否显示索引列，可传入`boolean`也可传入 column 配置 | `boolean / TableColumnProps` |        | false  | 1.2.19           |
-| fixed-header    | 是否固定表头，需要结合`height`才可以实现固定表头的效果。      | boolean                      | -      | true   | 1.5.0 |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| data | 表格数据源（必填） | Record\<string, any>\[] | - |
+| border | 是否显示边框 | `boolean` | `true` |
+| stripe | 是否显示斑马纹 | `boolean` | `true` |
+| height | 表格最大高度，设置后可纵向滚动；开启虚拟滚动时必须传入数值类型 | string | number | - |
+| show-header | 是否显示表头 | `boolean` | `true` |
+| ellipsis | 单元格文本是否超出两行后省略 | `boolean` | `false` |
+| index | 是否显示索引列，传入对象时可自定义索引列配置（`prop` 除外） | boolean | Omit\<Partial\<TableColumnProps>, 'prop'> | `false` |
+| fixed-header | 是否固定表头（使用 CSS sticky 定位） | `boolean` | `true` |
+| span-method | 合并单元格方法，回调参数为 `SpanMethodParams`，返回 `{ rowspan, colspan }` 或 `void`（等同 `{ rowspan: 1, colspan: 1 }`） | `SpanMethod` | - |
+| virtual | 是否开启虚拟滚动，大数据量时只渲染可视区域行 | `boolean` | `false` |
+| row-height | 虚拟滚动固定行高，开启 `virtual` 时必须传入 | `number` | `44` |
+| buffer | 虚拟滚动可视区域上下各额外预渲染行数 | `number` | `5` |
+| custom-class | 根节点自定义类名 | `string` | `''` |
+| custom-style | 根节点自定义样式 | `string` | `''` |
 
-## Events
+## Table Events
 
-| 事件名称    | 说明                                                               | 参数                             | 最低版本 |
-| ----------- | ------------------------------------------------------------------ | -------------------------------- | -------- |
-| sort-method | 指定数据按照哪个属性进行排序，仅当 sortable 设置为 true 的时候有效 | `TableColumn：当前点击列数据`    | 0.0.39   |
-| row-click   | 当某一行被点击时会触发该事件                                       | `{rowIndex:number} 点击行的下标` | 0.0.39   |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| sort-method | 点击可排序列表头后触发 | `column: TableColumn` |
+| row-click | 点击表格行时触发 | `{ rowIndex: number }` |
+
+## Table Slots
+
+| 名称 | 说明 |
+| --- | --- |
+| default | 表格列内容，通常放置一个或多个 `wd-table-column` |
 
 ## TableColumn Attributes
 
-| 参数     | 说明                        | 类型            | 可选值              | 默认值 | 最低版本 |
-| -------- | --------------------------- | --------------- | ------------------- | ------ | -------- |
-| prop     | 字段名称,对应列内容的字段名 | string          | -                   | -      | 0.0.39   |
-| label    | 显示的标题                  | string          | -                   | -      | 0.0.39   |
-| width    | 对应列的宽度，单位为 px     | number / string | -                   | 100    | 0.0.39   |
-| sortable | 是否开启列排序              | boolean         | -                   | false  | 0.0.39   |
-| fixed    | 是否固定本列                | boolean         | -                   | false  | 0.0.39   |
-| align    | 列的对齐方式                | AlignType       | left, center, right | left   | 0.0.39   |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| prop | 列对应的数据字段名（必填） | `string` | - |
+| label | 列标题（必填） | `string` | - |
+| width | 列宽度 | string | number | `100` |
+| sortable | 是否开启排序 | `boolean` | `false` |
+| fixed | 是否固定当前列，仅支持固定在左侧 | `boolean` | `false` |
+| align | 内容对齐方式，可选值为 `left`、`center`、`right` | `AlignType` | `left` |
 
-## TableColumn Slot
+## TableColumn Slots
 
-| name  | 说明                                   | 参数                             | 最低版本 |
-| ----- | -------------------------------------- | -------------------------------- | -------- |
-| value | 自定义列的内容，1.2.16 新增`index`参数 | `{ row: Object, index: number }` | 0.1.22   |
+| 名称 | 说明 |
+| --- | --- |
+| value | 自定义单元格内容，插槽参数为 `{ row: Record<string, any>, index: number }` |
+
+## 类型定义
+
+```ts
+import type { SpanMethodParams, SpanMethodResult, SpanMethod } from '@/uni_modules/wot-ui/components/wd-table/types'
+import type { TableColumn, AlignType } from '@/uni_modules/wot-ui/components/wd-table-column/types'
+
+/** span-method 回调参数 */
+interface SpanMethodParams {
+  /** 当前行的数据对象 */
+  row: Record<string, any>
+  /** 当前列的配置 */
+  column: { prop: string; label: string }
+  /** 当前行索引，从 0 开始 */
+  rowIndex: number
+  /** 当前列索引，从 0 开始 */
+  columnIndex: number
+}
+
+/** span-method 返回值 */
+interface SpanMethodResult {
+  /** 合并行数，0 表示该单元格被隐藏，大于 1 表示向下合并 N 行 */
+  rowspan: number
+  /** 合并列数，0 表示该单元格被隐藏，大于 1 表示向右合并 N 列 */
+  colspan: number
+}
+
+type SpanMethod = (params: SpanMethodParams) => SpanMethodResult | void
+```

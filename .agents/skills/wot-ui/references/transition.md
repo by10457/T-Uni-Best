@@ -1,40 +1,54 @@
 ---
-url: 'https://wot-ui.cn/component/transition.md'
+url: 'https://v2.wot-ui.cn/component/transition.md'
 ---
 
 # Transition 动画
 
 用于在元素进入或离开时应用过渡效果。
 
-## 基本用法
+## 组件类型
 
-将元素包裹在 `wd-transition` 标签中，并设置 `show` 来切换显隐，设置 `name` 选择动画。
+### 淡入淡出
+
+通过 `name` 指定淡入淡出相关动画，适合提示层、浮层、局部内容切换等场景。
 
 ```html
-<wd-transition :show="show" name="fade">内容</wd-transition>
+<wd-transition :show="show" name="fade">
+  <view>内容</view>
+</wd-transition>
 ```
 
-## 动画类型
+### 滑动动画
 
-`wd-transition` 内置了常用的动画，如 `fade`、`slide`、`zoom-in` 等。
+内置 `slide-up`、`slide-down`、`slide-left`、`slide-right` 四种滑动方向。
 
 ```html
-<wd-transition :show="show" name="slide">内容</wd-transition>
+<wd-transition :show="show" name="slide-up">
+  <view>内容</view>
+</wd-transition>
 ```
 
-## 动画时间
+### 缩放动画
 
-可以通过 `duration` 设置动画执行时间，动画拆分为 `enter` 进入动画和 `leave` 离开动画，`duration` 可以分别设置进入动画执行时间和离开动画执行时间： `{ enter: 300, leave: 500 }`。
-
-## 自定义动画
-
-可以通过 `enter-class`、`enter-active-class`、`enter-to-class`、`leave-class`、`leave-active-class`、`leave-to-class` 设置自定义动画的类名。
-
-在动画进入时，会给标签设置 `enter-class` 和 `enter-active-class` 样式，在下一帧切换为 `enter-to-class` 和 `enter-active-class` 样式，因此进入动画是从 `enter-class` 样式切换为 `enter-to-class` 样式状态，`enter-active-class` 设置 `transition` 相关属性。
-
-在动画离开时，会给标签设置 `leave-class` 和 `leave-active-class` 样式，在下一帧切换为 `leave-to-class` 和 `leave-active-class` 样式，因此离开动画是从 `leave-class` 样式切换为 `leave-to-class` 样式状态，`leave-active-class` 设置 `transition` 相关属性。
+内置 `zoom-in` 与 `zoom-out` 两种缩放动画。
 
 ```html
+<wd-transition :show="show" name="zoom-in">
+  <view>内容</view>
+</wd-transition>
+```
+
+## 特殊样式
+
+### 自定义动画
+
+通过 `enter-class`、`enter-active-class`、`enter-to-class`、`leave-class`、`leave-active-class`、`leave-to-class` 自定义进入和离开动画类名。
+
+`duration` 支持数字，也支持分别配置进入和离开时长，例如 `{ enter: 700, leave: 1000 }`。
+
+::: code-group
+
+```html [vue]
 <wd-transition
   :show="customShow"
   :duration="{ enter: 700, leave: 1000 }"
@@ -48,10 +62,7 @@ url: 'https://wot-ui.cn/component/transition.md'
 />
 ```
 
-```scss
-:deep(button) {
-  margin: 0 10px 10px 0;
-}
+```scss [scss]
 :deep(.block) {
   position: fixed;
   left: 50%;
@@ -66,77 +77,69 @@ url: 'https://wot-ui.cn/component/transition.md'
 :deep(.custom-leave-active) {
   transition-property: background, transform;
 }
+
 :deep(.custom-enter) {
   transform: translate3d(-100px, -100px, 0) rotate(-180deg);
   background: #ff0000;
 }
+
 :deep(.custom-leave-to) {
   transform: translate3d(100px, 100px, 0) rotate(180deg);
   background: #ff0000;
 }
 ```
 
+:::
+
 ## Attributes
 
-| 参数         | 说明         | 类型             | 可选值         | 默认值  | 最低版本 |
-|--------------|--------------|------------------|----------------|---------|----------|
-| show         | 是否展示组件 | boolean          | -              | -       | -        |
-| name         | 动画类型     | string / array   | `TransitionName` | -       | -        |
-| duration     | 动画执行时间 | number / object / boolean | -              | 300(ms) | -        |
-| custom-style | 自定义样式   | string           | -              | -       | -        |
-| custom-class | 自定义根节点样式类 | string     | -              | -       | -        |
-| lazy-render  | 弹层内容懒渲染 | boolean        | -              | false   | -        |
-| destroy      | 是否在动画结束时销毁子节点 | boolean | -              | true    | -        |
-| enter-class  | 进入过渡的开始状态 | string     | -              | -       | -        |
-| enter-active-class | 进入过渡的激活状态 | string | -              | -       | -        |
-| enter-to-class | 进入过渡的结束状态 | string   | -              | -       | -        |
-| leave-class  | 离开过渡的开始状态 | string     | -              | -       | -        |
-| leave-active-class | 离开过渡的激活状态 | string | -              | -       | -        |
-| leave-to-class | 离开过渡的结束状态 | string   | -              | -       | -        |
-| disable-touch-move | 是否阻止触摸滚动 | boolean | -              | false   | 1.11.0 |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| show | 是否展示组件 | `boolean` | `false` |
+| duration | 动画执行时间，支持统一时长或分别设置进入、离开时长 | number | boolean | Record\<string, number> | `300` |
+| lazy-render | 是否在首次展示时再渲染内容 | `boolean` | `false` |
+| name | 动画类型，可选值为 `fade`、`fade-up`、`fade-down`、`fade-left`、`fade-right`、`slide-up`、`slide-down`、`slide-left`、`slide-right`、`zoom-in`、`zoom-out`，也支持数组组合多个动画 | TransitionName | TransitionName\[] | - |
+| destroy | 是否在动画结束后通过 `display: none` 隐藏内容 | `boolean` | `true` |
+| enter-class | 进入过渡的开始状态类名 | `string` | `''` |
+| enter-active-class | 进入过渡的激活状态类名 | `string` | `''` |
+| enter-to-class | 进入过渡的结束状态类名 | `string` | `''` |
+| leave-class | 离开过渡的开始状态类名 | `string` | `''` |
+| leave-active-class | 离开过渡的激活状态类名 | `string` | `''` |
+| leave-to-class | 离开过渡的结束状态类名 | `string` | `''` |
+| disable-touch-move | 是否阻止触摸滚动 | `boolean` | `false` |
+| custom-style | 自定义根节点样式 | `string` | `''` |
+| custom-class | 自定义根节点样式类 | `string` | `''` |
 
 ### TransitionName 动画类型
 
-| 名称        | 说明         | 最低版本 |
-|-------------|--------------|----------|
-| fade        | 淡入淡出     | -        |
-| fade-down   | 向下淡入淡出 | -        |
-| fade-left   | 向左淡入淡出 | -        |
-| fade-right  | 向右淡入淡出 | -        |
-| fade-up     | 向上淡入淡出 | -        |
-| slide-down  | 向下滑动     | -        |
-| slide-left  | 向左滑动     | -        |
-| slide-right | 向右滑动     | -        |
-| slide-up    | 向上滑动     | -        |
-| zoom-in     | 缩放进入     | -        |
-| zoom-out    | 缩放离开     | -        |
+| 名称 | 说明 |
+| --- | --- |
+| fade | 淡入淡出 |
+| fade-down | 向下淡入淡出 |
+| fade-left | 向左淡入淡出 |
+| fade-right | 向右淡入淡出 |
+| fade-up | 向上淡入淡出 |
+| slide-down | 向下滑动 |
+| slide-left | 向左滑动 |
+| slide-right | 向右滑动 |
+| slide-up | 向上滑动 |
+| zoom-in | 缩放进入 |
+| zoom-out | 缩放离开 |
 
 ## Events
 
-| 事件名称         | 说明       | 参数 | 最低版本 |
-| ---------------- | ---------- | ---- | -------- |
-| before-enter | 进入前触发 | -    | -        |
-| enter       | 进入时触发 | -    | -        |
-| after-enter  | 进入后触发 | -    | -        |
-| before-leave | 离开前触发 | -    | -        |
-| leave       | 离开时触发 | -    | -        |
-| after-leave  | 离开后触发 | -    | -        |
-| click       | 点击时触发 | -    | -        |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| before-enter | 进入前触发 | - |
+| enter | 进入时触发 | - |
+| after-enter | 进入后触发 | - |
+| before-leave | 离开前触发 | - |
+| leave | 离开时触发 | - |
+| after-leave | 离开后触发 | - |
+| click | 点击组件时触发 | - |
 
 ## Slots
 
-| 插槽名称 | 说明 | 最低版本 |
-|---------|------|---------|
-| default | 需要应用动画效果的内容 | - |
-
-## 外部样式类
-
-| 类名               | 说明                                                                                                                   | 最低版本 |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------- | -------- |
-| custom-class       | 根节点样式                                                                                                             | -        |
-| enter-class        | 定义进入过渡的开始状态，在元素被插入前生效，在插入的下一帧移除                                                         | -        |
-| enter-active-class | 定义动画执行期间的状态，在整个进入动画中应用；在元素被插入前生效，在动画结束后移除；可以定义 transition 相关属性       | -        |
-| enter-to-class     | 定义进入过渡的结束状态，在元素被插入的下一帧生效，在动画结束后移除                                                     | -        |
-| leave-class        | 定义离开过渡的开始状态，在离开动画触发时立即生效，在下一帧移除                                                         | -        |
-| leave-active-class | 定义动画执行期间的状态，在整个离开动画中应用；在离开动画触发时立即生效，在动画结束后移除；可以定义 transition 相关属性 | -        |
-| leave-to-class     | 定义离开过渡的结束状态，在离开动画触发时的下一帧生效，在动画结束后移除                                                 | -        |
+| 名称 | 说明 |
+| --- | --- |
+| default | 需要应用动画效果的内容 |

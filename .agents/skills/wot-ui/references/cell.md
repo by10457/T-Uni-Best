@@ -1,56 +1,23 @@
 ---
-url: 'https://wot-ui.cn/component/cell.md'
+url: 'https://v2.wot-ui.cn/component/cell.md'
 ---
 
 # Cell 单元格
 
-单元格为列表中的单个展示项。
+单元格用于信息展示与轻交互，可独立使用，也可通过 `wd-cell-group` 统一管理布局与样式。
 
-## 基本用法
+## 组件类型
 
-`Cell` 可以单独使用，也可以和 `CellGroup` 组合使用。
+### 基本用法
 
 ```html
-<wd-cell title="标题文字" value="内容" />
-
 <wd-cell-group>
   <wd-cell title="标题文字" value="内容" />
   <wd-cell title="标题文字" label="描述信息" value="内容" />
 </wd-cell-group>
 ```
 
-## 图标设置
-
-设置 `icon` 属性，值可以为 Icon 章节中的图标名，也可以通过 icon 的 slot 自定义图标位置。
-
-> 自定义图标，如果有多个 cell，需保证所有图标的宽度是一致的且垂直居中。使用 icon 属性且为 Icon 章节的字体图标，则宽度会自动一致且垂直居中；cell 图标的大小是宽 16px，高 16px，large 尺寸图标宽度 18px，高度 18px，距离右侧文字距离 15px。如果使用插槽，可以通过`custom-icon-class`进行设置。
-
-```html
-<wd-cell-group>
-  <wd-cell title="标题文字" value="内容" icon="setting" />
-  <wd-cell title="标题文字" value="内容">
-    <template #icon>
-      <view class="cell-icon"></view>
-    </template>
-  </wd-cell>
-</wd-cell-group>
-```
-
-```scss
-.cell-icon {
-  display: block;
-  box-sizing: border-box;
-  width: 16px;
-  height: 16px;
-  margin-right: 4px;
-  background: url('https://img10.360buyimg.com/jmadvertisement/jfs/t1/71075/7/3762/1820/5d1f26d1E0d600b9e/a264c901943080ac.png') no-repeat;
-  background-size: cover;
-}
-```
-
-## 分组标题
-
-可以在 `cell-group` 上设置 `title` 和 `value` 属性。
+### 分组标题
 
 ```html
 <wd-cell-group title="交易管理" value="内容">
@@ -59,155 +26,150 @@ url: 'https://wot-ui.cn/component/cell.md'
 </wd-cell-group>
 ```
 
-## 单元格大小
+## 组件状态
 
-通过设置 `size` 修改单元格大小，将 `size` 设置为 'large' 时左侧标题字号为 16px。
+### 点击反馈
 
 ```html
-<wd-cell size="large" title="标题文字" value="内容" />
+<wd-cell title="标题文字" value="内容" clickable @click="showToast" />
 ```
 
-## 展示边框线
+## 组件变体
 
-在 `wd-cell-group` 上设置 `border` 属性，会给每个 cell 加上边框，最后一个 cell 则不展示边框，其他具有 `cell` 类型的表单组件也支持边框展示，如 input、picker。
+### Placeholder
 
 ```html
-<wd-cell-group title="交易管理" border>
-  <wd-cell title="标题文字" value="内容" />
-  <wd-cell :border="false" title="标题文字" label="这一个cell不想要边框" value="内容" />
-  <wd-cell title="标题文字" label="描述信息" value="内容"></wd-cell>
+<wd-cell-group>
+  <wd-cell title="用户名" placeholder="请输入用户名" />
+  <wd-cell title="手机号" value="188****8888" placeholder="请输入手机号" />
+  <wd-cell title="左对齐" placeholder="请输入内容" value-align="left" />
+  <wd-cell title="居中对齐" placeholder="请输入内容" value-align="center" />
 </wd-cell-group>
 ```
 
-## 圆角卡片风格
-
-在 `wd-cell-group` 上设置 `insert` 属性，展示为圆角卡片风格，带有圆角和左右边距。
+### 页面跳转
 
 ```html
-<wd-cell-group title="交易管理" insert>
+<wd-cell-group>
+  <wd-cell title="帮助与反馈" is-link to="/pages/index/Index" />
+  <wd-cell title="设置" value="内容" is-link to="/pages/button/Index" replace />
+</wd-cell-group>
+```
+
+### 箭头方向
+
+```html
+<wd-cell-group>
+  <wd-cell title="向上箭头" is-link arrow-direction="up" />
+  <wd-cell title="向下箭头" is-link arrow-direction="down" />
+  <wd-cell title="向左箭头" is-link arrow-direction="left" />
+  <wd-cell title="默认箭头(向右)" is-link />
+</wd-cell-group>
+```
+
+## 组件样式
+
+### 图标设置
+
+设置 `prefix-icon` 使用内置图标，或使用 `prefix` 插槽自定义前置图标。
+
+```html
+<wd-cell-group>
+  <wd-cell title="标题文字" value="内容" prefix-icon="settings" />
+  <wd-cell title="标题文字" value="内容">
+    <template #prefix>
+      <view class="cell-icon"></view>
+    </template>
+  </wd-cell>
+</wd-cell-group>
+```
+
+### 大尺寸
+
+```html
+<wd-cell-group>
+  <wd-cell size="large" title="标题文字" value="内容" />
+  <wd-cell size="large" title="标题文字" value="内容" prefix-icon="settings" is-link />
+  <wd-cell size="large" title="标题文字" label="描述信息" value="内容" />
+</wd-cell-group>
+```
+
+### 垂直居中
+
+```html
+<wd-cell-group>
+  <wd-cell title="标题文字" value="内容" center />
+  <wd-cell title="标题文字" label="描述信息" value="内容" center />
+</wd-cell-group>
+```
+
+### 圆角卡片风格
+
+```html
+<wd-cell-group insert>
   <wd-cell title="标题文字" value="内容" />
   <wd-cell title="标题文字" label="描述信息" value="内容" />
 </wd-cell-group>
 ```
 
-## 点击反馈
+## 特殊样式
 
-通过设置 `clickable` 开启点击反馈，之后可以监听`click`事件。
-
-```html
-<wd-toast />
-<wd-cell title="标题文字" value="内容" clickable @click="toast" />
-```
-
-```typescript
-import { useToast } from '@/uni_modules/wot-design-uni'
-const toast = useToast()
-
-function showToast() {
-  toast.show('点击')
-}
-```
-
-## 页面跳转
-
-通过设置 `is-link` 属性显示导航箭头和点击态，设置 `to` 属性，指定跳转地址，可以设置 replace 替换掉历史堆栈中的当前页面。
-
-`is-link`会默认开启`clickable`。
+### 展示边框线
 
 ```html
-<wd-cell title="帮助与反馈" is-link to="/pages/index/index" />
-<wd-cell title="设置" value="内容" is-link to="/pages/button/index" replace></wd-cell>
+<wd-cell-group title="交易管理" border>
+  <wd-cell title="标题文字" value="内容" />
+  <wd-cell :border="false" title="标题文字" label="这一个 cell 不想要边框" value="内容" />
+  <wd-cell title="标题文字" label="描述信息" value="内容" />
+</wd-cell-group>
 ```
 
-可以只设置 `is-link` 用于展示右箭头和点击态。
+### 表单属性
 
 ```html
-<wd-cell title="帮助与反馈" is-link></wd-cell>
+<wd-cell-group border>
+  <wd-cell title="必填" required>
+    <wd-rate v-model="rate" />
+  </wd-cell>
+  <wd-cell title="必填星号在右侧" required asterisk-position="end">
+    <wd-rate v-model="rate1" />
+  </wd-cell>
+  <wd-cell title="上下结构" layout="vertical" required asterisk-position="end">
+    <wd-slider v-model="slider" />
+  </wd-cell>
+</wd-cell-group>
 ```
 
-## 箭头方向
-
-通过设置 `arrow-direction` 属性可以控制箭头的方向，可选值为 `left`、`up`、`down`，默认为向右箭头。该属性只在 `is-link` 为 `true` 时生效。
+### 设置左侧宽度
 
 ```html
-<wd-cell title="向上箭头" is-link arrow-direction="up" />
-<wd-cell title="向下箭头" is-link arrow-direction="down" />
-<wd-cell title="向左箭头" is-link arrow-direction="left" />
-<wd-cell title="默认箭头(向右)" is-link />
+<wd-cell
+  title="标题文字"
+  label="这里是文字描述这里是文字描述这里是文字描述"
+  title-width="200px"
+  value="内容"
+/>
 ```
 
-## 垂直居中
-
-通过设置 `center` 设置内容垂直居中对齐，默认顶部居中。
+### 内容省略
 
 ```html
-<wd-cell title="标题文字" value="内容" center></wd-cell>
+<wd-cell-group>
+  <wd-cell title="正常显示" value="这是一段很长很长很长很长很长很长的内容" />
+  <wd-cell title="省略号显示" value="这是一段很长很长很长很长很长很长的内容" ellipsis />
+  <wd-cell title="左对齐省略" value="这是一段很长很长很长很长很长很长的内容" value-align="left" ellipsis />
+</wd-cell-group>
 ```
 
-## 表单属性 - 必填
-
-设置 `required` 属性。
-
-```html
-<wd-cell title="必填" required>
-  <wd-rate v-model="rate" change="handleRateChange"></wd-rate>
-</wd-cell>
-```
-
-```typescript
-const rate = ref(0)
-
-function handleRateChange({ value }) {
-  console.log(value)
-}
-```
-
-## 表单属性 - 上下结构
-
-设置 `vertical` 属性。
-
-```html
-<wd-cell title="上下结构" vertical>
-  <wd-slider v-model="slider" change="handleSliderChange"></wd-slider>
-</wd-cell>
-```
-
-```typescript
-const slider = ref('')
-function handleSliderChange({ value }) {
-  console.log(value)
-}
-```
-
-## 设置左侧宽度
-
-设置 `title-width` 属性，label 内容超出则会 ... 隐藏，如果有个性化需求，使用插槽实现。
-
-```html
-<wd-cell title="标题文字" label="这里是文字描述这里是文字描述这里是文字描述" title-width="200px" value="内容" />
-```
-
-## 内容省略
-
-设置 `ellipsis` 属性，右侧内容超出时会以省略号显示。
-
-```html
-<wd-cell title="标题文字" value="这是一段很长很长很长很长很长很长的内容" ellipsis />
-```
-
-## 自定义内容
-
-`cell` 提供了 `icon`、`title`、`label`和默认 value 的插槽。
+### 自定义内容
 
 ```html
 <wd-cell-group>
   <wd-cell title="标题文字" center>
-    <wd-button custom-class="custom-value" size="small" plain>按钮</wd-button>
+    <wd-button size="small" plain>按钮</wd-button>
   </wd-cell>
   <wd-cell title="标题文字" center>
-    <view class="custom-value" style="height: 32px;">
-      <wd-switch v-model="switchValue" change="handleSwitchChange" />
-    </view>
+    <wd-switch v-model="switchValue" />
   </wd-cell>
   <wd-cell title="标题文字" is-link to="/pages/index/index">
     <view class="custom-text">订购</view>
@@ -223,125 +185,77 @@ function handleSliderChange({ value }) {
 </wd-cell-group>
 ```
 
-```typescript
-const switchValue = ref('')
-function handleSwitchChange({ value }) {
-  console.log(value)
-}
-```
-
-```scss
-.cell-icon {
-  display: block;
-  box-sizing: border-box;
-  padding: 4px 0;
-  width: 16px;
-  height: 24px;
-  margin-right: 4px;
-  background: url('https://img10.360buyimg.com/jmadvertisement/jfs/t1/71075/7/3762/1820/5d1f26d1E0d600b9e/a264c901943080ac.png') no-repeat;
-  background-size: cover;
-}
-:deep(.custom-value) {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translate(0, -50%);
-  white-space: nowrap;
-}
-.custom-text {
-  color: #f0883a;
-}
-.end-time {
-  display: inline-block;
-  margin-left: 8px;
-  border: 1px solid #faa21e;
-  padding: 0 4px;
-  font-size: 10px;
-  color: #faa21e;
-}
-```
-
 ## CellGroup Attributes
 
-| 参数     | 说明           | 类型    | 可选值 | 默认值 | 最低版本 |
-| -------- | -------------- | ------- | ------ | ------ | -------- |
-| title    | 分组标题       | string  | -      | -      | -        |
-| value    | 分组右侧内容   | string  | -      | -      | -        |
-| border   | 是否展示边框线 | boolean  | -      | -      | -        |
-| insert   | 是否展示为圆角卡片风格 | boolean | -      | false  | 1.14.0        |
-| use-slot | 分组启用插槽   | boolean | -      | false  | -        |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| title | 分组标题 | string | - |
+| value | 分组右侧内容 | string | - |
+| border | 是否展示外边框 | boolean | false |
+| insert | 是否展示为圆角卡片风格 | boolean | false |
+| center | 是否使内容垂直居中 | boolean | false |
+| size | 单元格大小，支持 `large` | string | - |
+| title-width | 左侧标题宽度 | `string \| number` | - |
+| layout | 单元格布局方式，支持 `horizontal / vertical` | string | - |
+| value-align | 右侧内容对齐方式，支持 `left / right / center` | string | - |
+| custom-class | 根节点自定义类名 | string | `''` |
+| custom-style | 根节点自定义样式 | string | `''` |
 
 ## Cell Attributes
 
-| 参数        | 说明                           | 类型    | 可选值 | 默认值 | 最低版本 |
-| ----------- | ------------------------------ | ------- | ------ | ------ | -------- |
-| title       | 标题                           | string  | -      | -      | -        |
-| value       | 右侧内容                       | string  | -      | -      | -        |
-| icon        | 图标类名                       | string  | -      | -      | -        |
-| icon-size   | 图标大小                       | string | number  | -      | -      | 1.13.0 |
-| label       | 描述信息                       | string  | -      | -      | -        |
-| is-link     | 是否为跳转链接                 | boolean | -      | false  | -        |
-| to          | 跳转地址                       | string  | -      | -      | -        |
-| clickable   | 点击反馈，开启 is-link 时，默认开启此选项 | boolean | -      | false  | -        |
-| replace     | 跳转时是否替换栈顶页面         | boolean | -      | false  | -        |
-| size        | 设置单元格大小                 | string  | large  | -      | -        |
-| title-width | 设置左侧标题宽度               | string  | -      | -      | -        |
-| center      | 是否垂直居中，默认顶部居中     | boolean | -      | false  | -        |
-| required    | 表单属性，必填                 | boolean | -      | false  | -        |
-| marker-side | 必填标记的位置                 | string  | before / after | before | 1.12.0 |
-| arrow-direction | 箭头方向，只在 is-link 为 true 时生效 | string  | left / up / down | -      | 1.14.0 |
-| vertical    | 表单属性，上下结构             | boolean | -      | false  | -        |
-| ellipsis    | 内容省略，右侧内容超出时会以省略号显示 | boolean | -      | false  | 1.11.0 |
-| use-title-slot | 是否启用title插槽，默认启用，用来解决插槽传递时v-slot和v-if冲突问题 | boolean | -      | true  | 1.11.0 |
-| prop | 表单域 `model` 字段名，在使用表单校验功能的情况下，该属性是必填的 | string | - | - | - |
-| rules | 表单验证规则，结合`wd-form`组件使用	 | `FormItemRule []`	 | - | `[]` | - |
-| border | 是否展示边框线，优先级高于`cell-group`的`border` | boolean | - | - | - |
-
-### FormItemRule 数据结构
-
-| 键名 | 说明 | 类型 |
-| --- | --- | --- |
-| required | 是否为必选字段	 | `boolean` |
-| message | 错误提示文案	 | `string` |
-| validator | 通过函数进行校验，可以返回一个 `Promise` 来进行异步校验 | `(value, rule) => boolean \| Promise` |
-| pattern | 通过正则表达式进行校验，正则无法匹配表示校验不通过 | `RegExp` |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| title | 左侧标题 | string | - |
+| value | 右侧内容 | `string \| number` | `''` |
+| placeholder | 占位符，仅在 value 为空时显示 | string | - |
+| label | 标题下方描述信息 | string | - |
+| prefix-icon | 前置图标名 | string | - |
+| suffix-icon | 后置图标名 | string | - |
+| icon-size | 图标大小 | `string \| number` | - |
+| icon-prefix | 图标类名前缀 | string | - |
+| to | 跳转地址 | string | - |
+| replace | 跳转时是否替换当前页面历史 | boolean | false |
+| clickable | 是否开启点击反馈 | boolean | false |
+| is-link | 是否展示右侧箭头并开启点击反馈 | boolean | false |
+| arrow-direction | 箭头方向（仅在 is-link 为 true 时生效），支持 `left / up / down / right` | string | right |
+| size | 单元格大小，支持 `large` | string | - |
+| border | 是否显示内边框，优先级高于 cell-group 同名属性 | boolean | 继承自 CellGroup |
+| title-width | 左侧标题宽度 | `string \| number` | 继承自 CellGroup |
+| center | 是否垂直居中 | boolean | 继承自 CellGroup |
+| layout | 单元格布局方式，支持 `horizontal / vertical` | string | 继承自 CellGroup |
+| value-align | 右侧内容对齐方式，支持 `left / right / center` | string | 继承自 CellGroup |
+| required | 是否显示必填星号 | boolean | false |
+| asterisk-position | 必填星号位置，支持 `start / end` | string | start |
+| hide-asterisk | 是否隐藏必填星号 | boolean | false |
+| ellipsis | 内容是否超出隐藏显示省略号 | boolean | false |
+| use-title-slot | 是否启用 title 插槽 | boolean | true |
+| custom-class | 根节点自定义类名 | string | `''` |
+| custom-style | 根节点自定义样式 | string | `''` |
+| custom-prefix-class | 前置图标自定义样式类 | string | `''` |
+| custom-suffix-class | 后置图标自定义样式类 | string | `''` |
+| custom-label-class | label 区域自定义样式类 | string | `''` |
+| custom-value-class | value 区域自定义样式类 | string | `''` |
+| custom-title-class | title 区域自定义样式类 | string | `''` |
 
 ## Cell Events
 
-| 事件名称 | 说明                                             | 参数 | 最低版本 |
-| -------- | ------------------------------------------------ | ---- | -------- |
-| click    | 当 clickable 或 is-link 为 true 时点击单元格触发 | -    | -        |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| click | 当 clickable 或 is-link 为 true 时，点击单元格触发 | - |
 
-## CellGroup Slot
+## CellGroup Slots
 
-> CellGroup 必须首先开启`use-slot`,插槽才生效。使用插槽时请通过外部自定义样式类来控制样式。
+| name | 说明 | 参数 |
+| --- | --- | --- |
+| title | 分组标题 | - |
+| value | 分组右侧内容 | - |
 
-| name  | 说明         | 最低版本 |
-| ----- | ------------ | -------- |
-| title | 分组标题     | -        |
-| value | 分组右侧内容 | -        |
+## Cell Slots
 
-## Cell Slot
-
-| name    | 说明                                      | 最低版本 |
-| ------- | ----------------------------------------- | -------- |
-| title   | 标题                                      | -        |
-| default | 右侧内容，使用时不需要设置 `#default` | -        |
-| icon    | 图标                                      | -        |
-| label   | 描述信息                                  | -        |
-
-## CellGroup 外部样式类
-
-| 类名         | 说明       | 最低版本 |
-| ------------ | ---------- | -------- |
-| custom-class | 根节点样式 | -        |
-
-## Cell 外部样式类
-
-| 类名               | 说明                           | 最低版本 |
-| ------------------ | ------------------------------ | -------- |
-| custom-class       | 根节点样式                     | -        |
-| custom-icon-class  | icon 外部自定义样式  | -        |
-| custom-label-class | label 外部自定义样式 | -        |
-| custom-value-class | value 外部自定义样式 | -        |
-| custom-title-class | title 外部自定义样式 | -        |
+| name | 说明 | 参数 |
+| --- | --- | --- |
+| prefix | 前置图标区域 | - |
+| title | 标题区域 | - |
+| label | 描述信息区域 | - |
+| default | 右侧内容区域 | - |
+| suffix | 后置图标区域（is-link 为 false 时生效） | - |

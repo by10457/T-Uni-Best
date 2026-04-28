@@ -85,4 +85,4 @@
 </style>
 ```
 
-> 更多变量请查阅：[Wot UI 官方文档 - 主题定制](https://wot-design-uni.cn/guide/custom-theme.html)
+> 更多变量请查阅：[Wot UI 官方文档 - 主题定制](https://wot-ui.cn/guide/custom-theme.html)

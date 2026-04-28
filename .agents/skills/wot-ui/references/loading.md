@@ -1,73 +1,87 @@
 ---
-url: 'https://wot-ui.cn/component/loading.md'
+url: 'https://v2.wot-ui.cn/component/loading.md'
 ---
 
 # Loading 加载指示器
 
 加载动画，用于表示加载中的过渡状态。
 
-## 基本用法
+## 组件类型
 
-基本用法，适用于按钮加载状态和页面轻提示。
+### 类型
+
+通过 `type` 属性设置指示器类型，可选值为 `circular`、`spinner`、`dots`、`wave`，默认为 `circular`。
 
 ```html
 <wd-loading />
-```
-
-## 修改指示器类型
-
-通过 `type` 调整指示器形态，可选值包括 `'ring'`（默认环形）、`'outline'`（轮廓环形）以及 `'spinner'`（风车指示，适合强调动态感）。
-
-```html
-<wd-loading type="outline" />
 <wd-loading type="spinner" />
+<wd-loading type="dots" />
+<wd-loading type="wave" />
 ```
 
-## 修改颜色
+## 组件样式
 
-通过 `color` 属性修改指示器的颜色。比如修改为白色，同时设置背景为黑色。
+### 颜色
 
-:::warning
-小程序中没有 svg 标签，所以是先通过js生成svg标签，再转换成 base64，因此设置指示器颜色必须为16进制色值，且不接受色值缩写。
-:::
+通过 `color` 属性修改指示器的颜色。
 
 ```html
-<wd-loading color="#ffffff" custom-class="loading-black" />
-
-<!-- 以下为错误写法 -->
-<wd-loading color="#fff" />
-<wd-loading color="green" />
-<wd-loading color="rgba(255,255,255,1)" />
+<wd-loading color="#fa34aa" />
+<wd-loading type="spinner" color="#fa34aa" />
+<wd-loading type="dots" color="#fa34aa" />
+<wd-loading type="wave" color="#fa34aa" />
 ```
 
-```scss
-:deep(.loading-black) {
-  background: rgba(0, 0, 0, 0.7);
-  padding: 10px;
-  border-radius: 4px;
-}
-```
+### 大小
 
-## 修改指示器大小
-
-通过 `size` 属性设置指示器的大小，默认为大小 '32px'，属性支持 `number`/`string` 类型。
+通过 `size` 属性设置指示器的大小，支持 `number` / `string` 类型。
 
 ```html
-<wd-loading :size="20" />
-<wd-loading :size="30" />
-<wd-loading size="50px" />
+<wd-loading :size="20" type="wave" />
+<wd-loading :size="30" type="wave" />
+<wd-loading size="50px" type="wave" />
+```
+
+## 内容形态
+
+### 显示文字
+
+通过 `text` 属性或默认插槽设置加载文字。
+
+```html
+<wd-loading text="加载中..."></wd-loading>
+<wd-loading>加载中...</wd-loading>
+<wd-loading type="spinner">加载中...</wd-loading>
+<wd-loading type="wave">加载中...</wd-loading>
+```
+
+### 水平方向
+
+通过 `direction` 属性设置文字与指示器的排列方向，可选值为 `vertical`、`horizontal`，默认为 `vertical`。
+
+```html
+<wd-loading direction="horizontal" text="加载中..."></wd-loading>
+<wd-loading direction="horizontal">加载中...</wd-loading>
+<wd-loading direction="horizontal" type="spinner">加载中...</wd-loading>
+<wd-loading direction="horizontal" type="wave">加载中...</wd-loading>
 ```
 
 ## Attributes
 
-| 参数 | 说明 | 类型 | 可选值 | 默认值 | 最低版本 |
-|-----|------|-----|-------|-------|---------|
-| type | 加载指示器类型 | string | ring / outline / spinner | ring | - |
-| color | 设置加载指示器颜色 | string | - | #4D80F0 | - |
-| size | 设置加载指示器大小 | number / string | - | 32px | - |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| type | 加载指示器类型，可选值为 `circular`、`spinner`、`dots`、`wave` | `LoadingType` | `circular` |
+| color | 设置加载指示器颜色 | `string` | - |
+| size | 设置加载指示器大小 | `number \| string` | - |
+| text | 加载指示器文字 | `string` | - |
+| direction | 排列方向，可选值为 `vertical`、`horizontal` | `LoadingDirection` | `vertical` |
+| inherit-color | 是否继承父元素颜色 | `boolean` | `false` |
+| custom-class | 根节点样式类名 | `string` | - |
+| custom-style | 根节点样式 | `string` | - |
+| custom-spinner-class | 自定义加载指示器样式类 | `string` | - |
 
-## 外部样式类
+## Slots
 
-| 类名 | 说明 | 最低版本 |
-|-----|------|--------|
-| custom-class | 根节点样式 | - |
+| name | 说明 |
+| --- | --- |
+| default | 加载文字内容 |

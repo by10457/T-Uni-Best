@@ -1,5 +1,5 @@
 ---
-url: 'https://wot-ui.cn/component/segmented.md'
+url: 'https://v2.wot-ui.cn/component/segmented.md'
 ---
 
 # Segmented 分段器
@@ -11,9 +11,11 @@ url: 'https://wot-ui.cn/component/segmented.md'
 * 用于展示多个选项并允许用户选择其中单个选项；
 * 当切换选中选项时，关联区域的内容会发生变化。
 
-## 基本用法
+## 组件类型
 
-通过 `options` 属性设置选项列表，通过 `v-model:value` 绑定当前选中项。
+### 基本用法
+
+通过 `options` 设置选项列表，通过 `v-model:value` 绑定当前选中项。
 
 ```vue
 <wd-segmented :options="list" v-model:value="current"></wd-segmented>
@@ -25,39 +27,29 @@ const list = ref<string[]>(['评论', '点赞', '贡献', '打赏'])
 const current = ref('点赞')
 ```
 
-## 大型分段器
+## 组件状态
 
-通过设置 `size` 属性为 `"large"`，创建一个大型分段器。
+### 禁用
 
-```html
-<wd-segmented :options="list" v-model:value="current" size="large"></wd-segmented>
-```
-
-## 小型分段器
-
-通过设置 `size` 属性为 `"small"`，创建一个小型分段器。
-
-```html
-<wd-segmented :options="list" v-model:value="current" size="small"></wd-segmented>
-```
-
-## 带振动效果的分段器
-
-通过设置 `vibrate-short` 属性为 `true`，使手机在切换选项时产生短暂振动。
-
-```html
-<wd-segmented :options="list" v-model:value="current" :vibrate-short="true"></wd-segmented>
-```
-
-## 禁用分段器
-
-通过设置 `disabled` 属性为 `true`，禁用分段器。
+设置 `disabled` 属性禁用整个分段器。
 
 ```html
 <wd-segmented :options="list" v-model:value="current" disabled></wd-segmented>
 ```
 
-## 自定义渲染分段器标签
+## 组件变体
+
+### 轮廓主题
+
+通过 `theme="outline"` 切换为轮廓样式。
+
+```html
+<wd-segmented :options="list" v-model:value="current" theme="outline"></wd-segmented>
+```
+
+## 组件样式
+
+### 自定义渲染分段器标签
 
 使用插槽 `label` 可以自定义渲染分段器的标签内容。
 
@@ -102,7 +94,17 @@ const list = ref([
 }
 ```
 
-## 在弹出框中使用
+## 特殊样式
+
+### 带振动效果的分段器
+
+设置 `vibrate-short` 后，切换选项时会触发短振动反馈。
+
+```html
+<wd-segmented :options="list" v-model:value="current" :vibrate-short="true"></wd-segmented>
+```
+
+### 在弹出框中使用
 
 微信小程序端，在弹出框中使用本组件时，需要调用 `updateActiveStyle` 方法更新分段器样式，参见[常见问题](/guide/common-problems.html#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%8A%E4%BD%BF%E7%94%A8popup%E3%80%81actionsheet%E3%80%81dropdownitem%E7%AD%89%E5%BC%B9%E5%87%BA%E6%A1%86%E7%BB%84%E4%BB%B6%E5%8C%85%E8%A3%B9slider%E3%80%81tabs%E7%AD%89%E7%BB%84%E4%BB%B6%E6%97%B6-slider%E3%80%81tabs%E8%A1%A8%E7%8E%B0%E5%BC%82%E5%B8%B8)。
 
@@ -146,46 +148,39 @@ function handlePopupShow() {
 
 ## Attributes
 
-| 参数                | 说明               | 类型                                        | 可选值                         | 默认值   | 最低版本 |
-| ------------------- | ------------------ | ------------------------------------------- | ------------------------------ | -------- | -------- |
-| value/v-model:value | 当前选中的值       | string / number                            | -                              | -        | 0.1.23   |
-| disabled            | 是否禁用分段器     | boolean                                     | true / false                  | `false`  | 0.1.23   |
-| size                | 控件尺寸           | string                                      | `large` / `middle` / `small` | `middle` | 0.1.23   |
-| options             | 数据集合           | `string[] / number[] / SegmentedOption[]` | -                              | \[]       | 0.1.23   |
-| vibrateShort        | 切换选项时是否振动 | boolean                                     | true / false                  | `false`  | 0.1.23   |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| value / v-model:value | 当前选中的值 | `string \| number` | - |
+| disabled | 是否禁用分段器 | `boolean` | `false` |
+| options | 数据集合 | `string[] \| number[] \| SegmentedOption[]` | `[]` |
+| theme | 分段器主题，可选值为 `card`、`outline` | `string` | `'card'` |
+| vibrate-short | 切换选项时是否触发短振动 | `boolean` | `false` |
+| custom-class | 根节点自定义类名 | `string` | `''` |
+| custom-style | 根节点自定义样式 | `string` | `''` |
 
 ### SegmentedOption
 
-| 参数     | 说明     | 类型             | 可选值        | 默认值 | 最低版本 |
-| -------- | -------- | ---------------- | ------------- | ------ | -------- |
-| value    | 选中值   | string / number | -             | -      | 0.1.23   |
-| disabled | 是否禁用 | boolean          | true / false | -      | 0.1.23   |
-| payload  | 更多数据 | any              | -             | -      | 0.1.23   |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| value | 选项值 | `string \| number` | - |
+| disabled | 是否禁用该选项 | `boolean` | `false` |
+| payload | 附加数据，可用于插槽渲染 | `any` | - |
 
 ## Events
 
-| 事件名称 | 说明           | 参数              | 最低版本 |
-| -------- | -------------- | ----------------- | -------- |
-| change   | 选项切换时触发 | `SegmentedOption` | 0.1.23   |
-| click    | 选项点击时触发 | `SegmentedOption` | 1.2.20   |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| change | 选项切换时触发 | `SegmentedOption` |
+| click | 选项点击时触发 | `SegmentedOption` |
 
 ## Methods
 
-对外暴露函数
-
-| 事件名称          | 说明                                                      | 参数                           | 最低版本 |
-| ----------------- | --------------------------------------------------------- | ------------------------------ | -------- |
-| updateActiveStyle | 更新滑块偏移量，参数`animation`用于是否开启动画，默认开启 | `(animation: boolean) => void` | -        |
+| 方法名 | 说明 | 类型 |
+| --- | --- | --- |
+| updateActiveStyle | 更新滑块偏移量，参数 `animation` 用于控制是否启用动画，默认开启 | `(animation?: boolean) => void` |
 
 ## Slots
 
-| name  | 说明         | 参数                          | 最低版本 |
-| ----- | ------------ | ----------------------------- | -------- |
-| label | 选项标签内容 | `{ option: SegmentedOption }` | 0.1.23   |
-
-## 外部样式类
-
-| 类名        | 说明         | 最低版本 |
-| ----------- | ------------ | -------- |
-| customStyle | 自定义样式   | 0.1.23   |
-| customClass | 自定义样式类 | 0.1.23   |
+| name | 说明 | 参数 |
+| --- | --- | --- |
+| label | 选项标签内容 | `{ option: SegmentedOption }` |

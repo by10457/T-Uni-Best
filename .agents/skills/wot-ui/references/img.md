@@ -1,44 +1,38 @@
 ---
-url: 'https://wot-ui.cn/component/img.md'
+url: 'https://v2.wot-ui.cn/component/img.md'
 ---
 
 # Img 图片
 
-增强版的 img 标签，提供多种图片填充模式，支持图片懒加载、加载完成、加载失败。
+增强版图片组件，支持填充模式、懒加载、加载态/失败态插槽，以及点击预览。
 
-## 基本用法
+## 组件类型
 
-基础用法与原生 image 标签一致，可以设置 `src` 、 `width` 、`height` 等原生属性。
+### 基本用法
 
-原生属性，参考[uni-app image 官方文档](https://uniapp.dcloud.net.cn/component/image.html#image)。
+基础用法与原生 `image` 标签一致，可以设置 `src`、`width`、`height` 等属性。
 
-此处需要注意的是 src 属性：
-
-使用 `相对路径`，需要注意 `src` 需要以组件存放位置相对图片位置为相对路径。
-
-使用 `文件导入` ，需要注意的是微信小程序 image 标签路径接受二进制数据以及 base64 编码。单独使用 import 图片路径无法访问。
+使用本地资源时，建议通过文件导入方式传入 `src`。在微信小程序中，`image` 标签支持二进制数据和 base64 编码，单独使用导入路径时需要结合构建配置处理。
 
 ```html
-<wd-img :width="100" :height="100" :src="joy" />
+<wd-img :width="100" :height="100" :src="imgURL" />
 ```
 
 ```typescript
-// import { joy } from '../images/joy'
-const joy = 'data:image/jpeg;base64,...' // 图片文件base64
+import blackMao from './black_mao.png'
+
+const imgURL = blackMao
 ```
 
 :::tip 提示
-可以配置 `transformAssetUrls` 使 `src` 属性获得与原生 `image` 一致的体验。
+可以配置 `transformAssetUrls`，让 `wd-img` 的 `src` 属性获得与原生 `image` 一致的资源转换体验。
 
 ```typescript
-// vite.config.(js|ts)
-
 import uni from '@dcloudio/vite-plugin-uni'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [
-    // ...
     uni({
       vueOptions: {
         template: {
@@ -54,28 +48,40 @@ export default defineConfig({
 })
 ```
 
-修改完成后重启开发服务即可生效，查看 [uni-app issue#4997](https://github.com/dcloudio/uni-app/issues/4997#issuecomment-2456851123) 了解更多。
+修改完成后重启开发服务即可生效，更多背景可参考 [uni-app issue#4997](https://github.com/dcloudio/uni-app/issues/4997#issuecomment-2456851123)。
 :::
 
-## 插槽
+## 组件状态
 
-使用`loading` `error`插槽设置在图片加载时、加载失败后的展示内容
+### 加载中提示
 
-```vue
-<template>
-  <wd-img :width="100" :height="100" src="https://www.123.com/a.jpg">
-    <template #error>
-      <view class="error-wrap">加载失败</view>
-    </template>
-    <template #loading>
-      <view class="loading-wrap">
-        <wd-loading />
-      </view>
-    </template>
-  </wd-img>
-</template>
+图片加载时会显示默认占位内容，也可以通过 `loading` 插槽自定义加载态。若不希望显示默认加载态，可将 `show-loading` 设为 `false`。
 
-<style>
+```html
+<wd-img width="100%" height="27vw" src="https://www.123.wot.com/a.jpg" />
+
+<wd-img width="100%" height="27vw" src="https://www.123.wot.com/a.jpg">
+  <template #loading>
+    <wd-loading />
+  </template>
+</wd-img>
+```
+
+### 加载失败提示
+
+图片加载失败时会显示默认占位内容，也可以通过 `error` 插槽自定义失败态。若不希望显示默认失败态，可将 `show-error` 设为 `false`。
+
+```html
+<wd-img width="100%" height="27vw" src="https://www.123.wot.com/a.jpg" />
+
+<wd-img width="100%" height="27vw" src="https://www.123.wot.com/a.jpg">
+  <template #error>
+    <view class="error-wrap">加载失败</view>
+  </template>
+</wd-img>
+```
+
+```css
 .error-wrap {
   width: 100%;
   height: 100%;
@@ -84,81 +90,91 @@ export default defineConfig({
   line-height: 100px;
   text-align: center;
 }
-
-.loading-wrap {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-</style>
 ```
 
-## 填充模式
+## 组件样式
 
-通过 `mode` 属性可以设置图片填充模式，可选值见下方表格。
+### 填充模式
 
-mode 为小程序原生属性，参考[微信小程序 image 官方文档](https://developers.weixin.qq.com/miniprogram/dev/component/image.html)。
+通过 `mode` 设置图片填充模式。可选值为 `top left`、`top right`、`bottom left`、`bottom right`、`right`、`left`、`center`、`bottom`、`top`、`heightFix`、`widthFix`、`scaleToFill`、`aspectFit`、`aspectFill`。
 
 ```html
-<wd-img :width="100" :height="100" mode="center" :src="joy" />
+<wd-img :width="100" :height="100" :src="imgURL" mode="center" />
 ```
 
-## 圆形设置
+### 圆形
 
-通过 `round` 属性可以设置以圆形展示。
+通过 `round` 将图片显示为圆形。
 
 ```html
-<wd-img :width="100" :height="100" round :src="joy" />
+<wd-img :width="100" :height="100" :src="imgURL" round />
 ```
 
-## 可预览
+### 圆角
 
-通过设置`enable-preview`属性可以支持点击预览，底层调用 uni.previewImage 来实现预览效果
+通过 `radius` 设置图片圆角，默认单位为 `px`。
 
 ```html
-<wd-img :width="100" :height="100" :src="joy" :enable-preview="true" />
+<wd-img :width="100" :height="100" :src="imgURL" :radius="8" />
 ```
 
-也可以传入 `preview-src` 属性来预览另外的图片
+## 特殊用法
+
+### 可预览
+
+通过 `enable-preview` 开启点击预览，内部调用 `uni.previewImage` 实现。组件仅在图片加载成功后才会触发预览。
 
 ```html
-<wd-img :width="100" :height="100" :src="joy" :preview-src="img" :enable-preview="true" />
+<wd-img :width="100" :height="100" :src="imgURL" :enable-preview="true" />
+```
+
+### 指定预览图片
+
+通过 `preview-src` 指定预览时展示的图片，可与组件当前显示的图片不同。
+
+```html
+<wd-img :width="100" :height="100" :src="imgURL" :preview-src="previewURL" :enable-preview="true" />
+```
+
+```typescript
+import blackMao from './black_mao.png'
+import blackMaoPreview from './black_mao_1.png'
+
+const imgURL = blackMao
+const previewURL = blackMaoPreview
 ```
 
 ## Attributes
 
-| 参数                   | 说明                                               | 类型            | 可选值                                                                                                                                                                             | 默认值        | 最低版本         |
-| ---------------------- | -------------------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | ---------------- |
-| src                    | 图片链接                                           | string          | -                                                                                                                                                                                  | -             | -                |
-| width                  | 宽度，默认单位为 px                                | number / string | -                                                                                                                                                                                  | -             | -                |
-| height                 | 高度，默认单位为 px                                | number / string | -                                                                                                                                                                                  | -             | -                |
-| mode                   | 填充模式                                           | ImageMode       | 'top left' / 'top right' / 'bottom left' / 'bottom right' / 'right' / 'left' / 'center' / 'bottom' / 'top' / 'heightFix' / 'widthFix' / 'aspectFill' / 'aspectFit' / 'scaleToFill' | 'scaleToFill' | -                |
-| round                  | 是否显示为圆形                                     | boolean         | -                                                                                                                                                                                  | false         | -                |
-| radius                 | 圆角大小，默认单位为 px                            | number / string | -                                                                                                                                                                                  | -             | -                |
-| enable-preview         | 是否支持点击预览                                   | boolean         | -                                                                                                                                                                                  | false         | 1.2.11           |
-| show-menu-by-longpress | 开启长按图片显示识别小程序码菜单，仅微信小程序支持 | boolean         | -                                                                                                                                                                                  | false         | 1.3.11 |
-| preview-src             | 预览图片链接                                     | string           |  -                                                                                 | -             | 1.8.0 |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| src | 图片链接 | `string` | - |
+| preview-src | 预览图片链接 | `string` | - |
+| width | 宽度，支持数字（单位 `px`）或字符串 | `string \| number` | - |
+| height | 高度，支持数字（单位 `px`）或字符串 | `string \| number` | - |
+| mode | 填充模式，可选值为 `top left`、`top right`、`bottom left`、`bottom right`、`right`、`left`、`center`、`bottom`、`top`、`heightFix`、`widthFix`、`scaleToFill`、`aspectFit`、`aspectFill` | `ImageMode` | `scaleToFill` |
+| round | 是否显示为圆形 | `boolean` | `false` |
+| radius | 圆角大小，默认单位为 `px` | `string \| number` | - |
+| lazy-load | 是否开启图片懒加载 | `boolean` | `false` |
+| enable-preview | 是否支持点击预览 | `boolean` | `false` |
+| show-menu-by-longpress | 是否开启长按图片显示识别小程序码菜单，仅微信小程序平台有效 | `boolean` | `false` |
+| show-loading | 是否展示默认加载态 | `boolean` | `true` |
+| show-error | 是否展示默认失败态 | `boolean` | `true` |
+| custom-class | 根节点自定义类名 | `string` | `''` |
+| custom-style | 根节点自定义样式 | `string` | `''` |
+| custom-image | 内部 `image` 节点自定义类名 | `string` | `''` |
 
 ## Events
 
-| 事件名称 | 说明                 | 参数                        | 最低版本 |
-| -------- | -------------------- | --------------------------- | -------- |
-| click    | 点击事件             | (event: MouseEvent) => void | -        |
-| load     | 当图片载入完毕时触发 | `{height, width}`           | -        |
-| error    | 当错误发生时触发     | `{errMsg}`                  | -        |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| click | 点击图片时触发 | `event: MouseEvent` |
+| load | 图片加载完成时触发，返回图片加载事件对象 | `event: Event` |
+| error | 图片加载失败时触发，返回图片错误事件对象 | `event: Event` |
 
 ## Slots
 
-| 名称    | 说明               | 最低版本 |
-| ------- | ------------------ | -------- |
-| loading | 图片加载时展示     | 1.2.21   |
-| error   | 图片加载失败后展示 | 1.2.21   |
-
-## 外部样式类
-
-| 类名         | 说明                 | 最低版本 |
-| ------------ | -------------------- | -------- |
-| custom-class | 根节点样式           | -        |
-| custom-image | image 外部自定义样式 | -        |
+| 名称 | 说明 |
+| --- | --- |
+| loading | 自定义图片加载中的展示内容 |
+| error | 自定义图片加载失败后的展示内容 |

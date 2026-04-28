@@ -1,26 +1,28 @@
 ---
-url: 'https://wot-ui.cn/component/text.md'
+url: 'https://v2.wot-ui.cn/component/text.md'
 ---
 
 # Text 文本
 
 文本组件，用于展示文本信息。
 
-> 1.3.4 版本提供
+## 组件类型
 
-## 基本用法
+### 基本用法
 
-设置 `text` 设置文本内容。推荐您使用:text='value'的形式。
+通过 `text` 传入文本内容。
 
 ```html
-<wd-text
-  text="芦叶满汀洲，寒沙带浅流。二十年重过南楼。柳下系船犹未稳，能几日，又中秋。黄鹤断矶头，故人曾到否？旧江山浑是新愁。欲买桂花同载酒，终不似，少年游。"
-></wd-text>
+<wd-text :text="text"></wd-text>
 ```
 
-## 设置主题
+```ts
+const text = ref('芦叶满汀洲，寒沙带浅流。二十年重过南楼。')
+```
 
-通过type参数设置文本主题，我们提供了五类属性：primary error success warning default-默认。
+### 设置主题
+
+通过 `type` 设置主题色，支持 `primary`、`error`、`success`、`warning`、`default`。
 
 ```html
 <wd-text type="primary" text="主色"></wd-text>
@@ -30,68 +32,88 @@ url: 'https://wot-ui.cn/component/text.md'
 <wd-text text="默认"></wd-text>
 ```
 
-## 自定义字体颜色
+### 模式
 
-设置 `color` 属性。
-
-```html
-<wd-text
-  text="芦叶满汀洲，寒沙带浅流。二十年重过南楼。柳下系船犹未稳，能几日，又中秋。黄鹤断矶头，故人曾到否？旧江山浑是新愁。欲买桂花同载酒，终不似，少年游。"
-  color="#36B8C2"
-></wd-text>
-```
-
-## 是否粗体
-
-设置 `bold` 属性。
+通过 `mode` 对文本做格式化处理，支持 `text`、`date`、`phone`、`name`、`price`。
 
 ```html
-<wd-text
-  text="芦叶满汀洲，寒沙带浅流。二十年重过南楼。柳下系船犹未稳，能几日，又中秋。黄鹤断矶头，故人曾到否？旧江山浑是新愁。欲买桂花同载酒，终不似，少年游。"
-  bold
-></wd-text>
+<wd-text text="18888888888" mode="phone"></wd-text>
+<wd-text text="王三" mode="name"></wd-text>
+<wd-text text="1719976636911" mode="date"></wd-text>
 ```
 
-## 字体大小
+### 金额
 
-设置 `size` 属性。
+设置 `mode="price"` 可以展示金额格式化文本。
 
 ```html
-<wd-text
-  text="芦叶满汀洲，寒沙带浅流。二十年重过南楼。柳下系船犹未稳，能几日，又中秋。黄鹤断矶头，故人曾到否？旧江山浑是新愁。欲买桂花同载酒，终不似，少年游。"
-  size="16px"
-></wd-text>
+<wd-text text="16354.156" mode="price" type="success" decoration="line-through" prefix="￥" />
 ```
 
-## 脱敏
+## 组件样式
 
-设置 `format` 属性,当 `mode` 为 `phone`或`name`时生效。
+### 自定义字体颜色
+
+通过 `color` 设置文字颜色。
 
 ```html
-<wd-text text="李四" mode="name" :format="true"></wd-text>
-<wd-text text="张长三" mode="name" :format="true"></wd-text>
-<wd-text text="18888888888" mode="phone" :format="true"></wd-text>
+<wd-text :text="text" color="#36B8C2"></wd-text>
 ```
 
-## lines
+### 是否粗体
 
-设置 `lines` 属性,文本显示的行数，如果设置，超出此行数，将会显示省略号。最大值为 5。
+设置 `bold` 开启粗体。
+
+```html
+<wd-text :text="text" bold></wd-text>
+```
+
+### 字体大小
+
+通过 `size` 设置字体大小。
+
+```html
+<wd-text :text="text" size="16px"></wd-text>
+```
+
+### lines
+
+设置 `lines` 限制显示行数，超出后显示省略号。
 
 ```html
 <wd-text :text="text" :lines="2" size="16px"></wd-text>
 ```
 
-## lineHeight
+### lineHeight
 
-设置 `lineHeight` 文本行高。
+通过 `lineHeight` 设置行高。
 
 ```html
-<wd-text :text="text" lineHeight="20px"></wd-text>
+<wd-text :text="text" :lines="2" lineHeight="20px"></wd-text>
 ```
 
-## 前后插槽
+### 文字装饰
 
-设置 `prefix` `suffix` 插槽。
+通过 `decoration` 设置文字装饰线。
+
+```html
+<wd-text :text="text" type="warning" decoration="underline" />
+```
+
+## 特殊样式
+
+### 脱敏
+
+设置 `format` 后，在 `mode` 为 `phone` 或 `name` 时会进行脱敏展示。
+
+```html
+<wd-text text="张长三" mode="name" :format="true"></wd-text>
+<wd-text text="18888888888" mode="phone" :format="true"></wd-text>
+```
+
+### 前后插槽
+
+通过 `prefix`、`suffix` 属性或同名插槽扩展前后内容。
 
 ```html
 <wd-text text="12345678901" mode="phone" format type="primary" prefix="Prefix" suffix="Suffix" />
@@ -104,71 +126,42 @@ url: 'https://wot-ui.cn/component/text.md'
 </wd-text>
 ```
 
-## 金额
-
-设置 `mode="price"` 。
-
-```html
-<wd-text text="16354.156" mode="price" type="success" decoration="line-through" prefix="￥" />
-```
-
-## 文字装饰
-
-设置 `decoration` 文字装饰，下划线，中划线等。
-
-```html
-<wd-text :text="text" type="warning" decoration="underline" />
-```
-
-## 事件
-
-```html
-<wd-text
-  text="芦叶满汀洲，寒沙带浅流。二十年重过南楼。柳下系船犹未稳，能几日，又中秋。黄鹤断矶头，故人曾到否？旧江山浑是新愁。欲买桂花同载酒，终不似，少年游。"
-  @click="clickTest"
-></wd-text>
-```
-
-```typescript
-function clickTest() {
-  console.log(1)
-}
-```
-
 ## Attributes
 
-| 参数       | 说明                                                               | 类型            | 可选值                                                  | 默认值  | 最低版本 |
-| ---------- | ------------------------------------------------------------------ | --------------- | ------------------------------------------------------- | ------- | -------- |
-| type       | 主题类型                                                           | string          | 'primary' / 'error' / 'warning' / 'success' / 'default' | default | 1.3.4    |
-| text       | 文字                                                               | string / number | -                                                       | -       | 1.3.4    |
-| size       | 字体大小                                                           | string          | -                                                       | -       | 1.3.4    |
-| mode       | 文本处理的匹配模式                                                 | string          | 'text' / 'date' / 'phone' / 'name' / 'price'            | text    | 1.3.4+   |
-| bold       | 是否粗体，默认 normal                                              | boolean         | -                                                       | false   | 1.3.4    |
-| format     | 是否脱敏                                                           | boolean         | 当 mode 为 phone 和 name 时生效                         | false   | 1.3.4    |
-| color      | 文字颜色                                                           | string          | -                                                       | -       | 1.3.4    |
-| lines      | 文本显示的行数，如果设置，超出此行数，将会显示省略号。最大值为 5。 | number          | -                                                       | -       | 1.3.4    |
-| lineHeight | 文本行高                                                           | string          | -                                                       | -       | 1.3.4    |
-| decoration | 文字装饰，下划线，中划线等                                         | string          | 'underline' / 'line-through' / 'overline'               | none    | 1.3.4+   |
-| prefix     | 前置内容                                                           | string          | -                                                       | -       | 1.3.4+   |
-| suffix     | 后置内容                                                           | string          | -                                                       | -       | 1.3.4+   |
-| call       | mode=phone 时，点击文本是否拨打电话                                | boolean         | -                                                       | false   | 1.3.4    |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| type | 主题类型，可选值为 `default`、`primary`、`success`、`warning`、`error` | `TextType` | `default` |
+| text | 文本内容 | `string | number` | `''` |
+| size | 字体大小 | `string` | `''` |
+| mode | 文本处理模式，可选值为 `text`、`date`、`phone`、`name`、`price` | `TextMode` | `text` |
+| decoration | 文本装饰，可选值为 `none`、`underline`、`line-through`、`overline` | `TextDecoration` | `none` |
+| call | `mode="phone"` 时点击文本是否拨号 | `boolean` | `false` |
+| bold | 是否粗体 | `boolean` | `false` |
+| format | 是否脱敏，仅在 `mode` 为 `phone` 和 `name` 时生效 | `boolean` | `false` |
+| color | 文本颜色 | `string` | `''` |
+| prefix | 前缀内容 | `string` | - |
+| suffix | 后缀内容 | `string` | - |
+| lines | 展示行数，超出后显示省略号 | `number` | - |
+| line-height | 文本行高 | `string` | `''` |
+| custom-class | 根节点自定义类名 | `string` | `''` |
+| custom-style | 根节点自定义样式 | `string` | `''` |
 
 ## Events
 
-| 事件名称 | 说明           | 参数  | 最低版本 |
-| -------- | -------------- | ----- | -------- |
-| click    | 标签点击时触发 | event | 1.3.4    |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| click | 点击文本时触发 | `Event` |
 
 ## Slots
 
-| 插槽名称 | 说明     | 最低版本 |
-| -------- | -------- | -------- |
-| prefix   | 前置插槽 | 1.3.4    |
-| suffix   | 后置插槽 | 1.3.4    |
+| 名称 | 说明 |
+| --- | --- |
+| prefix | 前缀内容 |
+| suffix | 后缀内容 |
 
 ## 外部样式类
 
-| 类名         | 说明       | 最低版本 |
-| ------------ | ---------- | -------- |
-| custom-class | 根节点样式 | 1.3.4    |
-| custom-style | 根节点样式 | 1.3.4    |
+| 类名 | 说明 |
+| --- | --- |
+| custom-class | 根节点样式类 |
+| custom-style | 根节点内联样式 |

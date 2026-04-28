@@ -1,47 +1,72 @@
 ---
-url: 'https://wot-ui.cn/component/gap.md'
+url: 'https://v2.wot-ui.cn/component/gap.md'
 ---
 
 # Gap 间隔槽
 
-一般用于页面布局时代替margin或者padding;或者充当（底部）占位元素。
+用于页面布局中的间距占位，可替代 `margin` 或 `padding`，也可作为底部占位元素。
 
-## 基本使用
+## 组件类型
 
-通过 `height` 属性设置高度 `background` 属性设置背景色。
+### 基本使用
+
+默认渲染一个高度为 `14px`、背景为透明色的间隔槽。
 
 ```html
-<wd-gap bg-color="#FFFFFF"></wd-gap>
+<wd-gap />
 ```
 
-## 自定义背景色
+## 组件变体
+
+### 自定义背景色
+
+通过 `bg-color` 设置背景颜色。
 
 ```html
-<wd-gap bg-color="#4D80F0"></wd-gap>
+<wd-gap bg-color="#4D80F0" />
 ```
 
-## 自定义高度
+### 自定义高度
+
+通过 `height` 设置高度，支持数字和带单位字符串。
 
 ```html
-<wd-gap bg-color="#4D80F0" height="120rpx"></wd-gap>
+<wd-gap bg-color="#4D80F0" height="120rpx" />
 ```
 
-## 底部安全区
+## 组件样式
+
+### 自定义类名
+
+通过 `custom-class` 扩展样式。
 
 ```html
-<wd-gap safe-area-bottom height="0"></wd-gap>
+<wd-gap custom-class="custom-gap" />
+```
+
+```css
+.custom-gap {
+  padding-bottom: 120rpx;
+  background: #34d19d !important;
+}
+```
+
+## 特殊样式
+
+### 底部安全区
+
+开启 `safe-area-bottom` 后会自动追加底部安全区内边距，适合底部固定占位场景。
+
+```html
+<wd-gap safe-area-bottom height="0" />
 ```
 
 ## Attributes
 
-| 参数              | 说明      | 类型      | 可选值        | 默认值         | 最低版本 |
-|-----------------|---------|---------|------------|-------------| -------- |
-| height          | 高度      | `string`/`number`  | -          | 15       | -        |
-| bgColor      | 背景颜色    | string  |            | transparent | -        |
-| safeAreaBottom | 开启底部安全区  | boolean | true/false | false       | -        |
-
-## 外部样式类
-
-| 类名                 | 说明             | 最低版本 |
-| -------------------- | ---------------- | -------- |
-| custom-class         | 自定义样式 | -        |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| height | 间隔槽高度，支持数字（单位 `px`）或字符串（如 `20rpx`） | `string \| number` | `14` |
+| bg-color | 背景颜色 | `string` | `'transparent'` |
+| safe-area-bottom | 是否开启底部安全区适配 | `boolean` | `false` |
+| custom-class | 根节点自定义类名 | `string` | `''` |
+| custom-style | 根节点自定义样式 | `string` | `''` |

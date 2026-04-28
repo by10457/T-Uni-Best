@@ -1,24 +1,26 @@
 ---
-url: 'https://wot-ui.cn/component/button.md'
+url: 'https://v2.wot-ui.cn/component/button.md'
 ---
 
 # Button 按钮
 
 按钮用于触发一个操作，如提交表单或打开链接。
 
-## 基本用法
+## 组件类型
 
-基本按钮。
+### 类型
 
 ```html
 <wd-button>主要按钮</wd-button>
 <wd-button type="success">成功按钮</wd-button>
 <wd-button type="info">信息按钮</wd-button>
 <wd-button type="warning">警告按钮</wd-button>
-<wd-button type="error">危险按钮</wd-button>
+<wd-button type="danger">危险按钮</wd-button>
 ```
 
-## 禁用
+## 组件状态
+
+### 禁用
 
 设置 `disabled` 属性。
 
@@ -26,33 +28,7 @@ url: 'https://wot-ui.cn/component/button.md'
 <wd-button disabled>默认按钮</wd-button>
 ```
 
-## 幽灵按钮
-
-设置 `plain` 属性。
-
-```html
-<wd-button plain>主要按钮</wd-button>
-```
-
-## 细边框幽灵按钮
-
-设置 `hairline` 属性。
-
-```html
-<wd-button plain hairline>主要按钮</wd-button>
-```
-
-## 按钮大小
-
-设置 `size` ，支持 'small'、'medium'、'large'，默认为 'medium'。
-
-```html
-<wd-button size="small">小号按钮</wd-button>
-<wd-button size="medium">中号按钮</wd-button>
-<wd-button size="large">大号按钮</wd-button>
-```
-
-## 加载中按钮
+### 加载
 
 设置 `loading` 属性，让按钮处于加载中状态。加载中的按钮是禁止点击的。
 
@@ -60,47 +36,67 @@ url: 'https://wot-ui.cn/component/button.md'
 <wd-button loading>加载中</wd-button>
 ```
 
-## 文字按钮
+## 组件变体
 
-将 `type` 设置为 `text`。文字按钮不支持其他颜色。
+### 镂空
 
-```html
-<wd-button type="text">文字按钮</wd-button>
-```
-
-## 图标按钮
-
-将 `type` 设置为 `icon`，同时设置 `icon` 属性，icon 为图标的类名，可以直接使用 `Icon 图标` 章节中的图标类名。
+设置 `variant="plain"`。
 
 ```html
-<wd-button type="icon" icon="picture"></wd-button>
+<wd-button variant="plain">主要按钮</wd-button>
 ```
 
-## 带图标的按钮
+### 虚线
 
-设置 `icon` 属性，不需要设置 `type` 为 `icon`，即可以直接使用带图标的按钮。
+设置 `variant="dashed"`。
 
 ```html
-<wd-button icon="edit-outline"></wd-button>
+<wd-button variant="dashed">主要按钮</wd-button>
 ```
 
-结合`classPrefix`可以使用自定义图标，参见 [Icon 自定义图标](/component/icon#自定义图标)。
+### 柔和
+
+设置 `variant="soft"`。
 
 ```html
-<wd-button classPrefix="fish" icon="kehuishouwu">可回收</wd-button>
+<wd-button variant="soft">主要按钮</wd-button>
 ```
 
-## 块状按钮
+### 文字
 
-设置 `block` 属性。
+设置 `variant="text"`。
 
 ```html
-<wd-button block>主要按钮</wd-button>
+<wd-button variant="text">文字按钮</wd-button>
 ```
 
-## 自定义样式
+## 组件样式
 
-通过 `custom-class` 和 `custom-style` 属性可以自定义按钮的样式，这里我们使用`custom-class`给按钮添加一个 `Material Design 3` 风格的`box-shadow`。
+### 尺寸
+
+设置 `size` ，支持 'mini'、'small'、'medium'、'large'，默认为 'medium'。
+
+```html
+<wd-button size="mini">迷你按钮</wd-button>
+<wd-button size="small">小号按钮</wd-button>
+<wd-button size="medium">中号按钮</wd-button>
+<wd-button size="large">大号按钮</wd-button>
+```
+
+### 细边框与圆角
+
+设置 `hairline` 与 `round` 属性。
+
+```html
+<wd-button variant="plain" hairline>细边框</wd-button>
+<wd-button variant="plain" round>圆角按钮</wd-button>
+```
+
+## 特殊样式
+
+### custom-class 阴影
+
+通过 `custom-class` 和 `custom-style` 属性可以自定义按钮样式，这里使用 `custom-class` 添加 `Material Design 3` 风格 `box-shadow`。
 
 ```html
 <view class="page-class">
@@ -108,7 +104,7 @@ url: 'https://wot-ui.cn/component/button.md'
   <wd-button type="success" custom-class="custom-shadow">成功按钮</wd-button>
   <wd-button type="info" custom-class="custom-shadow">信息按钮</wd-button>
   <wd-button type="warning" custom-class="custom-shadow">警告按钮</wd-button>
-  <wd-button type="error" custom-class="custom-shadow">危险按钮</wd-button>
+  <wd-button type="danger" custom-class="custom-shadow">危险按钮</wd-button>
 </view>
 ```
 
@@ -122,68 +118,119 @@ url: 'https://wot-ui.cn/component/button.md'
 }
 ```
 
+## 内容形态
+
+### 纯图标按钮
+
+设置 `icon` 属性可展示图标按钮。
+
+```html
+<wd-button icon="edit-outline"></wd-button>
+```
+
+### 图文按钮
+
+结合 `icon` 与内容展示图文按钮；结合 `class-prefix` 可使用自定义图标，参见 [Icon 自定义图标](/component/icon#自定义图标)。
+
+```html
+<wd-button icon="download">下载</wd-button>
+<wd-button class-prefix="fish" icon="kehuishouwu">可回收</wd-button>
+```
+
+## 布局能力
+
+### 块状按钮
+
+设置 `block` 属性。
+
+```html
+<wd-button block>主要按钮</wd-button>
+```
+
 ## Attributes
 
-| 参数                   | 说明                                                                                                                                                           | 类型        | 可选值                                                   | 默认值       | 最低版本 |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------- | ------------ | -------- |
-| type                   | 按钮类型                                                                                                                                                       | string      | primary / success / info / warning / error / text / icon | primary      | -        |
-| round                  | 圆角按钮                                                                                                                                                       | boolean     | -                                                        | true         | -        |
-| plain                  | 幽灵按钮                                                                                                                                                       | boolean     | -                                                        | false        | -        |
-| hairline               | 是否细边框                                                                                                                                                     | boolean     | -                                                        | false        | -        |
-| loading                | 加载中按钮                                                                                                                                                     | boolean     | -                                                        | false        | -        |
-| block                  | 块状按钮                                                                                                                                                       | boolean     | -                                                        | false        | -        |
-| size                   | 按钮尺寸                                                                                                                                                       | string      | small / medium / large                                   | medium       | -        |
-| disabled               | 禁用按钮                                                                                                                                                       | boolean     | -                                                        | false        | -        |
-| icon                   | 图标类名                                                                                                                                                       | string      | -                                                        | -            | -        |
-| loading-color          | 加载图标颜色                                                                                                                                                   | string      | -                                                        | -            | -        |
-| open-type              | 微信开放能力                                                                                                                                                   | string      | -                                                        | -            | -        |
-| hover-stop-propagation | 指定是否阻止本节点的祖先节点出现点击态                                                                                                                         | boolean     | -                                                        | false        | -        |
-| lang                   | 指定返回用户信息的语言，zh\_CN 简体中文，zh\_TW 繁体中文，en 英文                                                                                                | string      | zh\_CN / zh\_TW                                            | en           | -        |
-| session-from           | 会话来源，open-type="contact"时有效                                                                                                                            | string      | -                                                        | -            | -        |
-| send-message-title     | 会话内消息卡片标题，open-type="contact"时有效                                                                                                                  | string      | -                                                        | 当前标题     | -        |
-| send-message-path      | 会话内消息卡片点击跳转小程序路径，open-type="contact"时有效                                                                                                    | string      | -                                                        | 当前分享路径 | -        |
-| send-message-img       | 会话内消息卡片图片，open-type="contact"时有效                                                                                                                  | string      | -                                                        | 截图         | -        |
-| app-parameter          | 打开 APP 时，向 APP 传递的参数，open-type=launchApp 时有效                                                                                                     | string      | -                                                        | -            | -        |
-| show-message-card      | 是否显示会话内消息卡片，设置此参数为 true，用户进入客服会话会在右下角显示"可能要发送的小程序"提示，用户点击后可以快速发送小程序消息，open-type="contact"时有效 | boolean     | -                                                        | false        | -        |
-| classPrefix            | 类名前缀，用于使用自定义图标，参见[icon](/component/icon#自定义图标)                                                                                           | string      | -                                                        | 'wd-icon'    | 0.1.27   |
-| button-id              | 按钮的唯一标识，可用于设置隐私同意授权按钮的 id                                                                                                                | string      | -                                                        | -            | 1.3.6    |
-| scope                  | 支付宝小程序使用，当 open-type 为 getAuthorize 时有效。                                                                                                        | ButtonScope | `phoneNumber` / `userInfo`                               | -            | 1.3.14   |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| type | 按钮类型，可选值为 `primary`、`success`、`info`、`warning`、`danger` | string | primary |
+| variant | 按钮变体，可选值为 `base`、`plain`、`dashed`、`soft`、`text` | string | base |
+| size | 按钮尺寸，可选值为 `mini`、`small`、`medium`、`large` | string | medium |
+| round | 圆角按钮 | boolean | false |
+| disabled | 禁用按钮 | boolean | false |
+| hairline | 细边框 | boolean | false |
+| block | 块状按钮 | boolean | false |
+| loading | 加载中按钮 | boolean | false |
+| text | 按钮文本 | string | - |
+| icon | 图标类名 | string | - |
+| class-prefix | 类名前缀，用于使用自定义图标，用法参考 Icon 组件 | string | wd-icon |
+| css-icon | CSS 图标，用法参考 Icon 组件 | `boolean \| string` | false |
+| loading-props | 加载配置项 | `Partial<LoadingProps>` | - |
+| open-type | 开放能力类型，详见下方 `ButtonOpenType` | string | - |
+| hover-stop-propagation | 阻止祖先节点点击态 | boolean | false |
+| hover-start-time | 按下后多久出现点击态（ms） | number | 20 |
+| hover-stay-time | 松开后多久移除点击态（ms） | number | 70 |
+| lang | 用户信息语言，可选值为 `zh_CN`、`zh_TW`、`en` | string | - |
+| session-from | 会话来源（`open-type=contact` 时有效） | string | - |
+| send-message-title | 会话消息卡片标题（`open-type=contact` 时有效） | string | 当前标题 |
+| send-message-path | 会话消息卡片路径（`open-type=contact` 时有效） | string | 当前分享路径 |
+| send-message-img | 会话消息卡片图片（`open-type=contact` 时有效） | string | 截图 |
+| app-parameter | 打开 APP 传参（`open-type=launchApp` 时有效） | string | - |
+| show-message-card | 显示会话消息卡片（`open-type=contact` 时有效） | boolean | false |
+| button-id | 按钮唯一标识 | string | - |
+| scope | 支付宝授权范围，可选值为 `phoneNumber`、`userInfo`（open-type=getAuthorize 时有效） | string | - |
+| loading-color | 加载图标颜色 | string | - |
+| custom-class | 根节点自定义类名 | string | - |
+| custom-style | 根节点自定义样式 | string | - |
 
 ### ButtonOpenType 开放能力
 
-| 属性                      | 说明                                                                                       |
-| ------------------------- | ------------------------------------------------------------------------------------------ |
-| feedback                  | 打开“意见反馈”页面，用户可提交反馈内容并上传日志。                                         |
-| share                     | 触发用户转发                                                                               |
-| getUserInfo               | 获取用户信息，可以从@getuserinfo 回调中获取到用户信息                                      |
-| contact                   | 打开客服会话，如果用户在会话中点击消息卡片后返回应用，可以从 @contact 回调中获得具体信息   |
-| getPhoneNumber            | 获取用户手机号，可以从@getphonenumber 回调中获取到用户信息                                 |
-| getRealtimePhoneNumber    | 实时获取用户手机号，可以从@getrealtimephonenumber 回调中获取到用户信息，仅微信小程序          |
-| launchApp                 | 小程序中打开 APP，可以通过 app-parameter 属性设定向 APP 传的参数                           |
-| openSetting               | 打开授权设置页                                                                             |
-| chooseAvatar              | 获取用户头像，可以从@chooseavatar 回调中获取到头像信息                                     |
-| getAuthorize              | 支持小程序授权，支付宝小程序配合`scope`使用，可以实现`getPhoneNumber`和`getUserInfo`功能。 |
-| lifestyle                 | 关注生活号，支付宝小程序                                                                   |
-| contactShare              | 分享到通讯录好友，支付宝小程序                                                             |
-| agreePrivacyAuthorization | 用户同意隐私协议按钮。可通过 @agreeprivacyauthorization 监听用户同意隐私协议事件。         |
+| 属性 | 说明 |
+| --- | --- |
+| feedback | 打开“意见反馈”页 |
+| share | 触发用户转发 |
+| getUserInfo | 获取用户信息 |
+| contact | 打开客服会话 |
+| getPhoneNumber | 获取手机号 |
+| getRealtimePhoneNumber | 实时获取手机号（仅微信） |
+| launchApp | 在小程序中打开 APP |
+| openSetting | 打开授权设置页 |
+| chooseAvatar | 获取用户头像 |
+| getAuthorize | 支持支付宝授权（配合 `scope`） |
+| lifestyle | 关注生活号（支付宝） |
+| contactShare | 分享到通讯录（支付宝） |
+| openGroupProfile | 打开群资料卡（微信） |
+| openGuildProfile | 打开频道资料卡（微信） |
+| openPublicProfile | 打开公众号资料卡（微信） |
+| shareMessageToFriend | 分享消息给朋友（微信） |
+| addFriend | 添加好友（微信） |
+| addColorSign | 添加彩签（微信） |
+| addGroupApp | 添加群应用（微信） |
+| addToFavorites | 收藏（微信） |
+| chooseAddress | 选择收货地址（微信） |
+| chooseInvoiceTitle | 选择发票抬头（微信） |
+| login | 授权登录（平台能力） |
+| subscribe | 订阅（平台能力） |
+| favorite | 收藏（平台能力） |
+| watchLater | 稍后再看（平台能力） |
+| openProfile | 打开个人主页（平台能力） |
+| agreePrivacyAuthorization | 用户同意隐私协议 |
 
 ## Events
 
-| 事件名称       | 说明                                                         | 参数     | 最低版本 |
-| -------------- | ------------------------------------------------------------ | -------- | -------- |
-| click          | 点击事件                                                     | `event`  | -        |
-| getuserinfo    | 获取用户信息                                                 | `detail` | -        |
-| contact        | 客服消息回调，open-type="contact"时有效                      | `detail` | -        |
-| getphonenumber | 获取用户手机号回调，open-type=getPhoneNumber 时有效          | `detail` | -        |
-| getrealtimephonenumber | 实时获取用户手机号回调，open-type=getRealtimePhoneNumber 时有效          | `detail` | 1.13.0 |
-| error          | 当使用开放能力时，发生错误的回调，open-type=launchApp 时有效 | `detail` | -        |
-| launchapp      | 打开 APP 成功的回调，open-type=launchApp 时有效              | `detail` | -        |
-| opensetting    | 在打开授权设置页后回调，open-type=openSetting 时有效         | `detail` | -        |
-| chooseavatar   | 获取用户头像回调，open-type=chooseAvatar 时有效              | `detail` | -        |
-| agreeprivacyauthorization | 用户同意隐私协议回调，open-type=agreePrivacyAuthorization 时有效 | `detail` | -        |
+| 事件名称 | 说明 | 参数 |
+| --- | --- | --- |
+| click | 点击事件 | `event` |
+| getuserinfo | 获取用户信息回调 | `event` |
+| contact | 客服消息回调（`open-type=contact`） | `event` |
+| getphonenumber | 获取手机号回调（`open-type=getPhoneNumber`） | `event` |
+| getrealtimephonenumber | 实时获取手机号回调（`open-type=getRealtimePhoneNumber`） | `event` |
+| error | 开放能力错误回调（`open-type=launchApp`） | `event` |
+| launchapp | 打开 APP 成功回调（`open-type=launchApp`） | `event` |
+| opensetting | 打开授权设置页回调（`open-type=openSetting`） | `event` |
+| chooseavatar | 获取用户头像回调（`open-type=chooseAvatar`） | `event` |
+| agreeprivacyauthorization | 同意隐私协议回调（`open-type=agreePrivacyAuthorization`） | `event` |
 
-## 外部样式类
+## Slots
 
-| 类名         | 说明       | 最低版本 |
-| ------------ | ---------- | -------- |
-| custom-class | 根节点样式 | -        |
+| name | 说明 |
+| --- | --- |
+| default | 按钮内容 |
