@@ -1,7 +1,13 @@
 /* eslint-disable import/no-mutable-exports */
+type SafeAreaInsets = UniNamespace.SafeAreaInsets
+type AppSystemInfo = (UniNamespace.GetWindowInfoResult | UniNamespace.GetSystemInfoResult) & {
+  safeAreaInsets: SafeAreaInsets
+  statusBarHeight: number
+}
+
 // 获取屏幕边界到安全区域距离
-let systemInfo
-let safeAreaInsets
+let systemInfo: AppSystemInfo
+let safeAreaInsets: SafeAreaInsets
 
 // #ifdef MP-WEIXIN
 // 微信小程序使用新的API
@@ -13,12 +19,22 @@ safeAreaInsets = systemInfo.safeArea
       bottom: systemInfo.windowHeight - systemInfo.safeArea.bottom,
       left: systemInfo.safeArea.left,
     }
-  : null
+  : systemInfo.safeAreaInsets
 // #endif
 
 // #ifndef MP-WEIXIN
 // 其他平台继续使用uni API
-systemInfo = uni.getSystemInfoSync()
+const _systemInfo = uni.getSystemInfoSync()
+systemInfo = {
+  ..._systemInfo,
+  safeAreaInsets: _systemInfo.safeAreaInsets || {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
+  statusBarHeight: _systemInfo.statusBarHeight || 0,
+}
 safeAreaInsets = systemInfo.safeAreaInsets
 // #endif
 
