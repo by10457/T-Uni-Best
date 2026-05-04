@@ -79,11 +79,15 @@ pnpm type-check      # 类型检查
 ### TypeScript
 - 禁止 `any`，用 `interface` 定义对象类型，`type` 定义联合类型
 - 导入类型使用 `import type` 语法
+- `defineProps` 中的每个属性必须用 `/** */` 注释说明用途、默认行为或单位，尤其是可配置组件、主题变量、事件状态开关等对外 API
 
 ### 样式（详见 `css-styling` skill）
 - **禁止**在 `<style>` 中写布局、间距、颜色等普通元素样式，一律用 UnoCSS 原子化类名
 - `<style scoped>` 仅用于：① `:deep()` 覆盖组件库内部样式　② 伪元素　③ `@keyframes`
 - **即使使用 Wot UI，也必须覆盖与设计稿不符的默认样式**
+
+### 构建与分析工具
+- Rollup visualizer 默认不得自动打开浏览器，避免打断本地开发；需要查看分析报告时，通过 `VITE_VISUALIZER_OPEN=true pnpm build:h5` 显式开启
 
 ### uni-app
 - 使用 `uni.xxx` API，禁止直接调用原生 API
