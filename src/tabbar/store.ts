@@ -20,6 +20,20 @@ function normalizeTabbarPath(
   return (path.startsWith('/') ? path : `/${path}`) as _LocationUrl
 }
 
+function normalizeRoutePath(path?: string) {
+  if (!path) {
+    return ''
+  }
+  const _path = path.split('?')[0]
+  return _path.startsWith('/') ? _path : `/${_path}`
+}
+
+function getCurrentPagePath() {
+  const pages = getCurrentPages()
+  const currentPage = pages[pages.length - 1]
+  return normalizeRoutePath(currentPage?.route)
+}
+
 /** tabbarList 里面的 path 从 pages.config.ts 得到 */
 const baseTabbarList = reactive<CustomTabBarRuntimeItem[]>(
   _tabbarList.map((item) => ({
@@ -56,7 +70,10 @@ export function isPageTabbar(path: string) {
   if (selectedTabbarStrategy === TABBAR_STRATEGY_MAP.NO_TABBAR) {
     return false
   }
-  const _path = path.split('?')[0]
+  const _path = normalizeRoutePath(path)
+  if (_path === '/') {
+    return true
+  }
   if (selectedTabbarStrategy === TABBAR_STRATEGY_MAP.NATIVE_TABBAR) {
     return nativeTabbarPathList.includes(_path as _LocationUrl)
   }
@@ -87,18 +104,19 @@ const tabbarStore = reactive({
       this.setCurIdx(0)
       return
     }
+    const normalizedPath = normalizeRoutePath(path)
     // '/' 当做首页
-    if (path === '/') {
+    if (normalizedPath === '/') {
       this.setCurIdx(0)
       return
     }
-    const index = list.findIndex((item) => item.pagePath === path)
+    const index = list.findIndex((item) => item.pagePath === normalizedPath)
     // console.log('tabbarList:', tabbarList)
     if (index === -1) {
       const pagesPathList = getCurrentPages()
         .map((item) => item.route)
         .filter((route): route is string => Boolean(route))
-        .map((route) => (route.startsWith('/') ? route : `/${route}`))
+        .map((route) => normalizeRoutePath(route))
       // console.log(pagesPathList)
       const flag = list.some((item) => pagesPathList.includes(item.pagePath))
       if (!flag) {
@@ -107,6 +125,12 @@ const tabbarStore = reactive({
       }
     } else {
       this.setCurIdx(index)
+    }
+  },
+  syncCurIdxByCurrentPage() {
+    const currentPath = getCurrentPagePath()
+    if (currentPath) {
+      this.setAutoCurIdx(currentPath)
     }
   },
   restorePrevIdx() {

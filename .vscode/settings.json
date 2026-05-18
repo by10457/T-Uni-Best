@@ -78,6 +78,7 @@
 
   "typescript.tsserver.exclude": ["**/node_modules", "**/dist", "**/unpackage"],
   "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
   "js/ts.inlayHints.enumMemberValues.enabled": true,
   "js/ts.preferences.preferTypeOnlyAutoImports": true,
   "js/ts.preferences.includePackageJsonAutoImports": "on",

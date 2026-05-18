@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app'
 import { navigateToInterceptor } from '@/router/interceptor'
+import { tabbarStore } from '@/tabbar/store'
 import updateManager from '@/utils/updateManager.wx'
 
 onLaunch((options) => {
@@ -19,6 +20,7 @@ onShow((options) => {
   } else {
     navigateToInterceptor.invoke({ url: '/' })
   }
+  tabbarStore.syncCurIdxByCurrentPage()
 })
 onHide(() => {
   console.log('App Hide')
