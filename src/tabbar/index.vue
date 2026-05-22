@@ -35,20 +35,25 @@ function handleClick(index: number) {
     return
   }
   const url = list[index].pagePath
+  const prevIdx = tabbarStore.curIdx
   tabbarStore.setCurIdx(index)
+  const syncTabbarAfterNavigation = () => {
+    tabbarStore.syncCurIdxByCurrentPageAsync()
+  }
+  const restoreTabbarWhenNavigationFailed = () => {
+    tabbarStore.setCurIdx(prevIdx)
+  }
   if (tabbarCacheEnable) {
     uni.switchTab({
       url,
-      complete() {
-        tabbarStore.syncCurIdxByCurrentPageAsync()
-      },
+      success: syncTabbarAfterNavigation,
+      fail: restoreTabbarWhenNavigationFailed,
     })
   } else {
     uni.navigateTo({
       url,
-      complete() {
-        tabbarStore.syncCurIdxByCurrentPageAsync()
-      },
+      success: syncTabbarAfterNavigation,
+      fail: restoreTabbarWhenNavigationFailed,
     })
   }
 }

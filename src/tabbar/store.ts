@@ -74,17 +74,6 @@ function findTabbarIndexByPath(path?: string) {
   return tabbarList.value.findIndex((item) => item.pagePath === normalizedPath)
 }
 
-function findLatestTabbarIndexInPageStack() {
-  const pagesPathList = getCurrentPages().map((item) => normalizeRoutePath(item.route))
-  for (let i = pagesPathList.length - 1; i >= 0; i -= 1) {
-    const index = findTabbarIndexByPath(pagesPathList[i])
-    if (index >= 0) {
-      return index
-    }
-  }
-  return -1
-}
-
 export function isPageTabbar(path: string) {
   if (selectedTabbarStrategy === TABBAR_STRATEGY_MAP.NO_TABBAR) {
     return false
@@ -127,12 +116,6 @@ const tabbarStore = reactive({
     const index = findTabbarIndexByPath(path)
     if (index >= 0) {
       this.setCurIdx(index)
-      return
-    }
-
-    const latestTabbarIndex = findLatestTabbarIndexInPageStack()
-    if (latestTabbarIndex >= 0) {
-      this.setCurIdx(latestTabbarIndex)
       return
     }
 

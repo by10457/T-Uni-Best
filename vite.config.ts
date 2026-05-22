@@ -47,11 +47,14 @@ export default defineConfig(({ command, mode }) => {
   // pnpm dev:app 时得到 => build development (注意区别，command为build)
   // pnpm build:app 时得到 => build production
   // dev 和 build 命令可以分别使用 .env.development 和 .env.production 的环境变量
+  // 非 H5 端 dev 也是 build command，最终加载哪个 env 文件以实际 mode 为准。
 
   const { UNI_PLATFORM, SKIP_OPEN_DEVTOOLS } = process.env
   console.log('UNI_PLATFORM -> ', UNI_PLATFORM) // 得到 mp-weixin, h5, app 等
 
-  const env = loadEnv(mode, path.resolve(process.cwd(), 'env'))
+  const envDir = path.resolve(process.cwd(), 'env')
+  const env = loadEnv(mode, envDir)
+  const localEnv = loadEnv(mode, envDir, '')
   const {
     VITE_APP_PORT,
     VITE_SERVER_BASEURL,
@@ -62,6 +65,7 @@ export default defineConfig(({ command, mode }) => {
     VITE_APP_PROXY_PREFIX,
     VITE_COPY_NATIVE_RES_ENABLE,
   } = env
+  const { WECHAT_DEVTOOLS_CLI_PATH } = localEnv
   console.log('环境变量 env -> ', env)
 
   return defineConfig({
@@ -154,7 +158,11 @@ export default defineConfig(({ command, mode }) => {
       }),
       // 自动打开开发者工具插件 (必须修改 .env 文件中的 VITE_WX_APPID)
       // 上传时通过 SKIP_OPEN_DEVTOOLS=true 跳过
-      SKIP_OPEN_DEVTOOLS !== 'true' && openDevTools({ mode }),
+      SKIP_OPEN_DEVTOOLS !== 'true' &&
+        openDevTools({
+          mode,
+          wechatDevtoolsCliPath: WECHAT_DEVTOOLS_CLI_PATH,
+        }),
     ],
     define: {
       __VITE_APP_PROXY__: JSON.stringify(VITE_APP_PROXY_ENABLE),
