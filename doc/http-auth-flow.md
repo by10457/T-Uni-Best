@@ -237,7 +237,34 @@ httpGet('/user/profile', undefined, undefined, { hideErrorToast: true })
 
 ---
 
-## 十、注意事项
+## 十、统一错误结构
+
+HTTP 层不会改变成功响应的行为，仍直接返回业务 `data`。失败响应统一 reject
+`HttpError`：
+
+```typescript
+interface HttpError<T = any> {
+  type: 'business' | 'auth' | 'http' | 'network'
+  code?: number
+  statusCode?: number
+  message: string
+  data?: T
+  raw?: unknown
+}
+```
+
+| `type`     | 场景                               |
+| ---------- | ---------------------------------- |
+| `business` | HTTP 成功，但业务码不是成功码      |
+| `auth`     | 未登录、登录失效或刷新后仍鉴权失败 |
+| `http`     | 非 2xx HTTP 状态                   |
+| `network`  | `uni.request` 未收到有效响应       |
+
+业务错误原先 reject 的是 `responseData.data`，认证和 HTTP 错误原先可能 reject 原始
+响应。现在如需访问这些信息，应分别读取 `error.data` 和 `error.raw`。设置
+`hideErrorToast: true` 只关闭 HTTP 层提示，不改变错误 reject 行为。
+
+## 十一、注意事项
 
 1. **认证分叉维度是平台，不是 Token 模式**。小程序始终走静默登录重试；H5 在无法刷新时始终跳转登录页。Token 模式（单/双）只影响刷新的具体方式。
 

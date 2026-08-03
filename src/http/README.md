@@ -1,16 +1,62 @@
 # 请求库
 
-目前unibest支持3种请求库：
+项目提供 3 种请求方式：
 
-- 菲鸽简单封装的 `简单版本http`，路径（src/http/http.ts），对应的示例在 src/api/foo.ts
-- `alova 的 http`，路径（src/http/alova.ts），对应的示例在 src/api/foo-alova.ts
-- `vue-query`, 路径（src/http/vue-query.ts）, 目前主要用在自动生成接口，详情看(https://unibest.tech/base/17-generate)，示例在 src/service/app 文件夹
+- 简单版 `http`：路径 `src/http/http.ts`，当前项目的认证与请求主链路。
+- `alova`：路径 `src/http/alova.ts`，备用实现。
+- `vue-query`：路径 `src/http/vue-query.ts`，主要用于自动生成接口。
 
-## 如何选择
+完整的跨端认证、双 Token 刷新和 401 容灾流程见
+[`doc/http-auth-flow.md`](../../doc/http-auth-flow.md)。
 
-如果您以前用过 alova 或者 vue-query，可以优先使用您熟悉的。
-如果您的项目简单，简单版本的http 就够了，也不会增加包体积。（发版的时候可以去掉alova和vue-query，如果没有超过包体积，留着也无所谓 ^\_^）
+## 基本使用
 
-## roadmap
+```ts
+import { httpGet, httpPost } from '@/http/http'
 
-菲鸽最近在优化脚手架，后续可以选择是否使用第三方的请求库，以及选择什么请求库。还在开发中，大概月底出来（8月31号）。
+interface IUserInfoRes {
+  id: number
+  nickname: string
+}
+
+export function getUserInfo() {
+  return httpGet<IUserInfoRes>('/user/info')
+}
+
+export function updateUserInfo(data: Partial<IUserInfoRes>) {
+  return httpPost('/user/update', data)
+}
+```
+
+响应成功时返回业务 `data`。业务错误、登录失效、HTTP 状态异常和网络异常会统一
+reject `HttpError`：
+
+```ts
+import type { HttpError } from '@/http/types'
+
+try {
+  const userInfo = await getUserInfo()
+  console.log(userInfo.nickname)
+} catch (error) {
+  const httpError = error as HttpError
+  console.log(httpError.type, httpError.message, httpError.statusCode)
+}
+```
+
+## 自定义请求行为
+
+登录、刷新 Token 等无需已有登录态的接口必须设置 `ignoreAuth: true`：
+
+```ts
+httpPost('/auth/login', data, undefined, undefined, { ignoreAuth: true })
+```
+
+如果调用方需要自行展示错误，可关闭 HTTP 层的默认提示：
+
+```ts
+httpGet<IUserInfoRes>('/user/info', undefined, undefined, {
+  hideErrorToast: true,
+})
+```
+
+`_retryCount` 是 401 容灾流程的内部字段，业务代码不得手动设置。

@@ -1,9 +1,16 @@
 import type { IDoubleTokenRes } from '@/api/types/login'
-import type { CustomRequestOptions, IResponse } from '@/http/types'
+import type { CustomRequestOptions, HttpError, IResponse } from '@/http/types'
 import { useTokenStore } from '@/store/token'
 import { isDoubleTokenMode } from '@/utils'
 import { toLoginPage } from '@/utils/toLoginPage'
-import { isSuccessCode, isTokenExpiredCode } from './tools/enum'
+import {
+  createHttpError,
+  getResponseMessage,
+  HttpErrorType,
+  isSuccessCode,
+  isTokenExpiredCode,
+  ShowMessage,
+} from './tools/enum'
 
 // 刷新 token 状态管理
 let refreshing = false // 防止重复刷新 token 标识
@@ -103,7 +110,10 @@ async function ensureAuthReady(options: CustomRequestOptions) {
   tokenStore.updateNowTime()
   if (!tokenStore.hasLogin) {
     toLoginPage()
-    throw new Error('[请求拦截] 未登录，已跳转登录页')
+    throw createHttpError({
+      type: HttpErrorType.Auth,
+      message: '未登录或登录已过期，已跳转登录页',
+    })
   }
   // #endif
 }
@@ -139,11 +149,12 @@ export function http<T>(options: CustomRequestOptions) {
         // #endif
         // 响应成功
         success: async (res) => {
-          const responseData = res.data as IResponse<T>
-          const { code } = responseData
+          const responseData = res.data as Partial<IResponse<T>>
+          const code = responseData?.code
 
           // 检查是否是Token失效错误（包括HTTP状态码401或业务码）
-          const isTokenExpired = res.statusCode === 401 || isTokenExpiredCode(code)
+          const isTokenExpired =
+            res.statusCode === 401 || (code !== undefined && isTokenExpiredCode(code))
 
           if (isTokenExpired) {
             // 排除登录相关接口，避免无限循环重试
@@ -154,7 +165,16 @@ export function http<T>(options: CustomRequestOptions) {
               options.url?.includes('/auth/logout')
             if (isAuthEndpoint) {
               // 登录和认证接口直接返回错误，不进行重试
-              return reject(res)
+              return reject(
+                createHttpError({
+                  type: HttpErrorType.Auth,
+                  code,
+                  statusCode: res.statusCode,
+                  message: getResponseMessage(responseData, '登录认证失败'),
+                  data: responseData?.data,
+                  raw: res,
+                }),
+              )
             }
             const tokenStore = useTokenStore()
             // H5端：判断是否具备无感恢复能力，分情况处理
@@ -165,7 +185,16 @@ export function http<T>(options: CustomRequestOptions) {
             if (!isDoubleTokenMode || !(tokenStore.tokenInfo as IDoubleTokenRes)?.refreshToken) {
               tokenStore.logout()
               toLoginPage()
-              return reject(res)
+              return reject(
+                createHttpError({
+                  type: HttpErrorType.Auth,
+                  code,
+                  statusCode: res.statusCode,
+                  message: getResponseMessage(responseData, '登录已过期，请重新登录'),
+                  data: responseData?.data,
+                  raw: res,
+                }),
+              )
             }
             // #endif
 
@@ -175,7 +204,16 @@ export function http<T>(options: CustomRequestOptions) {
             if (retryCount >= 1) {
               // 已重试过一次，后端仍返回 401，将登出并拒绝
               await tokenStore.logout()
-              return reject(new Error('Token 刷新后仍鉴权失败，请重新打开小程序'))
+              return reject(
+                createHttpError({
+                  type: HttpErrorType.Auth,
+                  code,
+                  statusCode: res.statusCode,
+                  message: 'Token 刷新后仍鉴权失败，请重新登录',
+                  data: responseData?.data,
+                  raw: res,
+                }),
+              )
             }
 
             // 所有401请求都加入队列等待处理
@@ -263,31 +301,59 @@ export function http<T>(options: CustomRequestOptions) {
           // 处理其他成功状态（HTTP状态码200-299）
           if (res.statusCode >= 200 && res.statusCode < 300) {
             // 处理业务逻辑错误
-            if (!isSuccessCode(code)) {
-              uni.showToast({
-                icon: 'none',
-                title: responseData.msg || responseData.message || '请求错误',
+            if (code === undefined || !isSuccessCode(code)) {
+              const httpError = createHttpError({
+                type: HttpErrorType.Business,
+                code,
+                statusCode: res.statusCode,
+                message: getResponseMessage(responseData),
+                data: responseData?.data,
+                raw: responseData,
               })
-              return reject(responseData.data)
+
+              if (!options.hideErrorToast) {
+                uni.showToast({
+                  icon: 'none',
+                  title: httpError.message,
+                })
+              }
+              return reject(httpError)
             }
-            return resolve(responseData.data)
+            return resolve(responseData.data as T)
           }
 
-          // 处理其他错误
-          !options.hideErrorToast &&
+          const httpError = createHttpError({
+            type: HttpErrorType.Http,
+            code,
+            statusCode: res.statusCode,
+            message: getResponseMessage(responseData, ShowMessage(res.statusCode)),
+            data: responseData?.data,
+            raw: res,
+          })
+
+          if (!options.hideErrorToast) {
             uni.showToast({
               icon: 'none',
-              title: (res.data as any).msg || '请求错误',
+              title: httpError.message,
             })
-          reject(res)
+          }
+          reject(httpError)
         },
         // 响应失败
         fail(err) {
-          uni.showToast({
-            icon: 'none',
-            title: '网络错误，换个网络试试',
-          })
-          reject(err)
+          const httpError = createHttpError({
+            type: HttpErrorType.Network,
+            message: '网络错误，换个网络试试',
+            raw: err,
+          } satisfies HttpError)
+
+          if (!options.hideErrorToast) {
+            uni.showToast({
+              icon: 'none',
+              title: httpError.message,
+            })
+          }
+          reject(httpError)
         },
       })
     })()

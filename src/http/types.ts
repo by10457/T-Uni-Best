@@ -19,6 +19,18 @@ export interface HttpRequestResult<T> {
   requestTask: UniApp.RequestTask
 }
 
+/**
+ * HTTP 层统一抛出的错误结构，调用方可通过 type 区分处理策略。
+ */
+export interface HttpError<T = any> {
+  type: 'business' | 'auth' | 'http' | 'network'
+  code?: number
+  statusCode?: number
+  message: string
+  data?: T
+  raw?: unknown
+}
+
 // 通用响应格式（兼容 msg + message 字段）
 export type IResponse<T = any> =
   | {
