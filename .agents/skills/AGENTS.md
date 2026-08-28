@@ -1,5 +1,7 @@
 # T-Uni-Best 项目规范
 
+> 兼容入口：项目的规范事实源已迁移到根目录 `AGENTS.md`、`.agents/AGENTS.md` 和 `.agents/skills/SKILL.md`。支持标准 AGENTS 发现机制的工具应优先读取这些文件。
+
 基于 **uniapp + Vue3 + TypeScript + Vite5 + UnoCSS** 的跨平台开发框架（T-Uni-Best / unibest）。支持 H5、微信/支付宝小程序、APP 多平台，无需依赖 HBuilderX，支持命令行开发。
 
 ---
@@ -15,6 +17,11 @@
 | `wot-ui` | `.agents/skills/wot-ui/SKILL.md` | 使用 Wot UI 组件、查询组件 API、排查组件问题 |
 | `ui-ux-pro-max` | `.agents/skills/ui-ux-pro-max/SKILL.md` | 做 UI/UX 设计、生成设计系统、选色板字体 |
 | `coding-guidelines` | `.agents/skills/coding-guidelines/SKILL.md` | 开始新功能、重构代码、review/调试代码 |
+| `uni-app` | `.agents/skills/uni-app/SKILL.md` | UniApp 生命周期、内置 API、配置和多端兼容性 |
+| `uni-plugin-integration` | `.agents/skills/uni-plugin-integration/SKILL.md` | 评估、安装、升级第三方 UniApp 插件 |
+| `unicloud` | `.agents/skills/unicloud/SKILL.md` | 明确使用 uniCloud 云数据库、云函数或云存储 |
+| `wechat-miniapp-ad` | `.agents/skills/wechat-miniapp-ad/SKILL.md` | 接入微信小程序官方广告 |
+| `ucharts` | `.agents/skills/ucharts/SKILL.md` | 接入或排查 uCharts/qiun-data-charts |
 
 ---
 

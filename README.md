@@ -77,15 +77,20 @@
 
 本项目内置 `.agents/skills`，用于给 AI 代理提供项目级上下文和操作规范：
 
-| Skill                | 作用                                                          |
-| -------------------- | ------------------------------------------------------------- |
-| `coding-guidelines`  | 编码行为准则，减少过度工程化、无关重构和不可验证改动          |
-| `css-styling`        | T-Uni-Best 样式规范，约束 UnoCSS、Wot UI、图标和样式覆盖方式  |
-| `uni-page-generator` | 生成符合项目规范的 `uni-app` 页面和分包页面                   |
-| `wot-ui`             | Wot UI v2 组件库参考，辅助组件 API、事件、slot 和常见问题查询 |
-| `ui-ux-pro-max`      | UI/UX 设计参考，用于复杂页面设计和视觉规范推导                |
+| Skill                    | 作用                                                          |
+| ------------------------ | ------------------------------------------------------------- |
+| `coding-guidelines`      | 编码行为准则，减少过度工程化、无关重构和不可验证改动          |
+| `css-styling`            | T-Uni-Best 样式规范，约束 UnoCSS、Wot UI、图标和样式覆盖方式  |
+| `uni-page-generator`     | 生成符合项目规范的 `uni-app` 页面和分包页面                   |
+| `wot-ui`                 | Wot UI v2 组件库参考，辅助组件 API、事件、slot 和常见问题查询 |
+| `ui-ux-pro-max`          | UI/UX 设计参考，用于复杂页面设计和视觉规范推导                |
+| `uni-app`                | UniApp 生命周期、内置 API、配置生成物和多端兼容参考           |
+| `uni-plugin-integration` | 第三方插件评估、安装、配置、体积和跨端验证                    |
+| `unicloud`               | 可选的 uniCloud 数据库、云函数、云存储与安全边界              |
+| `wechat-miniapp-ad`      | 微信小程序官方广告、生命周期、失败降级与激励安全              |
+| `ucharts`                | uCharts/qiun-data-charts 的 Vue 3 集成和跨端 Canvas 约束      |
 
-这些 skills 的目标是让 AI 不只是“能写代码”，而是能按本项目既有风格、目录边界和验证方式稳定开发。
+这些 skills 通过根目录 `AGENTS.md` 和 `.agents/skills/SKILL.md` 按场景路由，不会在每次任务中全部加载。Wot UI v2 仍是项目唯一默认业务组件库，UniApp 参考资料不会引入 uView、uView Pro 或 uni-ui。
 
 ### 代码规范与格式化
 
