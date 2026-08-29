@@ -9,6 +9,7 @@ import {
   HttpErrorType,
   isSuccessCode,
   isTokenExpiredCode,
+  ResultCodeEnum,
   ShowMessage,
 } from './tools/enum'
 
@@ -17,12 +18,39 @@ let refreshing = false // 防止重复刷新 token 标识
 let taskQueue: ((err?: unknown) => void)[] = [] // 刷新 token 请求队列
 
 // 静默登录状态管理（小程序场景：启动时无 token 则静默登录，并让鉴权请求等待）
-let loggingIn = false
 let loginPromise: Promise<void> | null = null
 
 // 双token刷新并发控制（防止多个请求同时刷新token）
 let tokenRefreshing = false // 防止重复刷新 token 标识
 let tokenRefreshPromise: Promise<void> | null = null // 刷新 token Promise
+
+/** 所有认证恢复入口共用同一个微信静默登录任务。 */
+function silentWxLogin() {
+  if (loginPromise) return loginPromise
+
+  loginPromise = (async () => {
+    try {
+      await useTokenStore().wxLogin()
+    } finally {
+      loginPromise = null
+    }
+  })()
+  return loginPromise
+}
+
+/** 只有刷新令牌被服务端明确拒绝时，才降级为微信静默登录。 */
+function shouldReloginAfterRefreshFailure(error: unknown) {
+  const response = error as Partial<HttpError>
+  const code = Number(response?.code)
+  return (
+    response?.statusCode === 401 ||
+    [
+      ResultCodeEnum.RefreshTokenEmpty,
+      ResultCodeEnum.RefreshTokenInvalid,
+      ResultCodeEnum.RefreshTokenExpired,
+    ].includes(code)
+  )
+}
 
 /**
  * 确保请求前的认证状态就绪
@@ -80,26 +108,7 @@ async function ensureAuthReady(options: CustomRequestOptions) {
   // 小程序端：无 token -> 静默登录（并发仅执行一次，其它请求等待）
   // #ifdef MP-WEIXIN
 
-  // 第一步：如果已有登录Promise在进行中，直接返回它（让其他请求等待）
-  if (loginPromise) return loginPromise
-
-  // 第二步：如果没有正在登录，才启动新的登录流程
-  if (!loggingIn) {
-    loggingIn = true
-    loginPromise = (async () => {
-      try {
-        // 实际执行微信登录逻辑
-        await tokenStore.wxLogin()
-      } finally {
-        // 无论成功失败，都重置状态，为下次登录做准备
-        loggingIn = false
-        loginPromise = null
-      }
-    })()
-  }
-
-  // 第三步：返回登录Promise，所有并发请求都会等待这个Promise
-  return loginPromise
+  return silentWxLogin()
   // #endif
 
   // H5端：走到这里说明无法无感获取 token
@@ -183,7 +192,7 @@ export function http<T>(options: CustomRequestOptions) {
             // - 双Token H5 但无refreshToken：同样无法无感恢复，跳登录页
             // #ifdef H5
             if (!isDoubleTokenMode || !(tokenStore.tokenInfo as IDoubleTokenRes)?.refreshToken) {
-              tokenStore.logout()
+              tokenStore.clearLocalSession()
               toLoginPage()
               return reject(
                 createHttpError({
@@ -202,8 +211,8 @@ export function http<T>(options: CustomRequestOptions) {
             // 先检查重试次数，防止无限循环
             const retryCount = options._retryCount || 0
             if (retryCount >= 1) {
-              // 已重试过一次，后端仍返回 401，将登出并拒绝
-              await tokenStore.logout()
+              // 已重试过一次仍鉴权失败，只清理本地状态，避免再次请求退出接口。
+              tokenStore.clearLocalSession()
               return reject(
                 createHttpError({
                   type: HttpErrorType.Auth,
@@ -246,11 +255,31 @@ export function http<T>(options: CustomRequestOptions) {
                   const tokenInfo = tokenStore.tokenInfo as IDoubleTokenRes
                   if (tokenInfo?.refreshToken) {
                     // 优先用 refreshToken 刷新，避免无谓调用 wx.login
-                    await tokenStore.refreshToken()
+                    try {
+                      await tokenStore.refreshToken()
+                    } catch (refreshError) {
+                      if (!shouldReloginAfterRefreshFailure(refreshError)) throw refreshError
+
+                      // 服务端登录态丢失时，本地 refreshToken 仍可能尚未到期。
+                      // 清理旧会话后由微信静默登录重建服务端登录态。
+                      tokenStore.clearLocalSession()
+                      // #ifdef MP-WEIXIN
+                      await silentWxLogin()
+                      // #endif
+                      // #ifndef MP-WEIXIN
+                      throw refreshError
+                      // #endif
+                    }
                   } else {
-                    // 没有 refreshToken，降级到小程序静默登录
+                    tokenStore.clearLocalSession()
                     // #ifdef MP-WEIXIN
-                    await tokenStore.wxLogin()
+                    await silentWxLogin()
+                    // #endif
+                    // #ifndef MP-WEIXIN
+                    throw createHttpError({
+                      type: HttpErrorType.Auth,
+                      message: '登录状态已失效，请重新登录',
+                    })
                     // #endif
                   }
 
@@ -281,8 +310,9 @@ export function http<T>(options: CustomRequestOptions) {
                   //   })
                   // })
 
-                  // 清除登录状态（但不跳转页面）
-                  await tokenStore.logout()
+                  // #ifdef H5
+                  toLoginPage()
+                  // #endif
 
                   // 拒绝所有等待的请求
                   taskQueue.forEach((task) => task(error))

@@ -5,6 +5,8 @@ export type CustomRequestOptions = UniApp.RequestOptions & {
   query?: Record<string, any>
   /** 是否忽略鉴权（默认所有请求需要鉴权；登录/刷新等接口需设置 true 以绕过门禁） */
   ignoreAuth?: boolean
+  /** 是否跳过添加访问令牌（登录、刷新令牌等接口使用） */
+  skipAccessToken?: boolean
   /** 出错时是否隐藏错误提示 */
   hideErrorToast?: boolean
   /** 内部使用：401 重试计数，防止无限循环（外部请勿手动设置） */

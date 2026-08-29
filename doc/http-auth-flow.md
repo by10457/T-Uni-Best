@@ -100,10 +100,10 @@ VITE_AUTH_MODE=double   → 双 Token 模式（accessToken + refreshToken，各�
 
 ### 并发控制关键变量
 
-| 变量                                      | 作用                                     |
-| ----------------------------------------- | ---------------------------------------- |
-| `loggingIn` / `loginPromise`              | 保证并发请求只触发一次微信静默登录       |
-| `tokenRefreshing` / `tokenRefreshPromise` | 保证并发请求只触发一次 refreshToken 刷新 |
+| 变量                                      | 作用                                       |
+| ----------------------------------------- | ------------------------------------------ |
+| `loginPromise`                            | 保证所有认证恢复入口只触发一次微信静默登录 |
+| `tokenRefreshing` / `tokenRefreshPromise` | 保证并发请求只触发一次 refreshToken 刷新   |
 
 > **效果**：10 个请求同时发出时无 Token，只有第 1 个触发登录，其余 9 个 await 同一个 Promise，登录完成后全部自动继续。
 
@@ -115,12 +115,15 @@ VITE_AUTH_MODE=double   → 双 Token 模式（accessToken + refreshToken，各�
 
 ```typescript
 const token = tokenStore.updateNowTime().validToken
-if (token) {
+if (options.skipAccessToken) {
+  delete options.header.Authorization
+} else if (token) {
   options.header.Authorization = `Bearer ${token}`
 }
 ```
 
 > 因为 `ensureAuthReady` 已经异步等待 Token 就绪，拦截器执行时 Token 一定有效（或请求已被 throw 中断）。
+> 登录、微信登录和刷新接口必须设置 `skipAccessToken: true`，不能携带旧 AccessToken。
 
 ---
 
@@ -155,19 +158,20 @@ if (token) {
 
 ```
 1. 检查 _retryCount（重试计数保护）
-   └─ retryCount >= 1（已重试过一次仍 401）→ logout() + reject，彻底放弃
+   └─ retryCount >= 1（已重试过一次仍 401）→ 清理本地会话 + reject，彻底放弃
 
 2. 将当前请求加入 taskQueue
 
 3. 启动一次性容错 IIFE（refreshing 标记防止重复启动）：
    ├─ 有 refreshToken → 调 refreshToken 接口刷新 accessToken
+   │   └─ 服务端明确返回 3305 / 3306 / 3307 或 401 → 清理旧会话并降级 wxLogin
    └─ 无 refreshToken → 降级为 wxLogin() 静默登录（#ifdef MP-WEIXIN）
 
 4. 容错成功 → 释放队列，所有等待请求携带 _retryCount+1 重新发出
-   容错失败 → logout() + 所有等待请求全部 reject
+   容错失败 → 所有等待请求全部 reject；网络异常不清理本地会话
 ```
 
-> **容错逻辑互斥**：有 refreshToken 时只调刷新接口，不调 wxLogin；无 refreshToken 时只调 wxLogin。不叠加调用，避免 wxLogin 已颁发新 Token 后立刻被旧 refreshToken 覆盖。
+> **容错顺序固定**：有 refreshToken 时先刷新；只有服务端明确判定刷新令牌不可用，才清理旧会话并调用 wxLogin。网络错误和服务端临时异常不会误触发重新登录。
 
 ---
 
@@ -187,15 +191,15 @@ if (token) {
 
 ### 响应后 401 容错
 
-| 平台       | Token 模式 | refreshToken | 行为                                       |
-| ---------- | ---------- | ------------ | ------------------------------------------ |
-| **H5**     | 单 Token   | —            | `toLoginPage()` + reject                   |
-| **H5**     | 双 Token   | ❌ 无        | `toLoginPage()` + reject                   |
-| **H5**     | 双 Token   | ✅ 有        | 进入刷新队列 → 调 refreshToken 接口 → 重试 |
-| **小程序** | 单 Token   | —            | 进入刷新队列 → wxLogin → 重试              |
-| **小程序** | 双 Token   | ✅ 有        | 进入刷新队列 → 调 refreshToken 接口 → 重试 |
-| **小程序** | 双 Token   | ❌ 无        | 进入刷新队列 → wxLogin → 重试              |
-| 任意       | 任意       | —            | retryCount ≥ 1 → logout + reject（兜底）   |
+| 平台       | Token 模式 | refreshToken | 行为                                          |
+| ---------- | ---------- | ------------ | --------------------------------------------- |
+| **H5**     | 单 Token   | —            | `toLoginPage()` + reject                      |
+| **H5**     | 双 Token   | ❌ 无        | `toLoginPage()` + reject                      |
+| **H5**     | 双 Token   | ✅ 有        | 刷新成功后重试；刷新令牌失效则跳转登录页      |
+| **小程序** | 单 Token   | —            | 进入刷新队列 → wxLogin → 重试                 |
+| **小程序** | 双 Token   | ✅ 有        | 刷新成功后重试；刷新令牌失效则 wxLogin 后重试 |
+| **小程序** | 双 Token   | ❌ 无        | 进入刷新队列 → wxLogin → 重试                 |
+| 任意       | 任意       | —            | retryCount ≥ 1 → logout + reject（兜底）      |
 
 ---
 
@@ -222,7 +226,10 @@ Token 写入时机：`setTokenInfo()` 被调用时，同步将 `Date.now() + exp
 ### 9.1 忽略鉴权（登录接口等）
 
 ```typescript
-httpPost('/auth/wxLogin', { code }, undefined, undefined, { ignoreAuth: true })
+httpPost('/auth/wxLogin', { code }, undefined, undefined, {
+  ignoreAuth: true,
+  skipAccessToken: true,
+})
 ```
 
 ### 9.2 忽略错误提示
@@ -272,7 +279,7 @@ interface HttpError<T = any> {
 
 3. **认证接口本身收到 401 直接 reject**。`/auth/refreshToken`、`/auth/wxLogin` 等均在排除名单内，不会进入重试队列，避免死循环。
 
-4. **每个请求最多重试 1 次**。`_retryCount >= 1` 时直接 logout + reject，防止极端情况下的无限循环。
+4. **每个请求最多重试 1 次**。`_retryCount >= 1` 时清理本地会话并 reject，防止极端情况下的无限循环。
 
 5. **`alova.ts` 是备用实现，当前未启用**。项目实际走 `http.ts` 方案，两套不要混用，`alova.ts` 中的认证逻辑是占位符，不可用于生产。
 

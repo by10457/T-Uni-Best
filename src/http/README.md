@@ -45,11 +45,16 @@ try {
 
 ## 自定义请求行为
 
-登录、刷新 Token 等无需已有登录态的接口必须设置 `ignoreAuth: true`：
+登录、刷新 Token 等无需已有登录态的接口必须同时跳过认证门禁和访问令牌注入：
 
 ```ts
-httpPost('/auth/login', data, undefined, undefined, { ignoreAuth: true })
+httpPost('/auth/login', data, undefined, undefined, {
+  ignoreAuth: true,
+  skipAccessToken: true,
+})
 ```
+
+`ignoreAuth` 只跳过请求前认证检查；`skipAccessToken` 保证登录和刷新请求不会携带旧的 `Authorization`。
 
 如果调用方需要自行展示错误，可关闭 HTTP 层的默认提示：
 

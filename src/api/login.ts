@@ -31,6 +31,7 @@ export function getCode() {
 export function login(loginForm: ILoginForm) {
   return http.post<IAuthLoginRes>('/auth/login', loginForm, undefined, undefined, {
     ignoreAuth: true,
+    skipAccessToken: true,
   })
 }
 
@@ -41,6 +42,7 @@ export function login(loginForm: ILoginForm) {
 export function refreshToken(refreshToken: string) {
   return http.post<IDoubleTokenRes>('/auth/refreshToken', { refreshToken }, undefined, undefined, {
     ignoreAuth: true,
+    skipAccessToken: true,
   })
 }
 
@@ -55,7 +57,7 @@ export function getUserInfo() {
  * 退出登录
  */
 export function logout() {
-  return http.get<void>('/auth/logout', undefined, undefined, { ignoreAuth: true })
+  return http.post<void>('/auth/logout', undefined, undefined, undefined, { ignoreAuth: true })
 }
 
 /**
@@ -92,5 +94,8 @@ export function getWxCode() {
  * @returns Promise 包含登录结果
  */
 export function wxLogin(data: { code: string }) {
-  return http.post<IAuthLoginRes>('/auth/wxLogin', data, undefined, undefined, { ignoreAuth: true })
+  return http.post<IAuthLoginRes>('/auth/wxLogin', data, undefined, undefined, {
+    ignoreAuth: true,
+    skipAccessToken: true,
+  })
 }

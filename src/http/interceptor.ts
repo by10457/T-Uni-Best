@@ -50,7 +50,9 @@ const httpInterceptor = {
     const tokenStore = useTokenStore()
     const token = tokenStore.updateNowTime().validToken
 
-    if (token) {
+    if (options.skipAccessToken) {
+      delete options.header.Authorization
+    } else if (token) {
       options.header.Authorization = `Bearer ${token}`
     }
     return options

@@ -168,24 +168,28 @@ export const useTokenStore = defineStore(
     }
 
     /**
-     * 退出登录 并 删除用户信息
+     * 仅清理本地登录状态，不请求后端。
+     * 认证恢复失败时使用，避免失效令牌再次触发退出接口鉴权错误。
+     */
+    const clearLocalSession = () => {
+      updateNowTime()
+      uni.removeStorageSync('accessTokenExpireTime')
+      uni.removeStorageSync('refreshTokenExpireTime')
+      tokenInfo.value = { ...tokenInfoState }
+      uni.removeStorageSync('token')
+    }
+
+    /**
+     * 通知后端注销当前令牌，并始终清理本地登录状态。
      */
     const logout = async () => {
       try {
-        // TODO 实现自己的退出登录逻辑
+        // TODO 根据实际后端实现退出登录逻辑
         await _logout()
       } catch (error) {
         console.error('退出登录失败:', error)
       } finally {
-        updateNowTime()
-
-        // 无论成功失败，都需要清除本地token信息
-        // 清除存储的过期时间
-        uni.removeStorageSync('accessTokenExpireTime')
-        uni.removeStorageSync('refreshTokenExpireTime')
-        console.log('退出登录-清除用户信息')
-        tokenInfo.value = { ...tokenInfoState }
-        uni.removeStorageSync('token')
+        clearLocalSession()
       }
     }
 
@@ -283,6 +287,7 @@ export const useTokenStore = defineStore(
       login,
       wxLogin,
       logout,
+      clearLocalSession,
 
       // 认证状态判断（最常用的）
       hasLogin: hasValidLogin,
