@@ -9,6 +9,7 @@ T-Uni-Best 是基于 unibest 的多端业务模板，在原有工程能力上重
 ```text
 src/pages          主包页面
 src/pages-*        分包页面
+src/pages-redirect 登录、注册、404 等重定向目标页面
 src/components     业务与通用组件
 src/api            手写 API 请求入口
 src/http           HTTP、认证与错误处理
