@@ -1,6 +1,6 @@
 ---
 name: wot-ui
-description: wot-ui uni-app 组件库开发指南（v2）。当用户询问 wot-ui 组件使用、配置、示例或 API 时使用此技能。
+description: T-Uni-Best 的 Wot UI v2 组件开发与 API 查询指南。新增、修改或排查任何 wd-* 组件，使用 useToast/useDialog/useNotify 等 composable，处理 props、events、slots、v-model、函数式调用、Provider 或样式覆盖时必须加载；不能凭旧版经验猜 API。
 ---
 
 # wot-ui（v2）
@@ -9,12 +9,13 @@ description: wot-ui uni-app 组件库开发指南（v2）。当用户询问 wot-
 
 ## 何时使用
 
-当用户需要以下帮助时使用此技能：
+当请求或待修改代码包含以下内容时使用此技能：
 - 实现特定的 wot-ui 组件（例如，"如何使用 Calendar 日历组件？"）
 - 配置全局 Provider 或主题（含深色模式）
 - 排查组件行为问题
 - 查找 props、events 和 slots 的 API 参考
 - 使用函数式调用（useToast / useDialog / useImagePreview / useVideoPreview 等）
+- 新增或修改 `<wd-*>` 标签，即使用户没有显式提到 Wot UI
 
 ## 组件参考
 
@@ -129,14 +130,16 @@ description: wot-ui uni-app 组件库开发指南（v2）。当用户询问 wot-
 
 ## 使用模式
 
-1. **识别组件**: 确定用户感兴趣的组件。
-2. **查阅参考**: 阅读 `references/<component-name>.md` 中的具体组件文档。
-3. **提供示例**: 使用文档中的示例来指导用户。确保严格遵守参考中定义的 API（props, events）。
+1. **确认版本和现状**：检查 `package.json`、现有用法和 resolver 配置。
+2. **识别组件**：确定涉及的组件或 composable。
+3. **查阅参考**：完整阅读 `references/<component-name>.md`；样式或通用问题再读对应 guide。
+4. **核对 API**：严格确认 props、events、slots、v-model、返回类型和必要的承载组件。
+5. **按项目规则落地**：样式同时遵循 `css-styling`，主题行为先检查项目现有全局配置。
 
 ## 最佳实践
 
 - **包名**: 所有导入来自 `@wot-ui/ui`，不再是 `wot-design-uni`。
-- **自动引入**: npm 安装方式下，推荐通过 `WotResolver` 配合 `@uni-helper/vite-plugin-uni-components` 自动引入组件，或通过 `pages.json` easycom 正则配置（前缀 `@wot-ui/ui/components`）。
+- **自动引入**: 本项目通过 `WotResolver` 配合 `@uni-helper/vite-plugin-uni-components` 自动引入；不要手工修改生成的 `pages.json` 或组件声明。
 - **函数式调用**: Toast / Dialog / Notify / ImagePreview / VideoPreview 均需在页面中先声明对应组件实例（如 `<wd-dialog />`），再通过 `useXxx()` 调用。
 - **ConfigProvider**: v2 新增 `theme`（`'light' | 'dark'`）和 `theme-vars`（`ConfigProviderThemeVars`）props，可局部覆盖主题变量，无需全局修改 CSS。
 - **深色模式**: 需要在入口文件引入 `@wot-ui/ui/styles/theme/index.scss` 后，再通过 `wd-config-provider` 的 `theme` prop 切换。

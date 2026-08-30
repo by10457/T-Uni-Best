@@ -1,11 +1,11 @@
 ---
 name: css-styling
-description: T-Uni-Best 项目 CSS 样式规范。凡是在 template 中写 class 属性、讨论布局方式、调整间距颜色、使用或查找图标、需要覆盖 Wot UI 组件默认样式、或者用户说"样式太丑了"/"这个按钮加点样式"/"图标怎么变颜色"等任何与样式视觉相关的需求时，都应加载此 skill，即便用户没有明确说"查样式规范"。
+description: T-Uni-Best 的 UnoCSS 与移动端样式规范。凡是在 Vue template 中新增或修改 class/:class/:style，调整布局、间距、颜色、字体、图标、动画、响应式或安全区，覆盖 Wot UI 样式，或审查页面视觉时都必须加载，即使用户只说“优化页面”“按钮加点样式”。
 ---
 
 # CSS 样式编写规范
 
-本项目使用 **UnoCSS 原子化 CSS** 作为唯一样式方案。编写样式前必须阅读并遵守本规范。
+本项目使用 **UnoCSS 原子化 CSS** 作为普通样式的首选方案。编写样式前必须阅读并遵守本规范。
 
 | 维度 | 规范要求 | 备注 |
 | :--- | :--- | :--- |
@@ -51,7 +51,7 @@ description: T-Uni-Best 项目 CSS 样式规范。凡是在 template 中写 clas
 
 ## 二、`<style>` 块的唯一合法用途
 
-`<style scoped>` 仅允许用于以下 **3 种场景**，其他任何情况都应改用原子化类名：
+`<style scoped>` 仅用于原子类不能可靠表达或复用成本明显更高的场景：
 
 ### 场景 1：覆盖第三方组件库内部样式
 
@@ -111,6 +111,10 @@ description: T-Uni-Best 项目 CSS 样式规范。凡是在 template 中写 clas
 </style>
 ```
 
+### 场景 4：平台兼容样式或复杂选择器
+
+需要条件编译、第三方渲染差异或 UnoCSS 无法静态生成的复杂选择器时可以使用，并用中文注释说明原因。不要把这个例外扩展成普通页面 CSS。
+
 ---
 
 ## 三、UnoCSS 配置速查（`uno.config.ts`）
@@ -149,12 +153,6 @@ description: T-Uni-Best 项目 CSS 样式规范。凡是在 template 中写 clas
 <!-- transformerVariantGroup：() 分组语法 -->
 <view class="hover:(bg-gray-100 text-primary) focus:(ring-2 ring-primary)">
 
-<!-- transformerDirectives：在 style 中使用 @apply -->
-<style scoped>
-.my-btn {
-  @apply flex center px-6 py-2 rounded-lg text-primary;
-}
-</style>
 ```
 
 ---
@@ -222,7 +220,7 @@ src/static/my-icons/
 
 ## 五、组件库（Wot UI）样式覆盖规范
 
-**即使使用组件库，也必须统一覆盖组件内部样式**，确保视觉风格一致，不能依赖组件库默认外观。
+只有设计或主题确实需要时才覆盖组件内部样式。不要为了“看起来定制过”而无条件覆盖 Wot UI 默认值。
 
 ### 覆盖方式优先级
 
@@ -313,6 +311,21 @@ src/static/my-icons/
 <view class="bg-gradient-to-br from-blue-500 to-blue-700">...</view>
 ```
 
+### 紧凑标签与徽标的文字居中
+
+标签、状态块、徽标等紧凑元素不能只依赖 `py-*` 和默认行高。微信小程序与 H5 的字体度量可能不同，推荐明确高度并同时约束容器与文字行高：
+
+```vue
+<view class="h-7 inline-flex items-center justify-center rounded-1.5 bg-gray-100 px-2">
+  <text class="block text-2.7 text-gray-600 leading-none">标签文字</text>
+</view>
+```
+
+- 外层使用 `inline-flex items-center justify-center` 并设置稳定高度。
+- `<text>` 使用 `block leading-none`，避免默认行高扩大行盒。
+- 不用负 margin、`top` 或固定 `translateY` 修正字体基线，这类补偿跨端不稳定。
+- 至少检查微信小程序目标端，不能只根据 H5 判断垂直位置。
+
 ---
 
 ## 七、自检清单
@@ -322,7 +335,8 @@ src/static/my-icons/
 - [ ] 布局类（flex、grid、padding、margin）是否全部用原子化类？
 - [ ] 颜色类（bg-、text-、border-）是否全部用原子化类？
 - [ ] 字体大小（text-sm/base/lg）是否全部用原子化类？
-- [ ] `<style>` 块是否**只**包含 `:deep()` 覆盖、伪元素、`@keyframes`？
+- [ ] `<style>` 是否只包含深层覆盖、复杂选择器/伪元素、动画或平台兼容样式？
 - [ ] 使用的图标是否来自 `carbon` 库（`i-carbon-*`）？
 - [ ] 动态绑定的图标是否已加入 `safelist`？
 - [ ] 使用组件库时是否覆盖了与设计稿不符的默认样式？
+- [ ] 紧凑标签是否显式设置高度、flex 居中和文字行高？

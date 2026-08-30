@@ -1,11 +1,19 @@
 ---
 name: project-skill-router
-description: T-Uni-Best 项目 skills 路由。进入仓库执行开发、调试、页面、样式、Wot UI、UniApp API、插件、uniCloud、微信广告或图表任务前使用，用于判断必须加载哪些专项 skill。
+description: T-Uni-Best 项目 skills 总览与组合加载路由。进入仓库执行开发、调试、重构、review、页面、样式、Wot UI、UniApp API、插件、uniCloud、微信广告或图表任务前阅读；只负责判断应加载哪些专项 skill，不能替代专项正文。
 ---
 
 # T-Uni-Best Skills 路由
 
 先按场景选择专项 skill，再完整读取对应 `SKILL.md`。一个任务可以命中多个 skill，但不要加载无关 references。
+
+## 基础流程
+
+1. 根据用户请求、待修改文件和代码元素判断触发项。
+2. 同一任务命中多个 skill 时全部读取后再修改代码。
+3. 首次进度说明中告知用户本次加载的 skill 及原因。
+4. 实现中范围变化并命中新 skill 时，暂停修改并先补读。
+5. 完成后按专项 skill 和根 `AGENTS.md` 选择验证；规则变化时同步更新对应 skill。
 
 | Skill | 必须加载的场景 |
 | --- | --- |
@@ -22,6 +30,11 @@ description: T-Uni-Best 项目 skills 路由。进入仓库执行开发、调试
 
 ## 组合规则
 
+- 普通逻辑修复：`coding-guidelines`。
+- 新建普通页面：`coding-guidelines` + `uni-page-generator` + `css-styling`。
+- 页面使用 Wot UI：上述组合再加 `wot-ui`。
+- 调整现有页面视觉：`coding-guidelines` + `css-styling`。
+- 复杂整页设计：`coding-guidelines` + `ui-ux-pro-max` + `css-styling`；使用 Wot UI 时再加 `wot-ui`。
 - 页面使用 UniApp API：`coding-guidelines` + `uni-app`；涉及样式再加 `css-styling`。
 - 页面使用 Wot UI：继续以 `wot-ui` 为组件事实源，`uni-app` 只提供框架和原生能力参考。
 - 安装图表插件：`coding-guidelines` + `uni-plugin-integration` + `ucharts`。
