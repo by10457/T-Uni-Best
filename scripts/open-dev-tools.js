@@ -43,7 +43,7 @@ function _openDevTools(env = 'dev', options = {}) {
     if (UNI_PLATFORM === 'mp-weixin') {
       const cliPath =
         wechatDevtoolsCliPath || '/Applications/wechatwebdevtools.app/Contents/MacOS/cli'
-      command = `"${cliPath}" -o "${projectPath}"`
+      command = `"${cliPath}" open --project "${projectPath}"`
     } else if (UNI_PLATFORM === 'mp-alipay') {
       command = `/Applications/小程序开发者工具.app/Contents/MacOS/小程序开发者工具 --p "${projectPath}"`
     } else if (UNI_PLATFORM === 'mp-lark') {
@@ -54,7 +54,7 @@ function _openDevTools(env = 'dev', options = {}) {
     if (UNI_PLATFORM === 'mp-weixin') {
       const cliPath =
         wechatDevtoolsCliPath || 'D:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat'
-      command = `"${cliPath}" -o "${projectPath}"`
+      command = `"${cliPath}" open --project "${projectPath}"`
     }
   } else {
     // Linux 或其他系统

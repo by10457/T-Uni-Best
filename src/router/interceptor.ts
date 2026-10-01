@@ -5,7 +5,7 @@ import { isMp } from '@uni-helper/uni-env'
  * 黑、白名单的配置，请看 config.ts 文件， EXCLUDE_LOGIN_PATH_LIST
  */
 import { useTokenStore } from '@/store/token'
-import { isPageTabbar, tabbarStore } from '@/tabbar/store'
+import { getTabbarRedirectPath, isPageTabbar, tabbarStore } from '@/tabbar/store'
 import { getAllPages, getLastPage, HOME_PAGE, parseUrlToObj } from '@/utils/index'
 import {
   EXCLUDE_LOGIN_PATH_LIST,
@@ -94,6 +94,17 @@ export const navigateToInterceptor = {
     if (url.startsWith('plugin://')) {
       FG_LOG_ENABLE && console.log('路由拦截器 4: plugin:// 路径 ==>', url)
       path = url
+    }
+
+    // 页面仍存在于编译产物中，隐藏入口之外还需拦截分享、冷启动和主动导航。
+    const tabbarRedirectPath = getTabbarRedirectPath(path)
+    if (tabbarRedirectPath) {
+      if (isPageTabbar(tabbarRedirectPath)) {
+        uni.switchTab({ url: tabbarRedirectPath })
+      } else {
+        uni.redirectTo({ url: tabbarRedirectPath })
+      }
+      return false
     }
 
     // 处理直接进入路由非首页时，tabbarIndex 不正确的问题

@@ -35,13 +35,13 @@ function handleClick(index: number) {
     return
   }
   const url = list[index].pagePath
-  const prevIdx = tabbarStore.curIdx
+  const prevPath = tabbarStore.curPath
   tabbarStore.setCurIdx(index)
   const syncTabbarAfterNavigation = () => {
     tabbarStore.syncCurIdxByCurrentPageAsync()
   }
   const restoreTabbarWhenNavigationFailed = () => {
-    tabbarStore.setCurIdx(prevIdx)
+    tabbarStore.setCurPath(prevPath)
   }
   if (tabbarCacheEnable) {
     uni.switchTab({
@@ -100,7 +100,7 @@ function getColorByIndex(index: number) {
       <view class="h-50px flex items-center">
         <view
           v-for="(item, index) in tabbarList"
-          :key="index"
+          :key="item.pagePath"
           class="flex flex-1 flex-col items-center justify-center"
           :style="{ color: getColorByIndex(index) }"
           @click="handleClick(index)"
