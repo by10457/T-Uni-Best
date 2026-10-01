@@ -58,7 +58,6 @@ export default defineConfig({
         varsIgnorePattern: '^_',
       },
     ],
-    'no-unused-vars': 'off',
     'typescript/no-explicit-any': 'off',
     'typescript/no-non-null-assertion': 'off',
     'typescript/no-var-requires': 'error',

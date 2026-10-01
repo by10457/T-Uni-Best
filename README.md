@@ -101,6 +101,8 @@
 - `ESLint` 保留为 Vue、JSON/YAML、uni-app 相关规则的补充检查。
 - VSCode 工作区默认使用 Oxc formatter，减少格式器之间来回改动。
 
+保存和手动格式化均由 Oxfmt 处理整份文件，保存时不执行 lint 自动修复。ESLint 不承担 Vue 模板排版；提交和 `pnpm lint:fix` 均先修复 lint，再由 Oxfmt 最后统一排版。当前未启用 Oxlint 类型感知，Vue 类型检查使用 `pnpm type-check`。
+
 常用命令：
 
 ```bash

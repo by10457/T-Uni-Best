@@ -36,6 +36,20 @@ export default uniHelper({
     // uni 条件编译注释可能包裹 import，自动排序会破坏平台条件边界
     'perfectionist/sort-imports': 'off',
     'vue/singleline-html-element-content-newline': 'off',
+    // Vue 模板排版由 Oxfmt 统一负责，避免 ESLint fixer 与保存格式化互相覆盖
+    'vue/first-attribute-linebreak': 'off',
+    'vue/html-closing-bracket-newline': 'off',
+    'vue/html-closing-bracket-spacing': 'off',
+    'vue/html-indent': 'off',
+    'vue/html-quotes': 'off',
+    'vue/html-self-closing': 'off',
+    'vue/multiline-html-element-content-newline': 'off',
+    'vue/mustache-interpolation-spacing': 'off',
+    'vue/no-multi-spaces': 'off',
+    'vue/no-spaces-around-equal-signs-in-attribute': 'off',
+    'vue/dot-location': 'off',
+    'vue/space-infix-ops': 'off',
+    'vue/space-unary-ops': 'off',
     // vue SFC 调换顺序改这里
     'vue/block-order': [
       'error',

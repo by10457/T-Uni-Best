@@ -83,7 +83,8 @@
   "js/ts.preferences.preferTypeOnlyAutoImports": true,
   "js/ts.preferences.includePackageJsonAutoImports": "on",
   "oxc.enable": true,
-  "oxc.typeAware": true,
+  // 当前未安装 oxlint-tsgolint；Vue 类型检查继续由 vue-tsc 负责。
+  "oxc.typeAware": false,
   "oxc.configPath": "oxlint.config.ts",
   "oxc.fmt.configPath": "oxfmt.config.ts",
   "explorer.fileNesting.enabled": true,
@@ -98,7 +99,9 @@
 
   // Disable Prettier and use Oxc/Oxfmt as the workspace formatter.
   "prettier.enable": false,
+  "eslint.format.enable": false,
   "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "[vue]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
@@ -125,26 +128,14 @@
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
 
-  // Auto fix
+  // 保存时只由 Oxfmt 统一格式化，避免多个 fixer 连续改写同一文件。
   "editor.codeActionsOnSave": {
-    "source.fixAll.oxc": "explicit",
-    "source.fixAll.eslint": "explicit",
+    "source.fixAll": "never",
+    "source.fixAll.oxc": "never",
+    "source.fixAll.eslint": "never",
+    "source.format.oxc": "never",
     "source.organizeImports": "never"
   },
-
-  // Silent the stylistic rules in you IDE, but still auto fix them
-  "eslint.rules.customizations": [
-    { "rule": "style/*", "severity": "off", "fixable": true },
-    { "rule": "format/*", "severity": "off", "fixable": true },
-    { "rule": "*-indent", "severity": "off", "fixable": true },
-    { "rule": "*-spacing", "severity": "off", "fixable": true },
-    { "rule": "*-spaces", "severity": "off", "fixable": true },
-    { "rule": "*-order", "severity": "off", "fixable": true },
-    { "rule": "*-dangle", "severity": "off", "fixable": true },
-    { "rule": "*-newline", "severity": "off", "fixable": true },
-    { "rule": "*quotes", "severity": "off", "fixable": true },
-    { "rule": "*semi", "severity": "off", "fixable": true }
-  ],
 
   // Enable eslint for all supported languages
   "eslint.validate": [

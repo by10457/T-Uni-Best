@@ -102,7 +102,7 @@
     "lint:eslint": "eslint . --cache",
     "lint:eslint:fix": "eslint . --cache --fix",
     "lint": "pnpm format:check && pnpm lint:ox && pnpm lint:eslint",
-    "lint:fix": "pnpm format && pnpm lint:ox:fix && pnpm lint:eslint:fix",
+    "lint:fix": "pnpm lint:ox:fix && pnpm lint:eslint:fix && pnpm format",
     "test": "vitest",
     "test:run": "vitest run"
   },
@@ -206,9 +206,9 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,vue}": [
-      "oxfmt --no-error-on-unmatched-pattern",
       "oxlint --fix",
-      "eslint --cache --fix"
+      "eslint --cache --fix",
+      "oxfmt --no-error-on-unmatched-pattern"
     ],
     "*.{json,jsonc,md,css,scss,html}": "oxfmt --no-error-on-unmatched-pattern"
   }
